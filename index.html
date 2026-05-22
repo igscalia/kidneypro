@@ -3,78 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Nephro-Ref</title>
+  <title>KidneyPro</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Nephro-Ref">
+  <meta name="apple-mobile-web-app-title" content="KidneyPro">
   <meta name="theme-color" content="#0f172a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script>
   (function(){
-    try {
+    try{
       var c=document.createElement('canvas');c.width=c.height=180;
       var x=c.getContext('2d'),w=180;
-      // Warm cream rounded background
-      x.fillStyle='#FFF0EC';
-      var rd=38;
-      x.beginPath();x.moveTo(rd,0);x.lineTo(w-rd,0);
-      x.arcTo(w,0,w,rd,rd);x.lineTo(w,w-rd);
-      x.arcTo(w,w,w-rd,w,rd);x.lineTo(rd,w);
-      x.arcTo(0,w,0,w-rd,rd);x.lineTo(0,rd);
+      // Warm cream background
+      x.fillStyle='#FFF0EC';var rd=38;
+      x.beginPath();x.moveTo(rd,0);x.lineTo(w-rd,0);x.arcTo(w,0,w,rd,rd);x.lineTo(w,w-rd);
+      x.arcTo(w,w,w-rd,w,rd);x.lineTo(rd,w);x.arcTo(0,w,0,w-rd,rd);x.lineTo(0,rd);
       x.arcTo(0,0,rd,0,rd);x.closePath();x.fill();
-      // Shadow under ureters
+      // Shadow
       x.fillStyle='rgba(200,112,100,0.18)';
       x.beginPath();x.ellipse(90,162,17,4,0,0,Math.PI*2);x.fill();
-      // RIGHT kidney (behind, slightly darker) — smaller, further right
+      // Right kidney (behind, darker) — smaller, rightward
       x.fillStyle='#D88080';
-      x.beginPath();
-      x.moveTo(136,42);x.bezierCurveTo(156,42,168,59,168,84);
-      x.bezierCurveTo(168,109,155,128,135,128);
-      x.bezierCurveTo(125,128,117,122,115,113);
-      x.bezierCurveTo(112,104,119,97,120,91);
-      x.bezierCurveTo(121,85,115,78,117,70);
+      x.beginPath();x.moveTo(136,42);x.bezierCurveTo(156,42,168,59,168,84);
+      x.bezierCurveTo(168,109,155,128,135,128);x.bezierCurveTo(125,128,117,122,115,113);
+      x.bezierCurveTo(112,104,119,97,120,91);x.bezierCurveTo(121,85,115,78,117,70);
       x.bezierCurveTo(119,59,125,42,136,42);x.closePath();x.fill();
       x.strokeStyle='rgba(255,255,255,0.38)';x.lineWidth=4.5;x.lineCap='round';
       x.beginPath();x.moveTo(158,53);x.bezierCurveTo(163,62,165,74,162,85);x.stroke();
-      // LEFT kidney (front, brighter) — smaller, further left
+      // Left kidney (front, brighter) — smaller, leftward
       x.fillStyle='#E89090';
-      x.beginPath();
-      x.moveTo(44,42);x.bezierCurveTo(24,42,12,59,12,84);
-      x.bezierCurveTo(12,109,25,128,45,128);
-      x.bezierCurveTo(55,128,63,122,65,113);
-      x.bezierCurveTo(68,104,61,97,60,91);
-      x.bezierCurveTo(59,85,65,78,63,70);
+      x.beginPath();x.moveTo(44,42);x.bezierCurveTo(24,42,12,59,12,84);
+      x.bezierCurveTo(12,109,25,128,45,128);x.bezierCurveTo(55,128,63,122,65,113);
+      x.bezierCurveTo(68,104,61,97,60,91);x.bezierCurveTo(59,85,65,78,63,70);
       x.bezierCurveTo(61,59,55,42,44,42);x.closePath();x.fill();
       x.strokeStyle='rgba(255,255,255,0.45)';x.lineWidth=4.5;x.lineCap='round';
       x.beginPath();x.moveTo(22,53);x.bezierCurveTo(17,62,15,74,18,85);x.stroke();
       x.fillStyle='rgba(255,255,255,0.45)';
       x.beginPath();x.arc(20,51,3,0,Math.PI*2);x.fill();
-      // Left ureter
+      // Ureters with clear gap in centre
       x.strokeStyle='#C87070';x.lineWidth=5;x.lineCap='round';
-      x.beginPath();x.moveTo(65,111);
-      x.quadraticCurveTo(70,132,78,148);
-      x.quadraticCurveTo(83,157,86,161);x.stroke();
-      // Right ureter
-      x.beginPath();x.moveTo(115,111);
-      x.quadraticCurveTo(110,132,102,148);
-      x.quadraticCurveTo(97,157,94,161);x.stroke();
-      // Ureter junction
-      x.beginPath();x.moveTo(86,161);x.quadraticCurveTo(90,165,94,161);x.stroke();
-      x.fillStyle='#C87070';
-      x.beginPath();x.arc(90,161,3.5,0,Math.PI*2);x.fill();
-      // Heart — small, centered between the kidneys, upper area
+      x.beginPath();x.moveTo(65,111);x.quadraticCurveTo(72,134,80,150);
+      x.quadraticCurveTo(84,158,87,162);x.stroke();
+      x.beginPath();x.moveTo(115,111);x.quadraticCurveTo(108,134,100,150);
+      x.quadraticCurveTo(96,158,93,162);x.stroke();
+      x.beginPath();x.moveTo(87,162);x.quadraticCurveTo(90,166,93,162);x.stroke();
+      x.fillStyle='#C87070';x.beginPath();x.arc(90,162,3.5,0,Math.PI*2);x.fill();
+      // Heart between kidneys, top
       x.fillStyle='#C85060';
-      x.beginPath();
-      x.moveTo(90,38);
-      x.bezierCurveTo(90,38,84,28,77,28);
-      x.bezierCurveTo(70,28,65,34,65,40);
-      x.bezierCurveTo(65,49,76,57,90,67);
-      x.bezierCurveTo(104,57,115,49,115,40);
-      x.bezierCurveTo(115,34,110,28,103,28);
-      x.bezierCurveTo(96,28,90,38,90,38);x.closePath();x.fill();
-      // Apply as icons
+      x.beginPath();x.moveTo(90,38);
+      x.bezierCurveTo(90,38,84,28,77,28);x.bezierCurveTo(70,28,65,34,65,40);
+      x.bezierCurveTo(65,49,76,57,90,67);x.bezierCurveTo(104,57,115,49,115,40);
+      x.bezierCurveTo(115,34,110,28,103,28);x.bezierCurveTo(96,28,90,38,90,38);
+      x.closePath();x.fill();
       var img=c.toDataURL('image/png');
       var lk=document.createElement('link');lk.rel='apple-touch-icon';lk.setAttribute('sizes','180x180');lk.href=img;document.head.appendChild(lk);
       var fv=document.createElement('link');fv.rel='icon';fv.type='image/png';fv.href=img;document.head.appendChild(fv);
@@ -90,25 +72,12 @@
     input::placeholder, textarea::placeholder { color:#64748b; }
     small { font-size:0.65rem; }
 
-    /* ── Responsive layout ── */
     @media (max-width: 599px) {
-      #sidebar {
-        position:fixed!important; left:-260px!important; top:0;
-        height:100dvh; width:260px!important; min-width:260px!important;
-        z-index:100; transition:left 0.25s ease;
-      }
+      #sidebar { position:fixed!important;left:-260px!important;top:0;height:100dvh;width:260px!important;min-width:260px!important;z-index:100;transition:left 0.25s ease; }
       #sidebar.sb-open { left:0!important; }
-      .sb-safe-top {
-        height:env(safe-area-inset-top,0px); min-height:env(safe-area-inset-top,0px);
-        background:#0f172a; flex-shrink:0; display:block;
-      }
+      .sb-safe-top { height:env(safe-area-inset-top,0px);min-height:env(safe-area-inset-top,0px);background:#0f172a;flex-shrink:0;display:block; }
       #backdrop.bd-visible { display:block!important; }
-      .mobile-bar {
-        display:flex!important;
-        padding-top:max(14px,env(safe-area-inset-top,14px))!important;
-        padding-bottom:10px!important;
-        min-height:calc(44px + env(safe-area-inset-top,0px))!important;
-      }
+      .mobile-bar { display:flex!important;padding-top:max(14px,env(safe-area-inset-top,14px))!important;padding-bottom:10px!important;min-height:calc(44px + env(safe-area-inset-top,0px))!important; }
       .desktop-header { display:none!important; }
       .mobile-tabs { display:flex!important; }
     }
@@ -124,11 +93,10 @@
     <div style="height:100dvh;display:flex;align-items:center;justify-content:center;background:#0f172a">
       <div style="text-align:center;color:white">
         <div style="font-size:3rem;margin-bottom:12px">&#9877;</div>
-        <div style="color:#94a3b8;font-size:0.875rem">Loading Nephro-Ref...</div>
+        <div style="color:#94a3b8;font-size:0.875rem">Loading KidneyPro...</div>
       </div>
     </div>
   </div>
-
   <script>
 const PRESENTATIONS = [
   {
@@ -735,7 +703,7 @@ const PRESENTATIONS = [
 
 
   {
-    id:'abg-ref',name:'ABG — Five Step Method',abbr:'ABG Quick Ref',cat:'Quick Study',icon:'🩺',type:'management',
+    id:'abg-ref',name:'ABG — Five Step Method',abbr:'ABG Quick Ref',cat:'Quick Study',icon:'🩺',type:'study',
     summary:'A systematic five-step approach to arterial blood gas interpretation. Always apply all five steps in order — do not skip ahead. Key principle: identify the primary disorder first, then check for appropriate compensation, then look for mixed disorders.',
     pearls:[
       'Step 1 — pH: acidaemia (<7.35) or alkalaemia (>7.45)?',
@@ -755,7 +723,7 @@ const PRESENTATIONS = [
     dialysis:['Uraemic acidosis (HAGMA): renal ammoniagenesis is impaired in CKD — reduced H⁺ excretion as NH₄⁺','Dialysis corrects acidosis via bicarbonate dialysate (HD) or lactate/bicarbonate buffer (PD)','Post-dialysis alkalosis: over-correction can occur — monitor pre-dialysis HCO₃ (not post)','Patients on HD often have low pre-dialysis HCO₃ — target HCO₃ ≥22 mmol/L with oral sodium bicarbonate supplementation between sessions'],
   },
   {
-    id:'ckd-staging',name:'CKD Staging & Assessment',abbr:'CKD Staging',cat:'Quick Study',icon:'📊',type:'management',
+    id:'ckd-staging',name:'CKD Staging & Assessment',abbr:'CKD Staging',cat:'Quick Study',icon:'📊',type:'study',
     summary:'CKD is defined as structural or functional kidney abnormality for >3 months. Staging uses the combined GFR-albuminuria grid (KDIGO 2012). CKD-EPI 2021 (race-free equation) is now the preferred eGFR equation in Australia — use this over MDRD. Risk of progression, cardiovascular disease, and ESKD increases with lower eGFR AND higher albuminuria.',
     pearls:[
       'CKD diagnosis: abnormal kidney structure/function >3 months — either eGFR <60 (G3+) OR albuminuria (ACR ≥3 mg/mmol) OR structural abnormality',
@@ -774,7 +742,7 @@ const PRESENTATIONS = [
     dialysis:['ESKD preparation: nephrology review when eGFR <20 for modality education (HD, PD, transplant, conservative care)','Fistula/graft creation: ideally when eGFR 15–20 (HD access takes 3–6 months to mature)','PD catheter placement: 4–6 weeks before planned PD start','Transplant referral: consider when eGFR <20 — living donor workup can take 12–24+ months','Conservative management: a valid choice — discuss with patients who are elderly/frail or decline dialysis'],
   },
   {
-    id:'nephron-ref',name:'Nephron — Drug Target Reference',abbr:'Nephron Ref',cat:'Quick Study',icon:'🔬',type:'management',
+    id:'nephron-ref',name:'Drug Targets — Nephron Reference',abbr:'Drug Targets',cat:'Quick Study',icon:'🔬',type:'study',
     summary:'Quick reference for drug mechanisms organised by nephron segment. Understanding where drugs act explains both their therapeutic effects and side effects in CKD. The nephron is also the framework for understanding electrolyte disorders — tracing which segment handles each electrolyte explains the pattern of drug-induced electrolyte disturbances.',
     pearls:[
       'PCT (Proximal Convoluted Tubule): reabsorbs ~67% of filtered Na⁺/water, all glucose, all amino acids, ~80% HCO₃. Carbonic anhydrase mediates HCO₃ reabsorption. SGLT2 mediates glucose/Na⁺ cotransport.',
@@ -851,7 +819,7 @@ const PRESENTATIONS = [
     dialysis:['Dabigatran is ~60% dialysable over 4h HD session — useful if idarucizumab unavailable or re-elevation after reversal','HD anticoagulation during session: UFH (most common) or regional citrate anticoagulation if high bleeding risk; avoid systemic anticoagulation where possible','PD: no systemic anticoagulation for peritoneal dialysis itself; consider heparin added to dialysate bags only if fibrin formation occurs'],
   },
   {
-    id:'htn-management',name:'Hypertension Management',abbr:'Hypertension',cat:'Chronic Disease',icon:'🩺',type:'management',
+    id:'htn-management',name:'Hypertension Management',abbr:'Hypertension',cat:'CKD Management',icon:'🩺',type:'management',
     summary:'BP target in most CKD patients is <130/80 mmHg (standardised office BP). ACEi or ARB is mandatory in CKD with proteinuria — provides both BP and renoprotection. SGLT2 inhibitors offer an additional BP-lowering mechanism with cardiorenal benefit. Resistant hypertension (BP uncontrolled on 3 drugs including a diuretic) warrants MRA + secondary cause workup.',
     pearls:[
       'BP target: <130/80 mmHg for most CKD patients (KDIGO 2021); standardised office BP (5 min seated, 3 readings averaged)',
@@ -875,7 +843,7 @@ const PRESENTATIONS = [
     dialysis:['HD interdialytic hypertension: often volume-mediated — reassess dry weight, ultrafiltration goals, dialysate Na⁺','Intradialytic hypertension (BP rises during HD): paradoxical; investigate for volume overload, excessive Na loading, RAAS activation','Antihypertensives: avoid giving ACEi/ARB/beta-blockers immediately before HD (hypotension risk); give post-HD or split dosing','PD patients: lower prevalence of hypertension than HD; sodium restriction + adequate UF critical'],
   },
   {
-    id:'dm-ckd',name:'Diabetes Management in CKD',abbr:'Diabetes + CKD',cat:'Chronic Disease',icon:'🩸',type:'management',
+    id:'dm-ckd',name:'Diabetes Management in CKD',abbr:'Diabetes + CKD',cat:'CKD Management',icon:'🩸',type:'management',
     summary:'Diabetes is the leading cause of CKD in Australia. Tight glycaemic control (HbA1c <7%) reduces microvascular progression but must be individualised in CKD (hypoglycaemia risk with reduced drug clearance). SGLT2 inhibitors are now first-line agents in CKD + T2DM regardless of glycaemic control — proven cardiorenal protection independent of glucose effect.',
     pearls:[
       'SGLT2 inhibitors: first-line in CKD + T2DM — CREDENCE (canagliflozin), DAPA-CKD (dapagliflozin), EMPA-KIDNEY (empagliflozin) all show renoprotection independent of glucose lowering',
@@ -901,14 +869,13 @@ const PRESENTATIONS = [
 ];
 
   </script>
-
   <script>
 // ═══════════════════════════════════════════════════════════
 // APP v4 — Mobile-responsive, Export Notes, Quick Study
 // ═══════════════════════════════════════════════════════════
 
-const CATS = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific','Custom'];
-const CAT_C = {'Ward Quick Ref':'#67e8f9','Chronic Disease':'#fb923c','Quick Study':'#a78bfa','Infectious Disease':'#fbbf24','Transplant':'#60a5fa','Acute Presentations':'#f87171','CKD Management':'#34d399','Dialysis-Specific':'#2dd4bf','Custom':'#c084fc'};
+const CATS = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Dialysis-Specific','Custom'];
+const CAT_C = {'Ward Quick Ref':'#67e8f9','Quick Study':'#a78bfa','Infectious Disease':'#fbbf24','Transplant':'#60a5fa','Acute Presentations':'#f87171','CKD Management':'#34d399','Dialysis-Specific':'#2dd4bf','Custom':'#c084fc'};
 const FL = {safe:'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0',adjust:'background:#fffbeb;color:#92400e;border:1px solid #fde68a',caution:'background:#fff7ed;color:#9a3412;border:1px solid #fed7aa',avoid:'background:#fef2f2;color:#b91c1c;border:1px solid #fecaca'};
 const SRC_C = {'eTG':'background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe','UpToDate':'background:#f5f3ff;color:#6d28d9;border:1px solid #ddd6fe','eTG + UpToDate':'background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe','ISPD 2022':'background:#f0fdfa;color:#0f766e;border:1px solid #99f6e4','UpToDate / PBS':'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0','KDIGO':'background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd','KDIGO / PBS':'background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc','eTG / PBS':'background:#f0fdf4;color:#166534;border:1px solid #86efac'};
 const URGENCY_C = {'Mandatory':'background:#fee2e2;color:#b91c1c','Mandatory + ECG':'background:#fee2e2;color:#b91c1c','URGENT if TMA suspected':'background:#fee2e2;color:#b91c1c','URGENT if TTP suspected':'background:#fee2e2;color:#b91c1c','GN screen (URGENT if haemoptysis)':'background:#ffedd5;color:#c2410c','Urgent — same day':'background:#ffedd5;color:#c2410c','Urgent (bedside)':'background:#ffedd5;color:#c2410c','Urgent — do before antibiotics':'background:#ffedd5;color:#c2410c','First-line':'background:#fef9c3;color:#854d0e','First-line (if on diuretics)':'background:#fef9c3;color:#854d0e','Bedside':'background:#fef9c3;color:#854d0e','GN screen':'background:#dbeafe;color:#1e40af','If clinically indicated':'background:#f3f4f6;color:#4b5563','If respiratory symptoms':'background:#f3f4f6;color:#4b5563','If pulmonary infiltrate':'background:#f3f4f6;color:#4b5563'};
@@ -937,6 +904,7 @@ function cur() { return all().find(p=>p.id===S.id)||PRESENTATIONS[0]; }
 function tabs(type) {
   if (type==='investigations') return ['Overview','Investigations','Monitoring','My Notes'];
   if (type==='management') return ['Overview','Medications','Monitoring','My Notes'];
+  if (type==='study') return ['Overview','Physiology','Pearls & Tables','My Notes'];
   return ['Overview','Pathogens','Medications','Monitoring','My Notes'];
 }
 
@@ -987,7 +955,7 @@ function render() {
     <div style="padding:14px 16px 12px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:10px;flex-shrink:0">
       <span style="font-size:1.4rem">⚕️</span>
       <div>
-        <div style="color:white;font-weight:700;font-size:0.875rem">Nephro-Ref</div>
+        <div style="color:white;font-weight:700;font-size:0.875rem">KidneyPro</div>
         <div style="color:#94a3b8;font-size:0.65rem">Australian Clinical Reference</div>
       </div>
     </div>
@@ -1077,6 +1045,8 @@ function buildContent(p) {
   if (S.tab==='Pathogens' && p.pathogens) return buildPathogens(p);
   if (S.tab==='Investigations' && p.investigations) return buildInvestigations(p);
   if (S.tab==='Medications' && p.meds) return buildMeds(p);
+  if (S.tab==='Physiology') return buildStudyPhysiology(p);
+  if (S.tab==='Pearls & Tables') return buildStudyPearls(p);
   if (S.tab==='Monitoring') return buildMonitoring(p);
   if (S.tab==='My Notes') return buildNotes(p);
   return '';
@@ -1194,6 +1164,36 @@ function buildMonitoring(p) {
       </div>
     </div>`:''}
   </div>`;
+}
+
+
+function buildStudyPhysiology(p) {
+  var items = (p.monitoring||[]).concat(p.dialysis||[]);
+  if (!items.length) return '<div style="color:#9ca3af;font-size:0.875rem;padding:20px 0">No physiology content added yet. Use My Notes to add your own.</div>';
+  return '<div style="max-width:700px;display:flex;flex-direction:column;gap:14px">'
+    + '<div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">'
+    + '<div style="font-size:0.6rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Physiology & Reference Values</div>'
+    + '<div style="display:flex;flex-direction:column;gap:9px">'
+    + items.map(function(m){ return '<div style="display:flex;gap:8px"><span style="color:#818cf8;font-weight:700;flex-shrink:0;font-size:0.875rem">→</span><span style="font-size:0.875rem;color:#374151;line-height:1.6">'+esc(m)+'</span></div>'; }).join('')
+    + '</div></div>'
+    + '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px"><p style="font-size:0.72rem;color:#92400e;margin:0"><strong>⚠ Educational reference only.</strong> Verify against eTG/UpToDate. Diagrams coming soon.</p></div>'
+    + '</div>';
+}
+
+function buildStudyPearls(p) {
+  if (!p.pearls||!p.pearls.length) return '<div style="color:#9ca3af;font-size:0.875rem;padding:20px 0">No pearls added yet.</div>';
+  return '<div style="max-width:700px">'
+    + '<div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">'
+    + '<div style="font-size:0.6rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:14px">Key Pearls & Reference Tables</div>'
+    + '<div style="display:flex;flex-direction:column;gap:10px">'
+    + p.pearls.map(function(pearl,i){
+        var isFormula = pearl.indexOf('=')>=0 || pearl.indexOf(':')>0;
+        return '<div style="display:flex;gap:10px;padding:8px 10px;background:'+(isFormula?'#f0fdf4':'#f8fafc')+';border-radius:8px;border-left:3px solid '+(isFormula?'#10b981':'#a78bfa')+'">'
+          + '<span style="color:'+(isFormula?'#10b981':'#a78bfa')+';font-weight:700;flex-shrink:0;margin-top:1px">'+(i+1)+'.</span>'
+          + '<span style="font-size:0.875rem;color:#1e293b;line-height:1.6">'+esc(pearl)+'</span>'
+          + '</div>';
+      }).join('')
+    + '</div></div></div>';
 }
 
 function buildNotes(p) {
@@ -1344,8 +1344,8 @@ function downloadNotes() {
 }
 
 // ─── HOME PAGE ─────────────────────────────────────────────────
-var HOME_CATS = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific'];
-var HOME_ICONS = {'Ward Quick Ref':'💊','Quick Study':'🎓','Infectious Disease':'🫁','Transplant':'🔵','Acute Presentations':'⚡','CKD Management':'⚗️','Chronic Disease':'🩺','Dialysis-Specific':'🔴'};
+var HOME_CATS = ['Ward Quick Ref','Quick Study','CKD Management','Acute Presentations'];
+var HOME_ICONS = {'Ward Quick Ref':'💊','Quick Study':'🎓','Infectious Disease':'🫁','Transplant':'🔵','Acute Presentations':'⚡','CKD Management':'⚗️','Dialysis-Specific':'🔴'};
 
 function buildHome() {
   var hasQ = S.hsearch.length > 1;
@@ -1373,7 +1373,7 @@ function buildHome() {
     + '<div style="height:'+safeTop+';background:#0f172a;flex-shrink:0"></div>'
     + '<div style="flex-shrink:0;text-align:center;padding:18px 20px 6px">'
     + kidneySVG
-    + '<div style="color:white;font-size:1.45rem;font-weight:700;letter-spacing:0.02em;line-height:1.1">Nephro-Ref</div>'
+    + '<div style="color:white;font-size:1.45rem;font-weight:700;letter-spacing:0.02em;line-height:1.1">KidneyPro</div>'
     + '<div style="color:#64748b;font-size:0.75rem;margin-top:4px">Australian Clinical Reference</div>'
     + '</div>'
     + '<div style="padding:10px 16px 10px;flex-shrink:0">'
@@ -1388,19 +1388,25 @@ function buildHome() {
 }
 
 function buildCatTiles() {
-  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">'
+  var TBG = {'Ward Quick Ref':'rgba(103,232,249,0.1)','Quick Study':'rgba(167,139,250,0.1)','CKD Management':'rgba(52,211,153,0.1)','Acute Presentations':'rgba(248,113,113,0.1)'};
+  var TBDR = {'Ward Quick Ref':'rgba(103,232,249,0.28)','Quick Study':'rgba(167,139,250,0.28)','CKD Management':'rgba(52,211,153,0.28)','Acute Presentations':'rgba(248,113,113,0.28)'};
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
     + HOME_CATS.map(function(cat) {
         var col = CAT_C[cat]||'#9ca3af';
         var icon = HOME_ICONS[cat]||'📋';
         var count = all().filter(function(p){return p.cat===cat;}).length;
-        return '<div onclick="selCat(\''+cat+'\')"'
-          + ' style="background:white;border-radius:13px;border:1px solid #e5e7eb;padding:15px 10px;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.06)">'
-          + '<div style="font-size:1.5rem;margin-bottom:5px">'+icon+'</div>'
-          + '<div style="font-size:0.68rem;font-weight:600;color:#1e293b;line-height:1.3;margin-bottom:3px">'+esc(cat)+'</div>'
-          + '<div style="font-size:0.6rem;font-weight:600;color:'+col+'">'+count+' topics</div>'
+        var bg = TBG[cat]||'rgba(255,255,255,0.06)';
+        var bdr = TBDR[cat]||'rgba(255,255,255,0.15)';
+        return '<div onclick="selCat(''+cat+'')" style="background:'+bg+';border:1px solid '+bdr+';border-radius:14px;padding:18px 12px 14px;text-align:center;cursor:pointer">'
+          + '<div style="font-size:2rem;margin-bottom:8px;line-height:1">'+icon+'</div>'
+          + '<div style="font-size:0.8rem;font-weight:700;color:white;line-height:1.25;margin-bottom:4px;letter-spacing:0.01em">'+esc(cat)+'</div>'
+          + '<div style="font-size:0.62rem;font-weight:600;color:'+col+'">'+count+' topics</div>'
           + '</div>';
       }).join('')
-    + '</div>';
+    + '</div>'
+    + '<div style="text-align:center;margin-top:14px">'
+    + '<button onclick="openAllCats()" style="color:#64748b;font-size:0.78rem;background:none;border:1px solid #1e293b;border-radius:8px;cursor:pointer;font-family:inherit;padding:7px 16px">'
+    + 'Browse all topics →</button></div>';
 }
 
 function buildSearchResults(query) {
@@ -1447,6 +1453,14 @@ function snip(txt,idx){
   return (s>0?'...':'')+txt.slice(s,e)+(e<txt.length?'...':'');
 }
 
+function openAllCats() {
+  var sb = document.getElementById('sidebar');
+  var bd = document.getElementById('backdrop');
+  if (sb && window.innerWidth < 600) {
+    sb.classList.add('sb-open');
+    if (bd) bd.classList.add('bd-visible');
+  }
+}
 function selCat(cat) {
   var first = all().find(function(p){return p.cat===cat;});
   if (first) selP(first.id);
@@ -1469,6 +1483,5 @@ function attachHomeEvents() {
 init();
 
   </script>
-
 </body>
 </html>
