@@ -11,6 +11,55 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+  // Generate kidney bean icon for Add to Home Screen
+  function _mkIcon() {
+    try {
+      var c=document.createElement('canvas'); c.width=c.height=180;
+      var x=c.getContext('2d');
+      // Rounded dark background
+      x.fillStyle='#0f172a';
+      var r=38,w=180;
+      x.beginPath(); x.moveTo(r,0); x.lineTo(w-r,0);
+      x.arcTo(w,0,w,r,r); x.lineTo(w,w-r);
+      x.arcTo(w,w,w-r,w,r); x.lineTo(r,w);
+      x.arcTo(0,w,0,w-r,r); x.lineTo(0,r);
+      x.arcTo(0,0,r,0,r); x.closePath(); x.fill();
+      // Kidney bean (teal)
+      x.fillStyle='#14b8a6';
+      x.beginPath();
+      x.moveTo(90,28);
+      x.bezierCurveTo(142,28,158,62,158,90);
+      x.bezierCurveTo(158,120,140,152,90,152);
+      x.bezierCurveTo(60,152,36,134,30,110);
+      x.bezierCurveTo(22,90,34,82,48,84);
+      x.bezierCurveTo(56,85,55,80,52,74);
+      x.bezierCurveTo(47,62,50,42,60,33);
+      x.bezierCurveTo(70,24,80,28,90,28);
+      x.closePath(); x.fill();
+      // Inner highlight
+      x.fillStyle='rgba(255,255,255,0.12)';
+      x.beginPath();
+      x.moveTo(88,36); x.bezierCurveTo(120,34,148,58,148,84);
+      x.bezierCurveTo(145,72,125,48,96,46);
+      x.bezierCurveTo(84,45,74,36,82,32);
+      x.bezierCurveTo(84,30,87,36,88,36);
+      x.closePath(); x.fill();
+      // Small white hilum dot
+      x.fillStyle='rgba(255,255,255,0.35)';
+      x.beginPath(); x.arc(48,88,5,0,Math.PI*2); x.fill();
+      // Set as touch icon
+      var lk=document.createElement('link');
+      lk.rel='apple-touch-icon'; lk.href=c.toDataURL('image/png');
+      document.head.appendChild(lk);
+      // Also set manifest icon
+      var lk2=document.querySelector('link[rel="icon"]');
+      if(!lk2){lk2=document.createElement('link');lk2.rel='icon';document.head.appendChild(lk2);}
+      lk2.href=c.toDataURL('image/png');
+    } catch(e){}
+  }
+  _mkIcon();
+  </script>
   <style>
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     body { margin:0; overflow:hidden; }
@@ -21,16 +70,35 @@
     small { font-size:0.65rem; }
 
     @media (max-width: 599px) {
-      #sidebar { position:fixed!important;left:-260px!important;top:0;height:100dvh;width:260px!important;min-width:260px!important;z-index:100;transition:left 0.25s ease; }
+      #sidebar {
+        position:fixed!important; left:-260px!important; top:0;
+        height:100dvh; width:260px!important; min-width:260px!important;
+        z-index:100; transition:left 0.25s ease;
+      }
       #sidebar.sb-open { left:0!important; }
+      /* Safe-top spacer sits at very top of sidebar — fills status bar height */
+      .sb-safe-top {
+        height: env(safe-area-inset-top, 0px);
+        min-height: env(safe-area-inset-top, 0px);
+        background: #0f172a;
+        flex-shrink: 0;
+        display: block;
+      }
       #backdrop.bd-visible { display:block!important; }
-      .mobile-bar { display:flex!important; }
+      /* Push hamburger bar BELOW the iOS status bar */
+      .mobile-bar {
+        display:flex!important;
+        padding-top: max(14px, env(safe-area-inset-top, 14px)) !important;
+        padding-bottom: 10px !important;
+        min-height: calc(44px + env(safe-area-inset-top, 0px)) !important;
+      }
       .desktop-header { display:none!important; }
       .mobile-tabs { display:flex!important; }
     }
     @media (min-width: 600px) {
       .mobile-bar { display:none!important; }
       .mobile-tabs { display:none!important; }
+      .sb-safe-top { display:none!important; }
     }
   </style>
 </head>
@@ -790,6 +858,7 @@ function render() {
   }).join('');
 
   const sidebarHTML = `
+    <div class="sb-safe-top"></div>
     <div style="padding:14px 16px 12px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:10px;flex-shrink:0">
       <span style="font-size:1.4rem">⚕️</span>
       <div>
@@ -832,7 +901,7 @@ function render() {
       <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
 
         <!-- MOBILE-ONLY top bar -->
-        <div class="mobile-bar" style="display:none;background:#0f172a;padding:10px 14px;align-items:center;gap:10px;flex-shrink:0">
+        <div class="mobile-bar" style="display:none;background:#0f172a;padding-left:14px;padding-right:14px;padding-bottom:10px;padding-top:10px;align-items:center;gap:10px;flex-shrink:0">
           <button onclick="toggleMenu()" style="color:white;font-size:1.3rem;background:none;border:none;cursor:pointer;padding:0;line-height:1;flex-shrink:0">☰</button>
           <span style="font-size:1.1rem;flex-shrink:0">${p.icon}</span>
           <span style="color:white;font-weight:600;font-size:0.85rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}</span>
