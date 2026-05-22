@@ -11,66 +11,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; overflow: hidden; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+    body { margin: 0; overflow: hidden; }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    input::placeholder { color: #64748b; }
   </style>
 </head>
 <body>
   <div id="app" style="height:100dvh;overflow:hidden">
     <div style="height:100dvh;display:flex;align-items:center;justify-content:center;background:#0f172a">
       <div style="text-align:center;color:white">
-        <div style="font-size:3rem;margin-bottom:12px">⚕️</div>
-        <div style="color:#94a3b8;font-size:0.875rem">Loading Nephro-Ref...</div>
+        <div style="font-size:3rem;margin-bottom:12px">&#9877;</div>
+        <div style="color:#94a3b8;font-size:0.875rem">Starting...</div>
       </div>
     </div>
   </div>
-
   <script>
-// ═══════════════════════════════════════════════════════════
-// CLINICAL DATA
-// ═══════════════════════════════════════════════════════════
-// ─── FLAG & SOURCE STYLES ──────────────────────────────────────────────────────
-const FL = {
-  safe:    'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  adjust:  'bg-amber-50 text-amber-800 border border-amber-200',
-  caution: 'bg-orange-50 text-orange-800 border border-orange-200',
-  avoid:   'bg-red-50 text-red-700 border border-red-200',
-};
-const FL_LEGEND = { safe:'✓ No adjustment', adjust:'⚠ Adjust dose', caution:'⚠ Caution', avoid:'✕ Avoid/CI' };
-const SRC = {
-  'eTG': 'bg-blue-50 text-blue-700 border border-blue-200',
-  'UpToDate': 'bg-violet-50 text-violet-700 border border-violet-200',
-  'eTG + UpToDate': 'bg-indigo-50 text-indigo-700 border border-indigo-200',
-  'ISPD 2022': 'bg-teal-50 text-teal-700 border border-teal-200',
-  'UpToDate / PBS': 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  'KDIGO': 'bg-sky-50 text-sky-700 border border-sky-200',
-  'KDIGO / PBS': 'bg-cyan-50 text-cyan-700 border border-cyan-200',
-  'eTG / PBS': 'bg-green-50 text-green-700 border border-green-200',
-};
-const URGENCY_COLORS = {
-  'Mandatory': 'bg-red-100 text-red-700',
-  'URGENT if TMA suspected': 'bg-red-100 text-red-700',
-  'URGENT if TTP suspected': 'bg-red-100 text-red-700',
-  'Urgent (bedside)': 'bg-orange-100 text-orange-700',
-  'Urgent — same day': 'bg-orange-100 text-orange-700',
-  'Urgent — do before antibiotics': 'bg-orange-100 text-orange-700',
-  'GN screen (URGENT if haemoptysis)': 'bg-orange-100 text-orange-700',
-  'Mandatory + ECG': 'bg-red-100 text-red-700',
-  'First-line': 'bg-amber-100 text-amber-700',
-  'First-line (if on diuretics)': 'bg-amber-100 text-amber-700',
-  'Bedside': 'bg-amber-100 text-amber-700',
-  'GN screen': 'bg-blue-100 text-blue-700',
-  'If clinically indicated': 'bg-gray-100 text-gray-600',
-};
-
-// ─── CLINICAL DATA ─────────────────────────────────────────────────────────────
-
 const PRESENTATIONS = [
   {
     id:'cap', name:'Community-Acquired Pneumonia', abbr:'CAP',
@@ -676,7 +634,6 @@ const PRESENTATIONS = [
 
 ];
   </script>
-
   <script>
 // ═══════════════════════════════════════════════════════════
 // APP (vanilla JS — no framework dependencies)
@@ -1074,7 +1031,6 @@ function delC(id) {
 
 // Start the app
 init();
-
   </script>
 </body>
 </html>
