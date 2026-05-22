@@ -12,11 +12,26 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; overflow: hidden; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
-    ::-webkit-scrollbar-track { background: transparent; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    body { margin:0; overflow:hidden; }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-thumb { background:#475569; border-radius:2px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    input::placeholder, textarea::placeholder { color:#64748b; }
+    small { font-size:0.65rem; }
+
+    @media (max-width: 599px) {
+      #sidebar { position:fixed!important;left:-260px!important;top:0;height:100dvh;width:260px!important;min-width:260px!important;z-index:100;transition:left 0.25s ease; }
+      #sidebar.sb-open { left:0!important; }
+      #backdrop.bd-visible { display:block!important; }
+      .mobile-bar { display:flex!important; }
+      .desktop-header { display:none!important; }
+      .mobile-tabs { display:flex!important; }
+    }
+    @media (min-width: 600px) {
+      .mobile-bar { display:none!important; }
+      .mobile-tabs { display:none!important; }
+    }
   </style>
 </head>
 <body>
@@ -24,7 +39,7 @@
     <div style="height:100dvh;display:flex;align-items:center;justify-content:center;background:#0f172a">
       <div style="text-align:center;color:white">
         <div style="font-size:3rem;margin-bottom:12px">&#9877;</div>
-        <div style="color:#94a3b8;font-size:0.875rem">Starting...</div>
+        <div style="color:#94a3b8;font-size:0.875rem">Loading Nephro-Ref...</div>
       </div>
     </div>
   </div>
@@ -632,64 +647,121 @@ const PRESENTATIONS = [
     dialysis:['HD: bicarbonate dialysate corrects acidosis during session (dialysate HCO₃ typically 30–35 mmol/L); oral supplementation may still be needed between sessions','Pre-HD bicarbonate often low; normalises post-HD — check levels PRE-dialysis for true clinical picture','PD: lactate or bicarbonate-buffered dialysate corrects acidosis continuously; oral supplementation usually not needed but check HCO₃','Sodium bicarbonate in HD: additional sodium load — use with care in oliguric/anuric patients with fluid overload','Aggressive correction (HCO₃ >26): risk of rebound alkalosis post-HD — target 22–24 pre-dialysis'],
   },
 
+
+  {
+    id:'abg-ref',name:'ABG — Five Step Method',abbr:'ABG Quick Ref',cat:'Quick Study',icon:'🩺',type:'management',
+    summary:'A systematic five-step approach to arterial blood gas interpretation. Always apply all five steps in order — do not skip ahead. Key principle: identify the primary disorder first, then check for appropriate compensation, then look for mixed disorders.',
+    pearls:[
+      'Step 1 — pH: acidaemia (<7.35) or alkalaemia (>7.45)?',
+      'Step 2 — Primary disorder: is the CO₂ or HCO₃ driving the pH change? Acidaemia + ↑CO₂ = respiratory acidosis. Acidaemia + ↓HCO₃ = metabolic acidosis.',
+      'Step 3 — Compensation: is it appropriate? If not → mixed disorder',
+      'Step 4 — Anion Gap: AG = Na⁺ − (Cl⁻ + HCO₃⁻); normal 8–12 mEq/L (albumin-corrected). Corrected AG = measured AG + 2.5 × (40 − albumin in g/L)',
+      'Step 5 — Delta-Delta (if HAGMA): is there a concurrent metabolic alkalosis or normal AG metabolic acidosis? Δ-Δ = (AG − 12) / (24 − HCO₃). <0.4: pure NAGMA. 0.4–2: pure HAGMA. >2: concurrent metabolic alkalosis.',
+      'Winters Formula (metabolic acidosis compensation): expected pCO₂ = (1.5 × HCO₃) + 8 ± 2',
+      'Metabolic alkalosis compensation: expected pCO₂ = (0.7 × HCO₃) + 21 ± 2',
+      'Respiratory acidosis: acute compensation ↑HCO₃ by 1 per 10mmHg ↑pCO₂; chronic: ↑HCO₃ by 3.5 per 10mmHg',
+      'Respiratory alkalosis: acute compensation ↓HCO₃ by 2 per 10mmHg ↓pCO₂; chronic: ↓HCO₃ by 5 per 10mmHg',
+      'MUDPILES (HAGMA causes): Methanol, Uraemia, DKA, Propylene glycol / Paracetamol, Isoniazid / Iron, Lactic acidosis, Ethylene glycol, Salicylates',
+      'USED CARP (metabolic alkalosis causes): Urine Chloride low (<20) = saline-responsive: vomiting, NGT, diuretics. Urine Chloride high (>40) = saline-resistant: hyperaldosteronism, Cushing, Bartter/Gitelman',
+    ],
+    meds:[],
+    monitoring:['Normal values: pH 7.35–7.45 | pCO₂ 35–45 mmHg | pO₂ 80–100 mmHg | HCO₃ 22–26 mmol/L | BE ±2','A-a gradient = PAO₂ − PaO₂; PAO₂ = FiO₂ × (Patm − PH₂O) − (PaCO₂/RQ) = FiO₂ × 713 − 1.25 × PaCO₂ (on room air)','Normal A-a gradient = age/4 + 4 (rough guide); elevated → V/Q mismatch, shunt, diffusion impairment','Oxygenation: PaO₂/FiO₂ ratio — normal >400; mild hypoxaemia <300; moderate <200; severe <100','Lactic acidosis: Type A (tissue hypoperfusion) vs Type B (no hypoperfusion — metformin, liver failure, malignancy)'],
+    dialysis:['Uraemic acidosis (HAGMA): renal ammoniagenesis is impaired in CKD — reduced H⁺ excretion as NH₄⁺','Dialysis corrects acidosis via bicarbonate dialysate (HD) or lactate/bicarbonate buffer (PD)','Post-dialysis alkalosis: over-correction can occur — monitor pre-dialysis HCO₃ (not post)','Patients on HD often have low pre-dialysis HCO₃ — target HCO₃ ≥22 mmol/L with oral sodium bicarbonate supplementation between sessions'],
+  },
+  {
+    id:'ckd-staging',name:'CKD Staging & Assessment',abbr:'CKD Staging',cat:'Quick Study',icon:'📊',type:'management',
+    summary:'CKD is defined as structural or functional kidney abnormality for >3 months. Staging uses the combined GFR-albuminuria grid (KDIGO 2012). CKD-EPI 2021 (race-free equation) is now the preferred eGFR equation in Australia — use this over MDRD. Risk of progression, cardiovascular disease, and ESKD increases with lower eGFR AND higher albuminuria.',
+    pearls:[
+      'CKD diagnosis: abnormal kidney structure/function >3 months — either eGFR <60 (G3+) OR albuminuria (ACR ≥3 mg/mmol) OR structural abnormality',
+      'CKD-EPI 2021 (race-free) is now preferred over MDRD — underestimates GFR less at higher values',
+      'GFR categories: G1 ≥90 | G2 60–89 | G3a 45–59 | G3b 30–44 | G4 15–29 | G5 <15',
+      'Albuminuria categories: A1 <3 mg/mmol (normal) | A2 3–30 mg/mmol (moderate) | A3 >30 mg/mmol (severe)',
+      'Cystatin C-based eGFR: more accurate than creatinine-based in extremes of muscle mass (elderly, malnourished, amputation, bodybuilders) — request when creatinine-based eGFR seems discordant with clinical picture',
+      'FGF-23: rises early in CKD (often before phosphate elevates) — important CKD-MBD biomarker',
+      'ACR preferred over PCR for CKD monitoring: ACR detects early diabetic nephropathy better; PCR includes non-albumin proteins useful for myeloma screen',
+      'Haematuria: if dipstick positive, CONFIRM with microscopy (to exclude false positives). Persistent haematuria + proteinuria → nephrology (possible GN)',
+      'CKD progression: defined as >25% decline in eGFR or sustained change in eGFR category — triggers nephrology referral',
+      'Urgent referral: eGFR <15, >5 mL/min/year decline, ACR >300 mg/mmol, suspected GN, AKI on CKD, difficult-to-control hypertension',
+    ],
+    meds:[],
+    monitoring:['KDIGO monitoring frequency by risk category: Low risk (G1-2, A1): annual. Moderate (G3a, A1 or G1-2 A2): 1×/year. High (G3b-4, A2-3): 2×/year. Very high (G4-5, A3): 3-4×/year','Annual review in CKD3+: U&E, Cr, eGFR, ACR, BP, HbA1c (if diabetic), lipids, Hb, Ca, PO₄, PTH (from CKD4)','CKD-MBD monitoring from CKD G3a: calcium, phosphate, PTH, 25-OH vitamin D, alkaline phosphatase','Cardiovascular risk: CKD is an independent CV risk factor; treat as high-risk for statin/antihypertensive therapy regardless of Framingham score','BP targets: KDIGO 2021 — <120 mmHg systolic (measured as standardised office BP) in most CKD; individualize in elderly/frail','RAAS agents: tolerate Cr rise ≤30% + K⁺ ≤5.5 mmol/L — do NOT stop for moderate Cr rise'],
+    dialysis:['ESKD preparation: nephrology review when eGFR <20 for modality education (HD, PD, transplant, conservative care)','Fistula/graft creation: ideally when eGFR 15–20 (HD access takes 3–6 months to mature)','PD catheter placement: 4–6 weeks before planned PD start','Transplant referral: consider when eGFR <20 — living donor workup can take 12–24+ months','Conservative management: a valid choice — discuss with patients who are elderly/frail or decline dialysis'],
+  },
+  {
+    id:'nephron-ref',name:'Nephron — Drug Target Reference',abbr:'Nephron Ref',cat:'Quick Study',icon:'🔬',type:'management',
+    summary:'Quick reference for drug mechanisms organised by nephron segment. Understanding where drugs act explains both their therapeutic effects and side effects in CKD. The nephron is also the framework for understanding electrolyte disorders — tracing which segment handles each electrolyte explains the pattern of drug-induced electrolyte disturbances.',
+    pearls:[
+      'PCT (Proximal Convoluted Tubule): reabsorbs ~67% of filtered Na⁺/water, all glucose, all amino acids, ~80% HCO₃. Carbonic anhydrase mediates HCO₃ reabsorption. SGLT2 mediates glucose/Na⁺ cotransport.',
+      'SGLT2 inhibitors (PCT): block glucose+Na⁺ reabsorption → glycosuria → natriuresis → ↓RAAS → cardiorenal protection. Note: acute Cr rise on initiation is haemodynamic (reduced intraglomerular pressure) — do NOT stop.',
+      'Acetazolamide (PCT): inhibits carbonic anhydrase → ↓HCO₃ reabsorption → bicarbonaturia → metabolic acidosis. ADVOR trial 2022: acetazolamide + loop diuretic improves decongestion in acute HF.',
+      'Loop of Henle — TAL: NKCC2 cotransporter reabsorbs ~25% of filtered Na⁺. Frusemide/bumetanide block NKCC2 → natriuresis + calciuresis + magnesuresis. Countercurrent multiplication is abolished → loss of medullary concentration gradient.',
+      'DCT (Distal Convoluted Tubule): NCC cotransporter (thiazide-sensitive). Thiazides block NCC → ↓Ca²⁺ excretion (thiazide-calcium paradox via TRPV5) → useful in hypercalciuria/nephrolithiasis. TRPM6 mediates Mg²⁺ reabsorption — PPIs inhibit TRPM6 → PPI-induced hypomagnesaemia.',
+      'Collecting Duct: ENaC (epithelial Na channel) and principal cells — aldosterone upregulates ENaC. MRAs (spironolactone, eplerenone, finerenone) block aldosterone. Amiloride blocks ENaC directly. Intercalated cells: Type A secrete H⁺ (distal RTA if dysfunctional), Type B secrete HCO₃.',
+      'ADH (V2 receptor, collecting duct): inserts AQP2 water channels → water reabsorption → urine concentration. Tolvaptan blocks V2R → aquaresis (free water excretion without natriuresis). Lithium blocks ADH action → nephrogenic DI.',
+      'Gitelman syndrome: loss-of-function NCC mutation → hypoK⁺, hypoMg²⁺, metabolic alkalosis, hypocalciuria (mimics thiazide effect).',
+      'Bartter syndrome: loss-of-function NKCC2 → hypoK⁺, metabolic alkalosis, hypercalciuria, normal/low BP (mimics frusemide effect).',
+      'Liddle syndrome: gain-of-function ENaC → severe hypertension, hypoK⁺, metabolic alkalosis. Treat with amiloride (not spironolactone — ENaC constitutively active).',
+    ],
+    meds:[],
+    monitoring:['Fanconi syndrome (generalised PCT dysfunction): glucosuria with normal BSL, phosphaturia, aminoaciduria, uricosuria, bicarbonaturia, type 2 (proximal) RTA. Key acquired cause: tenofovir disoproxil (TDF) → check urine glucose in all patients on TDF','RTA types: Type 1 (distal) — inability to acidify urine (<5.3); Type 2 (proximal) — bicarbonate wasting; Type 4 — hyperkalaemic (↓aldosterone effect or tubular resistance)','Urine electrolyte interpretation: urine Na <20 = avid Na retention (pre-renal/RAAS activation). Urine K >40 = renal K wasting (hyperaldosteronism, diuretics, Bartter/Gitelman)','Fractional excretion of Mg²⁺ (FEMg): >4% = renal Mg wasting (diuretics, PPIs, cisplatin, aminoglycosides, calcineurin inhibitors)'],
+    dialysis:['Patients on HD are anuric — nephron-level physiology does not apply to solute handling. All electrolyte balance is through dialysis + dietary restriction.','However, nephron pharmacology still relevant: drugs that act on tubules (frusemide, thiazides) have limited benefit in anuric ESKD patients but may preserve residual renal function in early HD/PD patients','Residual renal function (RRF): important in both HD and PD — preserves phosphate/potassium/fluid handling. Avoid nephrotoxins, volume depletion, and contrast wherever possible.'],
+  },
 ];
+
   </script>
   <script>
 // ═══════════════════════════════════════════════════════════
-// APP (vanilla JS — no framework dependencies)
+// APP v4 — Mobile-responsive, Export Notes, Quick Study
 // ═══════════════════════════════════════════════════════════
 
-// ─── CONSTANTS ────────────────────────────────────────────────
-const CATS = ['Ward Quick Ref','Infectious Disease','Transplant','Acute Presentations','CKD Management','Dialysis-Specific','Custom'];
-const CAT_C = {'Ward Quick Ref':'color:#67e8f9','Infectious Disease':'color:#fbbf24','Transplant':'color:#60a5fa','Acute Presentations':'color:#f87171','CKD Management':'color:#34d399','Dialysis-Specific':'color:#2dd4bf','Custom':'color:#c084fc'};
+const CATS = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Dialysis-Specific','Custom'];
+const CAT_C = {'Ward Quick Ref':'#67e8f9','Quick Study':'#a78bfa','Infectious Disease':'#fbbf24','Transplant':'#60a5fa','Acute Presentations':'#f87171','CKD Management':'#34d399','Dialysis-Specific':'#2dd4bf','Custom':'#c084fc'};
 const FL = {safe:'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0',adjust:'background:#fffbeb;color:#92400e;border:1px solid #fde68a',caution:'background:#fff7ed;color:#9a3412;border:1px solid #fed7aa',avoid:'background:#fef2f2;color:#b91c1c;border:1px solid #fecaca'};
 const SRC_C = {'eTG':'background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe','UpToDate':'background:#f5f3ff;color:#6d28d9;border:1px solid #ddd6fe','eTG + UpToDate':'background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe','ISPD 2022':'background:#f0fdfa;color:#0f766e;border:1px solid #99f6e4','UpToDate / PBS':'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0','KDIGO':'background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd','KDIGO / PBS':'background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc','eTG / PBS':'background:#f0fdf4;color:#166534;border:1px solid #86efac'};
 const URGENCY_C = {'Mandatory':'background:#fee2e2;color:#b91c1c','Mandatory + ECG':'background:#fee2e2;color:#b91c1c','URGENT if TMA suspected':'background:#fee2e2;color:#b91c1c','URGENT if TTP suspected':'background:#fee2e2;color:#b91c1c','GN screen (URGENT if haemoptysis)':'background:#ffedd5;color:#c2410c','Urgent — same day':'background:#ffedd5;color:#c2410c','Urgent (bedside)':'background:#ffedd5;color:#c2410c','Urgent — do before antibiotics':'background:#ffedd5;color:#c2410c','First-line':'background:#fef9c3;color:#854d0e','First-line (if on diuretics)':'background:#fef9c3;color:#854d0e','Bedside':'background:#fef9c3;color:#854d0e','GN screen':'background:#dbeafe;color:#1e40af','If clinically indicated':'background:#f3f4f6;color:#4b5563','If respiratory symptoms':'background:#f3f4f6;color:#4b5563','If pulmonary infiltrate':'background:#f3f4f6;color:#4b5563'};
 
-// ─── STATE ────────────────────────────────────────────────────
 const S = {
-  id: 'common-meds', tab: 'Overview',
-  notes: {}, custom: [], search: '',
-  editNote: false, noteText: '',
-  showModal: false, newName: '', newSummary: '', newPearls: ''
+  id:'common-meds', tab:'Overview',
+  notes:{}, custom:[], search:'',
+  editNote:false, noteText:'',
+  showModal:false, newName:'', newSummary:'', newPearls:'',
+  showExport:false
 };
 
-// ─── INIT ─────────────────────────────────────────────────────
 function init() {
-  try { S.notes = JSON.parse(localStorage.getItem('nephroref_notes_v2') || '{}'); } catch(e) {}
-  try { S.custom = JSON.parse(localStorage.getItem('nephroref_custom_v2') || '[]'); } catch(e) {}
+  try { S.notes = JSON.parse(localStorage.getItem('nephroref_notes_v2')||'{}'); } catch(e) {}
+  try { S.custom = JSON.parse(localStorage.getItem('nephroref_custom_v2')||'[]'); } catch(e) {}
   render();
 }
 
-// ─── HELPERS ──────────────────────────────────────────────────
 function esc(s) {
-  if (s == null) return '';
+  if (s==null) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function all() { return [...PRESENTATIONS, ...S.custom]; }
-function cur() { return all().find(p => p.id === S.id) || PRESENTATIONS[0]; }
+function cur() { return all().find(p=>p.id===S.id)||PRESENTATIONS[0]; }
 function tabs(type) {
-  if (type === 'investigations') return ['Overview','Investigations','Monitoring','My Notes'];
-  if (type === 'management') return ['Overview','Medications','Monitoring','My Notes'];
+  if (type==='investigations') return ['Overview','Investigations','Monitoring','My Notes'];
+  if (type==='management') return ['Overview','Medications','Monitoring','My Notes'];
   return ['Overview','Pathogens','Medications','Monitoring','My Notes'];
 }
-function catStyle(cat) { return CAT_C[cat] || 'color:#9ca3af'; }
 
-// ─── RENDER ────────────────────────────────────────────────────
-function render() {
-  document.getElementById('app').innerHTML = buildApp();
-  // Restore search focus if searching
-  if (S.search) {
-    const el = document.getElementById('srch');
-    if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
-  }
-  if (S.editNote) {
-    const ta = document.getElementById('note-ta');
-    if (ta) ta.focus();
-  }
+// ─── SIDEBAR TOGGLE (CSS-only, no re-render) ──────────────────
+function toggleMenu() {
+  const sb = document.getElementById('sidebar');
+  const bd = document.getElementById('backdrop');
+  if (!sb) return;
+  const open = sb.classList.toggle('sb-open');
+  bd.classList.toggle('bd-visible', open);
+}
+function closeMenu() {
+  const sb = document.getElementById('sidebar');
+  const bd = document.getElementById('backdrop');
+  if (sb) { sb.classList.remove('sb-open'); bd.classList.remove('bd-visible'); }
 }
 
-function buildApp() {
+// ─── RENDER ───────────────────────────────────────────────────
+function render() {
   const p = cur();
   const tabList = tabs(p.type);
   const filtered = all().filter(x =>
@@ -698,339 +770,386 @@ function buildApp() {
     x.cat.toLowerCase().includes(S.search.toLowerCase())
   );
 
-  const sidebar = CATS.filter(cat => filtered.some(x => x.cat === cat)).map(cat => {
-    const items = filtered.filter(x => x.cat === cat).map(x => {
-      const active = x.id === S.id;
+  // Build sidebar list
+  const sidebarList = CATS.filter(cat=>filtered.some(x=>x.cat===cat)).map(cat => {
+    const col = CAT_C[cat]||'#9ca3af';
+    const items = filtered.filter(x=>x.cat===cat).map(x => {
+      const active = x.id===S.id;
       const bg = active ? 'background:#0f766e;color:white' : 'color:#cbd5e1';
-      const hasNotes = !!S.notes[x.id];
-      return `<div onclick="selP('${x.id}')" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;cursor:pointer;margin:1px 8px;${bg}" onmouseenter="if('${x.id}'!='${S.id}')this.style.background='#1e293b'" onmouseleave="if('${x.id}'!='${S.id}')this.style.background='transparent'">
+      return `<div onclick="selP('${x.id}')" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;cursor:pointer;margin:1px 8px;${bg}">
         <span style="font-size:1rem;flex-shrink:0">${x.icon}</span>
         <span style="font-size:0.7rem;font-weight:500;line-height:1.2;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.abbr||x.name)}</span>
-        ${hasNotes ? '<span style="font-size:0.65rem;opacity:0.6">📝</span>' : ''}
-        ${x.cat==='Custom' ? `<button onclick="event.stopPropagation();delC('${x.id}')" style="color:#64748b;font-size:0.65rem;padding:0 4px;background:none;border:none;cursor:pointer" onmouseenter="this.style.color='#ef4444'" onmouseleave="this.style.color='#64748b'">✕</button>` : ''}
+        ${S.notes[x.id]?'<span style="font-size:0.6rem;opacity:0.5">📝</span>':''}
+        ${x.cat==='Custom'?`<button onclick="event.stopPropagation();delC('${x.id}')" style="color:#64748b;font-size:0.65rem;padding:0 4px;background:none;border:none;cursor:pointer">✕</button>`:''}
       </div>`;
     }).join('');
     return `<div style="margin-bottom:4px">
-      <div style="padding:6px 16px;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;${catStyle(cat)}">${esc(cat)}</div>
+      <div style="padding:6px 16px;font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:${col}">${esc(cat)}</div>
       ${items}
     </div>`;
   }).join('');
 
+  const sidebarHTML = `
+    <div style="padding:14px 16px 12px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <span style="font-size:1.4rem">⚕️</span>
+      <div>
+        <div style="color:white;font-weight:700;font-size:0.875rem">Nephro-Ref</div>
+        <div style="color:#94a3b8;font-size:0.65rem">Australian Clinical Reference</div>
+      </div>
+    </div>
+    <div style="padding:8px 10px;border-bottom:1px solid #1e293b;flex-shrink:0">
+      <input id="srch" value="${esc(S.search)}" oninput="handleSearch(this.value)" placeholder="Search..."
+        style="width:100%;background:#1e293b;color:white;font-size:0.7rem;border-radius:8px;padding:7px 10px;border:1px solid #334155;outline:none;font-family:inherit">
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:8px 0">${sidebarList}</div>
+    <div style="padding:10px;border-top:1px solid #1e293b;flex-shrink:0;display:flex;flex-direction:column;gap:6px">
+      <button onclick="openModal()" style="width:100%;background:#0f766e;color:white;font-size:0.7rem;border-radius:8px;padding:9px;font-weight:500;border:none;cursor:pointer;font-family:inherit">+ Add Custom</button>
+      <button onclick="showExportModal()" style="width:100%;background:#1e293b;color:#94a3b8;font-size:0.65rem;border-radius:8px;padding:7px;border:1px solid #334155;cursor:pointer;font-family:inherit">⬆ Export My Notes</button>
+    </div>`;
+
   const tabsHtml = tabList.map(t =>
-    `<button onclick="selTab('${t}')" style="padding:10px 16px;font-size:0.875rem;font-weight:500;border:none;border-bottom:2px solid ${S.tab===t?'#0d9488':'transparent'};color:${S.tab===t?'#0f766e':'#6b7280'};cursor:pointer;white-space:nowrap;flex-shrink:0;background:transparent" onmouseenter="if('${t}'!='${S.tab}')this.style.color='#374151'" onmouseleave="if('${t}'!='${S.tab}')this.style.color='#6b7280'">${esc(t)}</button>`
+    `<button onclick="selTab('${t}')" style="padding:10px 14px;font-size:0.8rem;font-weight:500;border:none;border-bottom:2px solid ${S.tab===t?'#0d9488':'transparent'};color:${S.tab===t?'#0f766e':'#6b7280'};cursor:pointer;white-space:nowrap;flex-shrink:0;background:transparent;font-family:inherit">${esc(t)}</button>`
   ).join('');
 
-  const modal = S.showModal ? `
-    <div onclick="closeModal()" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px">
-      <div onclick="event.stopPropagation()" style="background:white;border-radius:16px;width:100%;max-width:480px;box-shadow:0 25px 50px rgba(0,0,0,0.25)">
-        <div style="padding:20px 24px 16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-weight:700;font-size:1rem">Add Custom Presentation</span>
-          <button onclick="closeModal()" style="background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1.5rem;line-height:1">×</button>
-        </div>
-        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px">
-          <div>
-            <label style="display:block;font-size:0.7rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Presentation Name *</label>
-            <input id="mn" value="${esc(S.newName)}" oninput="S.newName=this.value" placeholder="e.g., Hyponatraemia..." style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:0.875rem;outline:none;font-family:inherit">
-          </div>
-          <div>
-            <label style="display:block;font-size:0.7rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Summary</label>
-            <textarea id="ms" oninput="S.newSummary=this.value" placeholder="Brief clinical overview..." style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:0.875rem;resize:none;outline:none;font-family:inherit" rows="3">${esc(S.newSummary)}</textarea>
-          </div>
-          <div>
-            <label style="display:block;font-size:0.7rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Key Pearls (one per line)</label>
-            <textarea id="mp" oninput="S.newPearls=this.value" placeholder="Pearl 1&#10;Pearl 2..." style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:0.875rem;resize:none;outline:none;font-family:inherit" rows="4">${esc(S.newPearls)}</textarea>
-          </div>
-        </div>
-        <div style="padding:16px 24px;border-top:1px solid #f1f5f9;display:flex;gap:8px;justify-content:flex-end">
-          <button onclick="closeModal()" style="padding:8px 16px;font-size:0.875rem;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;font-family:inherit">Cancel</button>
-          <button onclick="addCustom()" style="padding:8px 16px;font-size:0.875rem;background:#0f766e;color:white;border:none;border-radius:8px;cursor:pointer;font-family:inherit">Add Presentation</button>
-        </div>
-      </div>
-    </div>` : '';
+  const mainContent = buildContent(p);
 
-  return `
-    <div style="display:flex;height:100dvh;background:#f9fafb;font-family:'IBM Plex Sans',system-ui,sans-serif;overflow:hidden">
-      
-      <!-- SIDEBAR -->
-      <div style="width:240px;min-width:240px;background:#0f172a;display:flex;flex-direction:column;height:100dvh;overflow:hidden">
-        <div style="padding:16px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:8px;flex-shrink:0">
-          <span style="font-size:1.5rem">⚕️</span>
-          <div>
-            <div style="color:white;font-weight:700;font-size:0.875rem;letter-spacing:0.025em">Nephro-Ref</div>
-            <div style="color:#94a3b8;font-size:0.7rem">Australian Clinical Reference</div>
-          </div>
-        </div>
-        <div style="padding:8px 12px;border-bottom:1px solid #1e293b;flex-shrink:0">
-          <input id="srch" value="${esc(S.search)}" oninput="handleSearch(this.value)"
-            placeholder="Search..." 
-            style="width:100%;background:#1e293b;color:white;font-size:0.7rem;border-radius:8px;padding:8px 12px;border:1px solid #334155;outline:none;font-family:inherit">
-        </div>
-        <div style="flex:1;overflow-y:auto;padding:8px 0">
-          ${sidebar}
-        </div>
-        <div style="padding:12px;border-top:1px solid #1e293b;flex-shrink:0">
-          <button onclick="openModal()" style="width:100%;background:#0f766e;color:white;font-size:0.7rem;border-radius:8px;padding:10px;font-weight:500;border:none;cursor:pointer;font-family:inherit">+ Add Custom Presentation</button>
-        </div>
-      </div>
+  // Export modal
+  const exportModal = S.showExport ? buildExportModal() : '';
+  const addModal = S.showModal ? buildAddModal() : '';
+
+  document.getElementById('app').innerHTML = `
+    <div style="display:flex;height:100dvh;background:#f9fafb;overflow:hidden;font-family:'IBM Plex Sans',system-ui,sans-serif">
+
+      <!-- SIDEBAR (desktop: always visible; mobile: overlay via CSS) -->
+      <nav id="sidebar" style="width:240px;min-width:240px;background:#0f172a;display:flex;flex-direction:column;height:100dvh;overflow:hidden;flex-shrink:0">
+        ${sidebarHTML}
+      </nav>
+
+      <!-- MOBILE BACKDROP -->
+      <div id="backdrop" onclick="closeMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99"></div>
 
       <!-- MAIN -->
       <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
-        <div style="background:white;border-bottom:1px solid #e5e7eb;padding:16px 24px 0;flex-shrink:0">
-          <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px">
-            <span style="font-size:2rem;margin-top:2px">${p.icon}</span>
-            <div style="flex:1;min-width:0">
-              <h1 style="font-size:1.25rem;font-weight:700;color:#111827;margin:0">${esc(p.name)}</h1>
-              <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">
-                <span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;${catStyle(p.cat)}">${esc(p.cat)}</span>
+
+        <!-- MOBILE-ONLY top bar -->
+        <div class="mobile-bar" style="display:none;background:#0f172a;padding:10px 14px;align-items:center;gap:10px;flex-shrink:0">
+          <button onclick="toggleMenu()" style="color:white;font-size:1.3rem;background:none;border:none;cursor:pointer;padding:0;line-height:1;flex-shrink:0">☰</button>
+          <span style="font-size:1.1rem;flex-shrink:0">${p.icon}</span>
+          <span style="color:white;font-weight:600;font-size:0.85rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}</span>
+        </div>
+
+        <!-- DESKTOP-ONLY header -->
+        <div class="desktop-header" style="background:white;border-bottom:1px solid #e5e7eb;padding:14px 22px 0">
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:14px">
+            <span style="font-size:1.8rem;margin-top:2px">${p.icon}</span>
+            <div style="flex:1">
+              <h1 style="font-size:1.15rem;font-weight:700;color:#111827;margin:0">${esc(p.name)}</h1>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap">
+                <span style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:${CAT_C[p.cat]||'#9ca3af'}">${esc(p.cat)}</span>
                 <span style="color:#d1d5db">·</span>
-                <span style="font-size:0.7rem;color:#9ca3af">eTG + UpToDate · Australian practice</span>
-                ${S.notes[p.id] ? '<span style="font-size:0.7rem;background:#ccfbf1;color:#0f766e;padding:2px 8px;border-radius:9999px">📝 Notes saved</span>' : ''}
+                <span style="font-size:0.65rem;color:#9ca3af">eTG + UpToDate · Australian practice</span>
+                ${S.notes[p.id]?'<span style="font-size:0.65rem;background:#ccfbf1;color:#0f766e;padding:2px 8px;border-radius:9999px">📝 Notes saved</span>':''}
               </div>
             </div>
           </div>
-          <div style="display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #f3f4f6;margin:0 -24px;padding:0 24px">
+          <div style="display:flex;overflow-x:auto;border-bottom:1px solid #f3f4f6;margin:0 -22px;padding:0 22px">
             ${tabsHtml}
           </div>
         </div>
-        <div style="flex:1;overflow-y:auto;padding:24px">
-          ${buildContent(p)}
+
+        <!-- MOBILE tabs bar -->
+        <div class="mobile-tabs" style="display:none;background:white;border-bottom:1px solid #e5e7eb;overflow-x:auto;flex-shrink:0">
+          ${tabsHtml}
+        </div>
+
+        <!-- CONTENT -->
+        <div style="flex:1;overflow-y:auto;padding:20px 22px" id="main-content">
+          ${mainContent}
         </div>
       </div>
-      ${modal}
+
+      ${exportModal}${addModal}
     </div>`;
+
+  // Restore focus if searching
+  if (S.search) { const el=document.getElementById('srch'); if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length);} }
+  if (S.editNote) { const ta=document.getElementById('note-ta'); if(ta) ta.focus(); }
 }
 
+// ─── CONTENT BUILDERS ─────────────────────────────────────────
 function buildContent(p) {
-  if (S.tab === 'Overview') return buildOverview(p);
-  if (S.tab === 'Pathogens' && p.pathogens) return buildPathogens(p);
-  if (S.tab === 'Investigations' && p.investigations) return buildInvestigations(p);
-  if (S.tab === 'Medications' && p.meds) return buildMeds(p);
-  if (S.tab === 'Monitoring') return buildMonitoring(p);
-  if (S.tab === 'My Notes') return buildNotes(p);
+  if (S.tab==='Overview') return buildOverview(p);
+  if (S.tab==='Pathogens' && p.pathogens) return buildPathogens(p);
+  if (S.tab==='Investigations' && p.investigations) return buildInvestigations(p);
+  if (S.tab==='Medications' && p.meds) return buildMeds(p);
+  if (S.tab==='Monitoring') return buildMonitoring(p);
+  if (S.tab==='My Notes') return buildNotes(p);
   return '';
 }
 
 function buildOverview(p) {
-  return `<div style="max-width:700px;display:flex;flex-direction:column;gap:20px">
-    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-      <div style="font-size:0.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Summary</div>
-      <p style="color:#374151;font-size:0.875rem;line-height:1.6;margin:0">${esc(p.summary)}</p>
+  return `<div style="max-width:700px;display:flex;flex-direction:column;gap:16px">
+    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
+      <div style="font-size:0.6rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Summary</div>
+      <p style="color:#374151;font-size:0.875rem;line-height:1.65;margin:0">${esc(p.summary)}</p>
     </div>
-    ${p.pearls && p.pearls.length ? `
-    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-      <div style="font-size:0.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Key CKD/Dialysis Considerations</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        ${p.pearls.map(pearl=>`<div style="display:flex;gap:8px;font-size:0.875rem;color:#374151"><span style="color:#0d9488;font-weight:700;flex-shrink:0">→</span><span style="line-height:1.6">${esc(pearl)}</span></div>`).join('')}
+    ${p.pearls&&p.pearls.length?`<div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
+      <div style="font-size:0.6rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Key Points</div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        ${p.pearls.map(pearl=>`<div style="display:flex;gap:8px"><span style="color:#0d9488;font-weight:700;flex-shrink:0;font-size:0.875rem">→</span><span style="font-size:0.875rem;color:#374151;line-height:1.55">${esc(pearl)}</span></div>`).join('')}
       </div>
-    </div>` : ''}
-    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px">
-      <p style="font-size:0.75rem;color:#92400e;margin:0"><strong>⚠ Educational reference only.</strong> Always verify against current eTG, UpToDate, and local guidelines. Consult clinical pharmacy for complex CKD/dialysis dosing.</p>
+    </div>`:''}
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px">
+      <p style="font-size:0.72rem;color:#92400e;margin:0"><strong>⚠ Educational reference only.</strong> Always verify against current eTG, UpToDate, and local guidelines.</p>
     </div>
   </div>`;
 }
 
 function buildPathogens(p) {
   return `<div style="max-width:700px">
-    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-      <div style="padding:12px 16px;background:#f9fafb;border-bottom:1px solid #e5e7eb;font-weight:700;font-size:0.875rem;color:#374151">Common Pathogens</div>
-      <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden">
+      <div style="padding:10px 16px;background:#f9fafb;border-bottom:1px solid #e5e7eb;font-weight:700;font-size:0.875rem;color:#374151">Common Pathogens</div>
+      <table style="width:100%;border-collapse:collapse">
         <thead><tr style="background:#f9fafb;border-bottom:1px solid #f3f4f6">
-          <th style="padding:8px 16px;text-align:left;color:#6b7280;font-size:0.65rem;text-transform:uppercase;font-weight:600">Organism</th>
-          <th style="padding:8px 16px;text-align:left;color:#6b7280;font-size:0.65rem;text-transform:uppercase;font-weight:600">Frequency</th>
-          <th style="padding:8px 16px;text-align:left;color:#6b7280;font-size:0.65rem;text-transform:uppercase;font-weight:600">Notes</th>
+          <th style="padding:8px 14px;text-align:left;color:#6b7280;font-size:0.62rem;text-transform:uppercase;font-weight:600">Organism</th>
+          <th style="padding:8px 14px;text-align:left;color:#6b7280;font-size:0.62rem;text-transform:uppercase;font-weight:600">Frequency</th>
+          <th style="padding:8px 14px;text-align:left;color:#6b7280;font-size:0.62rem;text-transform:uppercase;font-weight:600">Notes</th>
         </tr></thead>
-        <tbody>
-          ${p.pathogens.map((pt,i)=>`<tr style="border-top:1px solid #f3f4f6;${i%2?'background:#f9fafb':''}">
-            <td style="padding:10px 16px;font-family:'IBM Plex Mono',monospace;font-size:0.75rem;font-weight:500;color:#111827">${esc(pt.name)}</td>
-            <td style="padding:10px 16px;font-size:0.75rem;color:#4b5563">${esc(pt.freq)}</td>
-            <td style="padding:10px 16px;font-size:0.75rem;color:#6b7280">${esc(pt.note)}</td>
-          </tr>`).join('')}
-        </tbody>
+        <tbody>${p.pathogens.map((pt,i)=>`<tr style="border-top:1px solid #f3f4f6">
+          <td style="padding:9px 14px;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;font-weight:500;color:#111827">${esc(pt.name)}</td>
+          <td style="padding:9px 14px;font-size:0.72rem;color:#4b5563">${esc(pt.freq)}</td>
+          <td style="padding:9px 14px;font-size:0.72rem;color:#6b7280">${esc(pt.note)}</td>
+        </tr>`).join('')}</tbody>
       </table>
     </div>
   </div>`;
 }
 
 function buildInvestigations(p) {
-  return `<div style="max-width:800px;display:flex;flex-direction:column;gap:20px">
-    ${p.investigations.map(sec => `
-      <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-        <div style="padding:12px 16px;background:#1e293b;display:flex;align-items:center;gap:8px">
-          <span style="font-size:1.1rem">${sec.icon}</span>
-          <span style="font-weight:600;font-size:0.875rem;color:white">${esc(sec.cat)}</span>
-        </div>
-        <div>
-          ${sec.items.map((it,i)=>{
-            const uc = URGENCY_C[it.urgency] || 'background:#f3f4f6;color:#4b5563';
-            return `<div style="padding:12px 16px;${i>0?'border-top:1px solid #f3f4f6':''}">
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
-                <span style="font-weight:600;font-size:0.8rem;color:#111827">${esc(it.test)}</span>
-                <span style="font-size:0.65rem;padding:2px 8px;border-radius:9999px;font-weight:500;${uc}">${esc(it.urgency)}</span>
-              </div>
-              <p style="font-size:0.75rem;color:#4b5563;line-height:1.5;margin:0">${esc(it.detail)}</p>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>`).join('')}
+  return `<div style="max-width:800px;display:flex;flex-direction:column;gap:18px">
+    ${p.investigations.map(sec=>`<div style="background:white;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden">
+      <div style="padding:10px 16px;background:#1e293b;display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.1rem">${sec.icon}</span>
+        <span style="font-weight:600;font-size:0.875rem;color:white">${esc(sec.cat)}</span>
+      </div>
+      <div>${sec.items.map((it,i)=>{
+        const uc=URGENCY_C[it.urgency]||'background:#f3f4f6;color:#4b5563';
+        return `<div style="padding:11px 16px;${i?'border-top:1px solid #f3f4f6':''}">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px">
+            <span style="font-weight:600;font-size:0.8rem;color:#111827">${esc(it.test)}</span>
+            <span style="font-size:0.62rem;padding:2px 7px;border-radius:9999px;font-weight:500;${uc}">${esc(it.urgency)}</span>
+          </div>
+          <p style="font-size:0.75rem;color:#4b5563;line-height:1.5;margin:0">${esc(it.detail)}</p>
+        </div>`;
+      }).join('')}</div>
+    </div>`).join('')}
   </div>`;
 }
 
 function buildMeds(p) {
-  if (!p.meds || p.meds.length === 0) return `<div style="color:#9ca3af;font-size:0.875rem">No medications listed. Use My Notes to add your own.</div>`;
-  const cols = ['ckd3','ckd4','ckd5','hd','pd'];
-  const hdrs = ['CKD3<br><span style="font-size:0.6rem">(30–59)</span>','CKD4<br><span style="font-size:0.6rem">(15–29)</span>','CKD5<br><span style="font-size:0.6rem">(&lt;15)</span>','Haemodialysis','Peritoneal<br>Dialysis'];
-  
-  const legend = `<div style="display:flex;flex-wrap:wrap;gap:6px;padding:12px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:16px">
-    <span style="font-size:0.7rem;color:#6b7280;font-weight:500;align-self:center">Key:</span>
-    ${['safe','adjust','caution','avoid'].map(k=>`<span style="font-size:0.7rem;padding:2px 8px;border-radius:4px;font-weight:500;${FL[k]}">${{safe:'✓ No adjustment',adjust:'⚠ Adjust dose',caution:'⚠ Use with caution',avoid:'✕ Avoid / CI'}[k]}</span>`).join('')}
+  if (!p.meds||!p.meds.length) return `<div style="color:#9ca3af;font-size:0.875rem;padding:20px 0">No medications listed for this presentation. Use <strong>My Notes</strong> to add your own.</div>`;
+  const cols=['ckd3','ckd4','ckd5','hd','pd'];
+  const hdrs=['CKD3<br><small>(30–59)</small>','CKD4<br><small>(15–29)</small>','CKD5<br><small>(&lt;15)</small>','Haemo-<br>dialysis','Peritoneal<br>Dialysis'];
+  const legend=`<div style="display:flex;flex-wrap:wrap;gap:5px;padding:10px 12px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:14px">
+    <span style="font-size:0.65rem;color:#6b7280;font-weight:500;align-self:center;margin-right:2px">Key:</span>
+    ${['safe','adjust','caution','avoid'].map(k=>`<span style="font-size:0.65rem;padding:2px 7px;border-radius:4px;font-weight:500;${FL[k]}">${{safe:'✓ No adjustment',adjust:'⚠ Adjust',caution:'⚠ Caution',avoid:'✕ Avoid/CI'}[k]}</span>`).join('')}
   </div>`;
-
-  const rows = p.meds.map(m => {
-    if (m.isHeader) return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;margin-top:8px">
+  const rows=p.meds.map(m=>{
+    if(m.isHeader) return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;margin-top:6px">
       <div style="flex:1;height:1px;background:#e5e7eb"></div>
-      <span style="font-size:0.65rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;padding:0 8px">${esc(m.drug.replace(/━/g,'').trim())}</span>
+      <span style="font-size:0.62rem;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap">${esc(m.drug.replace(/━/g,'').trim())}</span>
       <div style="flex:1;height:1px;background:#e5e7eb"></div>
     </div>`;
-    
-    const src = m.src || '';
-    const srcStyle = SRC_C[src] || 'background:#f3f4f6;color:#4b5563;border:1px solid #e5e7eb';
-    const cells = cols.map((c,ci) => {
-      const d = m[c] || {d:'—',f:'safe'};
-      return `<div style="display:flex;flex-direction:column;gap:4px">
-        <div style="font-size:0.6rem;color:#9ca3af;font-weight:500;text-align:center;line-height:1.2">${hdrs[ci]}</div>
-        <div style="border-radius:8px;padding:6px;font-size:0.7rem;text-align:center;line-height:1.3;${FL[d.f]||FL.adjust}">${esc(d.d)}</div>
-      </div>`;
-    }).join('');
-    
-    return `<div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:white;box-shadow:0 1px 3px rgba(0,0,0,0.04)">
-      <div style="padding:12px 16px;background:#f9fafb;border-bottom:1px solid #e5e7eb">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span style="font-weight:700;color:#111827;font-size:0.875rem;font-family:'IBM Plex Mono',monospace">${esc(m.drug)}</span>
-          <span style="font-size:0.65rem;background:#e5e7eb;color:#4b5563;padding:2px 8px;border-radius:4px">${esc(m.route)}</span>
-          <span style="font-size:0.65rem;padding:2px 8px;border-radius:9999px;font-weight:500;${srcStyle}">${esc(src)}</span>
+    const srcStyle=SRC_C[m.src]||'background:#f3f4f6;color:#4b5563;border:1px solid #e5e7eb';
+    const cells=cols.map((c,ci)=>{const d=m[c]||{d:'—',f:'safe'};return `<div>
+      <div style="font-size:0.57rem;color:#9ca3af;font-weight:500;text-align:center;line-height:1.3;margin-bottom:3px">${hdrs[ci]}</div>
+      <div style="border-radius:7px;padding:5px 3px;font-size:0.67rem;text-align:center;line-height:1.3;${FL[d.f]||FL.adjust}">${esc(d.d)}</div>
+    </div>`;}).join('');
+    return `<div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:white;box-shadow:0 1px 2px rgba(0,0,0,0.04)">
+      <div style="padding:10px 14px;background:#f9fafb;border-bottom:1px solid #e5e7eb">
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <span style="font-weight:700;color:#111827;font-size:0.85rem;font-family:'IBM Plex Mono',monospace">${esc(m.drug)}</span>
+          <span style="font-size:0.62rem;background:#e5e7eb;color:#4b5563;padding:2px 7px;border-radius:4px">${esc(m.route)}</span>
+          <span style="font-size:0.62rem;padding:2px 7px;border-radius:9999px;font-weight:500;${srcStyle}">${esc(m.src||'')}</span>
         </div>
-        <div style="font-size:0.7rem;color:#6b7280;margin-top:2px">${esc(m.use)}</div>
-        <div style="font-size:0.7rem;color:#374151;margin-top:4px"><strong>Standard dose:</strong> ${esc(m.std)}</div>
+        <div style="font-size:0.68rem;color:#6b7280;margin-top:2px">${esc(m.use)}</div>
+        <div style="font-size:0.68rem;color:#374151;margin-top:3px"><strong>Std dose:</strong> ${esc(m.std)}</div>
       </div>
-      <div style="padding:12px">
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:8px">${cells}</div>
-        ${m.note ? `<div style="font-size:0.75rem;color:#374151;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 12px;margin-top:4px"><span style="font-weight:600;color:#1d4ed8">💡 </span>${esc(m.note)}</div>` : ''}
+      <div style="padding:10px 12px">
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:7px">${cells}</div>
+        ${m.note?`<div style="font-size:0.72rem;color:#374151;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:8px 10px"><span style="font-weight:600;color:#1d4ed8">💡 </span>${esc(m.note)}</div>`:''}
       </div>
     </div>`;
   }).join('');
-
-  return `<div style="max-width:900px">${legend}<div style="display:flex;flex-direction:column;gap:12px">${rows}</div></div>`;
+  return `<div style="max-width:900px">${legend}<div style="display:flex;flex-direction:column;gap:10px">${rows}</div></div>`;
 }
 
 function buildMonitoring(p) {
-  return `<div style="max-width:700px;display:flex;flex-direction:column;gap:20px">
-    ${p.monitoring && p.monitoring.length ? `
-    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-      <div style="font-size:0.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Monitoring Parameters</div>
+  return `<div style="max-width:700px;display:flex;flex-direction:column;gap:16px">
+    ${p.monitoring&&p.monitoring.length?`<div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:18px">
+      <div style="font-size:0.6rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Monitoring Parameters</div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        ${p.monitoring.map(m=>`<div style="display:flex;gap:8px;font-size:0.875rem;color:#374151"><span style="color:#60a5fa;font-weight:700;flex-shrink:0">•</span><span style="line-height:1.6">${esc(m)}</span></div>`).join('')}
+        ${p.monitoring.map(m=>`<div style="display:flex;gap:8px"><span style="color:#60a5fa;font-weight:700;flex-shrink:0">•</span><span style="font-size:0.875rem;color:#374151;line-height:1.55">${esc(m)}</span></div>`).join('')}
       </div>
-    </div>` : ''}
-    ${p.dialysis && p.dialysis.length ? `
-    <div style="background:white;border-radius:12px;border:1px solid #99f6e4;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-      <div style="font-size:0.65rem;font-weight:700;color:#0f766e;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">🔵 Dialysis-Specific Considerations</div>
+    </div>`:''}
+    ${p.dialysis&&p.dialysis.length?`<div style="background:white;border-radius:12px;border:1px solid #99f6e4;padding:18px">
+      <div style="font-size:0.6rem;font-weight:700;color:#0f766e;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">🔵 Dialysis-Specific Considerations</div>
       <div style="display:flex;flex-direction:column;gap:8px">
-        ${p.dialysis.map(d=>`<div style="display:flex;gap:8px;font-size:0.875rem;color:#374151"><span style="color:#0d9488;font-weight:700;flex-shrink:0">→</span><span style="line-height:1.6">${esc(d)}</span></div>`).join('')}
+        ${p.dialysis.map(d=>`<div style="display:flex;gap:8px"><span style="color:#0d9488;font-weight:700;flex-shrink:0">→</span><span style="font-size:0.875rem;color:#374151;line-height:1.55">${esc(d)}</span></div>`).join('')}
       </div>
-    </div>` : ''}
+    </div>`:''}
   </div>`;
 }
 
 function buildNotes(p) {
-  const saved = S.notes[p.id] || '';
-  if (S.editNote) {
-    return `<div style="max-width:700px;display:flex;flex-direction:column;gap:16px">
-      <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div style="font-size:0.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em">My Notes</div>
-          <div style="display:flex;gap:8px">
-            <button onclick="cancelNote()" style="font-size:0.75rem;color:#6b7280;padding:6px 12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;font-family:inherit">Cancel</button>
-            <button onclick="saveNote()" style="font-size:0.75rem;background:#0f766e;color:white;padding:6px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:500;font-family:inherit">💾 Save</button>
-          </div>
+  const saved = S.notes[p.id]||'';
+  if (S.editNote) return `<div style="max-width:700px">
+    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:0.6rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em">My Notes</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="cancelNote()" style="font-size:0.75rem;color:#6b7280;padding:5px 12px;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;font-family:inherit">Cancel</button>
+          <button onclick="saveNote()" style="font-size:0.75rem;background:#0f766e;color:white;padding:5px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:500;font-family:inherit">💾 Save</button>
         </div>
-        <textarea id="note-ta" rows="16" oninput="S.noteText=this.value" style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:12px;font-size:0.875rem;line-height:1.6;resize:none;outline:none;font-family:inherit;color:#374151">${esc(S.noteText)}</textarea>
       </div>
-    </div>`;
-  }
-  return `<div style="max-width:700px;display:flex;flex-direction:column;gap:16px">
-    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-size:0.65rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em">My Notes &amp; Clinical Pearls</div>
-        <button onclick="openNote()" style="font-size:0.75rem;background:#0f766e;color:white;padding:6px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:500;font-family:inherit">${saved ? 'Edit Notes' : '+ Add Notes'}</button>
-      </div>
-      ${saved 
-        ? `<div style="font-size:0.875rem;color:#374151;line-height:1.7;white-space:pre-wrap;background:#f9fafb;border-radius:8px;padding:16px;border:1px solid #f1f5f9">${esc(saved)}</div>`
-        : `<div style="text-align:center;padding:32px;color:#9ca3af">
-            <div style="font-size:2rem;margin-bottom:8px">📝</div>
-            <p style="font-size:0.875rem;margin:0 0 4px">No notes yet.</p>
-            <p style="font-size:0.75rem;margin:0">Add consultant pearls, local protocols, or case learnings.</p>
-            <button onclick="openNote()" style="margin-top:12px;font-size:0.75rem;background:#0f766e;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:500;font-family:inherit">+ Add Notes</button>
-          </div>`
-      }
+      <textarea id="note-ta" rows="16" oninput="S.noteText=this.value" style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:12px;font-size:0.875rem;line-height:1.6;resize:vertical;outline:none;font-family:inherit;color:#374151">${esc(S.noteText)}</textarea>
     </div>
-    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px">
-      <p style="font-size:0.75rem;color:#1d4ed8;margin:0"><strong>💡 Tip:</strong> Notes are saved to this device's local storage — private to this browser. They persist between sessions.</p>
+  </div>`;
+  return `<div style="max-width:700px;display:flex;flex-direction:column;gap:14px">
+    <div style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:0.6rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.05em">My Notes & Clinical Pearls</div>
+        <button onclick="openNote()" style="font-size:0.75rem;background:#0f766e;color:white;padding:5px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:500;font-family:inherit">${saved?'Edit Notes':'+ Add Notes'}</button>
+      </div>
+      ${saved?`<div style="font-size:0.875rem;color:#374151;line-height:1.7;white-space:pre-wrap;background:#f9fafb;border-radius:8px;padding:14px;border:1px solid #f1f5f9">${esc(saved)}</div>`
+      :`<div style="text-align:center;padding:28px;color:#9ca3af">
+          <div style="font-size:2rem;margin-bottom:8px">📝</div>
+          <p style="font-size:0.875rem;margin:0 0 4px">No notes yet.</p>
+          <p style="font-size:0.75rem;margin:0">Add consultant pearls, local protocols, or case learnings.</p>
+          <button onclick="openNote()" style="margin-top:10px;font-size:0.75rem;background:#0f766e;color:white;padding:7px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:500;font-family:inherit">+ Add Notes</button>
+        </div>`}
+    </div>
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px">
+      <p style="font-size:0.72rem;color:#1d4ed8;margin:0"><strong>💡 </strong>Notes are saved to this device. Tap <strong>Export My Notes</strong> (sidebar) to copy them back to Claude for integration into the next update.</p>
     </div>
   </div>`;
 }
 
-// ─── EVENT HANDLERS ────────────────────────────────────────────
+function buildExportModal() {
+  const entries = Object.entries(S.notes).filter(([id,t])=>t&&t.trim());
+  const allPres = all();
+  let text = entries.length === 0
+    ? 'No notes saved yet — add notes via the My Notes tab on any presentation.'
+    : entries.map(([id,t])=>{
+        const p = allPres.find(x=>x.id===id);
+        return `━━━ ${p?p.name:id} ━━━\n${t.trim()}`;
+      }).join('\n\n');
+  return `<div onclick="hideExportModal()" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px">
+    <div onclick="event.stopPropagation()" style="background:white;border-radius:16px;width:100%;max-width:580px;max-height:85dvh;display:flex;flex-direction:column;box-shadow:0 25px 50px rgba(0,0,0,0.3)">
+      <div style="padding:18px 22px 14px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+        <div>
+          <div style="font-weight:700;font-size:1rem;color:#111827">Export My Notes</div>
+          <div style="font-size:0.72rem;color:#6b7280;margin-top:2px">${entries.length} presentation${entries.length!==1?'s':''} with notes saved</div>
+        </div>
+        <button onclick="hideExportModal()" style="background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1.5rem;line-height:1">×</button>
+      </div>
+      <div style="padding:16px 22px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px">
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px">
+          <p style="font-size:0.78rem;color:#166534;margin:0"><strong>How to use:</strong> Select all text below → Copy → Paste into your Claude conversation. I can then update the HTML to incorporate your pearls into the main content.</p>
+        </div>
+        <textarea readonly style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:12px;font-size:0.8rem;line-height:1.6;height:260px;resize:none;outline:none;font-family:'IBM Plex Mono',monospace;color:#374151;background:#f9fafb" onclick="this.select()">${esc(text)}</textarea>
+      </div>
+      <div style="padding:14px 22px;border-top:1px solid #f1f5f9;display:flex;gap:8px;justify-content:flex-end;flex-shrink:0">
+        <button onclick="hideExportModal()" style="padding:8px 16px;font-size:0.875rem;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;font-family:inherit">Close</button>
+        <button onclick="downloadNotes()" style="padding:8px 16px;font-size:0.875rem;background:#0f766e;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:500;font-family:inherit">⬇ Download .txt</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildAddModal() {
+  return `<div onclick="closeModal()" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px">
+    <div onclick="event.stopPropagation()" style="background:white;border-radius:16px;width:100%;max-width:480px;box-shadow:0 25px 50px rgba(0,0,0,0.25)">
+      <div style="padding:18px 22px 14px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-weight:700;font-size:1rem">Add Custom Presentation</span>
+        <button onclick="closeModal()" style="background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1.5rem;line-height:1">×</button>
+      </div>
+      <div style="padding:18px 22px;display:flex;flex-direction:column;gap:14px">
+        <div>
+          <label style="display:block;font-size:0.65rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Presentation Name *</label>
+          <input id="mn" value="${esc(S.newName)}" oninput="S.newName=this.value" placeholder="e.g., Hyponatraemia..." style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:0.875rem;outline:none;font-family:inherit">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.65rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Summary</label>
+          <textarea id="ms" oninput="S.newSummary=this.value" placeholder="Brief clinical overview..." style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:0.875rem;resize:none;outline:none;font-family:inherit" rows="3">${esc(S.newSummary)}</textarea>
+        </div>
+        <div>
+          <label style="display:block;font-size:0.65rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Key Pearls (one per line)</label>
+          <textarea id="mp" oninput="S.newPearls=this.value" placeholder="Pearl 1&#10;Pearl 2..." style="width:100%;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:0.875rem;resize:none;outline:none;font-family:inherit" rows="4">${esc(S.newPearls)}</textarea>
+        </div>
+      </div>
+      <div style="padding:14px 22px;border-top:1px solid #f1f5f9;display:flex;gap:8px;justify-content:flex-end">
+        <button onclick="closeModal()" style="padding:8px 16px;font-size:0.875rem;border:1px solid #e5e7eb;border-radius:8px;cursor:pointer;background:white;font-family:inherit">Cancel</button>
+        <button onclick="addCustom()" style="padding:8px 16px;font-size:0.875rem;background:#0f766e;color:white;border:none;border-radius:8px;cursor:pointer;font-family:inherit">Add</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── EVENT HANDLERS ───────────────────────────────────────────
 function selP(id) {
-  S.id = id;
-  const p = all().find(x => x.id === id);
-  S.tab = p ? tabs(p.type)[0] : 'Overview';
-  S.editNote = false;
-  S.search = '';
+  closeMenu();
+  S.id=id; const p=all().find(x=>x.id===id);
+  S.tab=p?tabs(p.type)[0]:'Overview';
+  S.editNote=false; S.search='';
   render();
 }
 function selTab(t) {
-  if (t === 'My Notes') {
-    S.editNote = false;
-    S.noteText = S.notes[S.id] || '';
-  }
-  S.tab = t;
-  render();
+  if (t==='My Notes') { S.editNote=false; S.noteText=S.notes[S.id]||''; }
+  S.tab=t; render();
 }
-function handleSearch(val) { S.search = val; render(); }
-function openNote() { S.noteText = S.notes[S.id] || ''; S.editNote = true; render(); }
-function cancelNote() { S.editNote = false; render(); }
+function handleSearch(v) { S.search=v; render(); }
+function openNote() { S.noteText=S.notes[S.id]||''; S.editNote=true; render(); }
+function cancelNote() { S.editNote=false; render(); }
 function saveNote() {
-  S.notes[S.id] = S.noteText;
-  localStorage.setItem('nephroref_notes_v2', JSON.stringify(S.notes));
-  S.editNote = false;
-  render();
+  S.notes[S.id]=S.noteText;
+  localStorage.setItem('nephroref_notes_v2',JSON.stringify(S.notes));
+  S.editNote=false; render();
 }
-function openModal() { S.showModal = true; S.newName=''; S.newSummary=''; S.newPearls=''; render(); }
-function closeModal() { S.showModal = false; render(); }
+function openModal() { S.showModal=true; S.newName=''; S.newSummary=''; S.newPearls=''; render(); }
+function closeModal() { S.showModal=false; render(); }
 function addCustom() {
   if (!S.newName.trim()) return;
-  const p = {
-    id: 'custom_' + Date.now(),
-    name: S.newName.trim(), abbr: S.newName.trim().slice(0,16),
-    cat: 'Custom', icon: '📌', type: 'management',
-    summary: S.newSummary.trim() || 'Custom presentation.',
-    pearls: S.newPearls.trim() ? S.newPearls.trim().split('\n').filter(Boolean) : [],
-    meds: [], monitoring: [], dialysis: []
-  };
+  const p={id:'custom_'+Date.now(),name:S.newName.trim(),abbr:S.newName.trim().slice(0,16),cat:'Custom',icon:'📌',type:'management',summary:S.newSummary.trim()||'Custom presentation.',pearls:S.newPearls.trim()?S.newPearls.trim().split('\n').filter(Boolean):[],meds:[],monitoring:[],dialysis:[]};
   S.custom.push(p);
-  localStorage.setItem('nephroref_custom_v2', JSON.stringify(S.custom));
-  S.showModal = false;
-  selP(p.id);
+  localStorage.setItem('nephroref_custom_v2',JSON.stringify(S.custom));
+  S.showModal=false; selP(p.id);
 }
 function delC(id) {
-  S.custom = S.custom.filter(p => p.id !== id);
-  localStorage.setItem('nephroref_custom_v2', JSON.stringify(S.custom));
-  if (S.id === id) selP('common-meds');
-  else render();
+  S.custom=S.custom.filter(p=>p.id!==id);
+  localStorage.setItem('nephroref_custom_v2',JSON.stringify(S.custom));
+  if (S.id===id) selP('common-meds'); else render();
+}
+function showExportModal() { S.showExport=true; render(); }
+function hideExportModal() { S.showExport=false; render(); }
+function downloadNotes() {
+  const entries=Object.entries(S.notes).filter(([id,t])=>t&&t.trim());
+  const allPres=all();
+  let text='NEPHRO-REF NOTES EXPORT\n'+new Date().toLocaleDateString('en-AU')+'\n\n';
+  entries.forEach(([id,t])=>{
+    const p=allPres.find(x=>x.id===id);
+    text+=`${'═'.repeat(50)}\n${p?p.name:id}\n${'═'.repeat(50)}\n${t.trim()}\n\n`;
+  });
+  const blob=new Blob([text],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='nephroref-notes-'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click(); URL.revokeObjectURL(url);
 }
 
-// Start the app
+// Start
 init();
+
   </script>
 </body>
 </html>
