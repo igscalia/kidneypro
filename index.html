@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Nephro-Ref</title>
+
+  <!-- PWA / Add to Home Screen support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Nephro-Ref">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Australian Nephrology Clinical Reference — CKD dosing, ward medications, dialysis">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body { font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif; }
+    code, .font-mono { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+    /* iOS safe area */
+    .sidebar-safe { padding-bottom: env(safe-area-inset-bottom, 0); }
+    /* Smooth scroll */
+    * { -webkit-tap-highlight-color: transparent; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
+    /* Loading spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { animation: spin 1s linear infinite; }
+    /* Prevent zoom on double-tap iOS */
+    button, input, textarea { touch-action: manipulation; }
+  </style>
+
+  <!-- Inline PWA Manifest -->
+  <script>
+    const manifestData = {
+      name: "Nephro-Ref",
+      short_name: "Nephro-Ref",
+      description: "Australian Nephrology Clinical Reference",
+      start_url: "./",
+      display: "standalone",
+      background_color: "#0f172a",
+      theme_color: "#0f172a",
+      icons: [{
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230f172a'/%3E%3Ctext y='.9em' font-size='80' x='10'%3E⚕️%3C/text%3E%3C/svg%3E",
+        sizes: "192x192",
+        type: "image/svg+xml"
+      }]
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/manifest+json'});
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = manifestURL;
+    document.head.appendChild(manifestLink);
+  </script>
+</head>
+<body class="bg-gray-50 overflow-hidden">
+  <div id="root" class="h-screen">
+    <div class="h-screen flex items-center justify-center bg-slate-900">
+      <div class="text-center text-white">
+        <div class="text-5xl mb-4">⚕️</div>
+        <div class="text-slate-300 text-sm mb-3">Loading Nephro-Ref...</div>
+        <div class="w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full spinner mx-auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- React + ReactDOM (production builds) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel Standalone (JSX compiler) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PRESENTATION DATA (plain JS — no Babel needed)            -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <script>
+// ─── FLAG & SOURCE STYLES ──────────────────────────────────────────────────────
+const FL = {
+  safe:    'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  adjust:  'bg-amber-50 text-amber-800 border border-amber-200',
+  caution: 'bg-orange-50 text-orange-800 border border-orange-200',
+  avoid:   'bg-red-50 text-red-700 border border-red-200',
+};
+const FL_LEGEND = { safe:'✓ No adjustment', adjust:'⚠ Adjust dose', caution:'⚠ Caution', avoid:'✕ Avoid/CI' };
+const SRC = {
+  'eTG': 'bg-blue-50 text-blue-700 border border-blue-200',
+  'UpToDate': 'bg-violet-50 text-violet-700 border border-violet-200',
+  'eTG + UpToDate': 'bg-indigo-50 text-indigo-700 border border-indigo-200',
+  'ISPD 2022': 'bg-teal-50 text-teal-700 border border-teal-200',
+  'UpToDate / PBS': 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  'KDIGO': 'bg-sky-50 text-sky-700 border border-sky-200',
+  'KDIGO / PBS': 'bg-cyan-50 text-cyan-700 border border-cyan-200',
+  'eTG / PBS': 'bg-green-50 text-green-700 border border-green-200',
+};
+const URGENCY_COLORS = {
+  'Mandatory': 'bg-red-100 text-red-700',
+  'URGENT if TMA suspected': 'bg-red-100 text-red-700',
+  'URGENT if TTP suspected': 'bg-red-100 text-red-700',
+  'Urgent (bedside)': 'bg-orange-100 text-orange-700',
+  'Urgent — same day': 'bg-orange-100 text-orange-700',
+  'Urgent — do before antibiotics': 'bg-orange-100 text-orange-700',
+  'GN screen (URGENT if haemoptysis)': 'bg-orange-100 text-orange-700',
+  'Mandatory + ECG': 'bg-red-100 text-red-700',
+  'First-line': 'bg-amber-100 text-amber-700',
+  'First-line (if on diuretics)': 'bg-amber-100 text-amber-700',
+  'Bedside': 'bg-amber-100 text-amber-700',
+  'GN screen': 'bg-blue-100 text-blue-700',
+  'If clinically indicated': 'bg-gray-100 text-gray-600',
+};
+
+// ─── CLINICAL DATA ─────────────────────────────────────────────────────────────
+
+const PRESENTATIONS = [
+  {
+    id:'cap', name:'Community-Acquired Pneumonia', abbr:'CAP',
+    cat:'Infectious Disease', icon:'🫁', type:'infectious',
+    summary:'CAP in CKD/dialysis follows similar empirical coverage to the general population, with mandatory dose adjustment for renally-cleared antibiotics. Severity guides choice (CURB-65/PSI), then renal function guides dosing. Uraemic immune dysfunction may blunt fever response.',
+    pearls:[
+      'Doxycycline + azithromycin: NO dose adjustment across all CKD/dialysis stages — preferred atypical agents in renal impairment',
+      'Moxifloxacin: hepatically eliminated — no renal adjustment needed, but monitor QTc (especially in HD)',
+      'Levofloxacin: significant dose reduction required in CKD4/5 and HD',
+      'Benzylpenicillin: cap at 7.2g/day in CKD5/HD — neurotoxicity (myoclonus, seizures) risk at higher doses',
+      'Pip-tazobactam: dose reduce in CKD4+; neurotoxicity risk in ESKD',
+      'Pneumococcal vaccination: confirm up to date — PCV15/20 + PPSV23 recommended in CKD/dialysis',
+    ],
+    pathogens:[
+      {name:'S. pneumoniae', freq:'Most common', note:'Most common in ESKD also; bacteraemic disease more severe'},
+      {name:'H. influenzae', freq:'Common', note:''},
+      {name:'Mycoplasma pneumoniae', freq:'Common (atypical)', note:'Milder disease; may not require hospitalisation'},
+      {name:'Legionella pneumophila', freq:'Less common', note:'Check urinary Legionella antigen if severe CAP'},
+      {name:'Moraxella catarrhalis', freq:'Less common', note:''},
+      {name:'S. aureus (MSSA/MRSA)', freq:'↑ in ESKD', note:'Higher risk in HD patients; consider severe/cavitating pneumonia'},
+      {name:'Gram-negative bacilli', freq:'↑ in ESKD', note:'Klebsiella, E. coli — aspiration, alcoholism, severe disease'},
+    ],
+    meds:[
+      {drug:'Amoxicillin', route:'PO', use:'Mild CAP (+ doxycycline for atypical cover)', std:'1g TDS × 5d',
+       ckd3:{d:'1g TDS — no change',f:'safe'}, ckd4:{d:'500mg–1g BD',f:'adjust'}, ckd5:{d:'500mg BD',f:'adjust'},
+       hd:{d:'500mg BD; extra 500mg post-HD',f:'adjust'}, pd:{d:'500mg BD–TDS',f:'adjust'},
+       note:'No atypical coverage alone — combine with doxycycline.', src:'eTG'},
+      {drug:'Doxycycline', route:'PO', use:'Atypical cover; mild CAP sole agent; Legionella', std:'200mg loading then 100mg BD',
+       ckd3:{d:'100mg BD ✓',f:'safe'}, ckd4:{d:'100mg BD ✓',f:'safe'}, ckd5:{d:'100mg BD ✓',f:'safe'},
+       hd:{d:'100mg BD ✓ (not HD-cleared)',f:'safe'}, pd:{d:'100mg BD ✓',f:'safe'},
+       note:'Hepatically eliminated. No dose adjustment at ANY CKD/dialysis stage. Preferred atypical agent in renal impairment.', src:'eTG + UpToDate'},
+      {drug:'Azithromycin', route:'PO/IV', use:'Atypical cover; Legionella (IV preferred); alternative to doxycycline', std:'500mg daily × 3–5d',
+       ckd3:{d:'500mg daily ✓',f:'safe'}, ckd4:{d:'500mg daily ✓',f:'safe'}, ckd5:{d:'500mg daily ✓',f:'safe'},
+       hd:{d:'500mg daily ✓ (not HD-cleared)',f:'safe'}, pd:{d:'500mg daily ✓',f:'safe'},
+       note:'Hepatic/biliary elimination. No renal dose adjustment. Monitor QTc in HD patients.', src:'eTG + UpToDate'},
+      {drug:'Benzylpenicillin', route:'IV', use:'Moderate-severe CAP; pneumococcal pneumonia (hospital)', std:'1.2g IV q6h',
+       ckd3:{d:'1.2g q6h — no change',f:'safe'}, ckd4:{d:'1.2g q6h; monitor neurotoxicity',f:'adjust'},
+       ckd5:{d:'Max 7.2g/day (e.g. 1.2g q8h)',f:'adjust'}, hd:{d:'1.2g q8–12h; +600mg post-HD',f:'adjust'},
+       pd:{d:'600mg–1.2g q8h (reduced)',f:'adjust'},
+       note:'Neurotoxicity (myoclonus, seizures) with dose accumulation in ESKD. Cap at 7.2g/day in CKD5/HD. Combine with doxycycline for atypical cover.', src:'eTG'},
+      {drug:'Amox-Clavulanate', route:'PO/IV', use:'Moderate CAP; aspiration; gram-negative cover', std:'875/125mg BD PO or 1.2g IV TDS',
+       ckd3:{d:'875/125mg BD — no change',f:'safe'}, ckd4:{d:'500/125mg BD–TDS',f:'adjust'},
+       ckd5:{d:'500/125mg BD',f:'adjust'}, hd:{d:'500/125mg BD; dose post-HD',f:'adjust'}, pd:{d:'500/125mg BD',f:'adjust'},
+       note:'Both components renally cleared. Reduce clavulanate in CKD4+. Clavulanate accumulation → GI side effects.', src:'eTG + UpToDate'},
+      {drug:'Pip-Tazobactam', route:'IV', use:'Severe CAP; aspiration; gram-negative/Pseudomonas', std:'4.5g IV q6h (extended infusion preferred)',
+       ckd3:{d:'4.5g q6–8h — no change',f:'safe'}, ckd4:{d:'4.5g q8h',f:'adjust'},
+       ckd5:{d:'2.25–4.5g q8h',f:'adjust'}, hd:{d:'2.25–4.5g q8h; +0.75–2.25g post-HD',f:'adjust'},
+       pd:{d:'2.25–4.5g q8h (minimal PD clearance)',f:'adjust'},
+       note:'Neurotoxicity (encephalopathy) in ESKD with unreduced doses. Mandatory dose reduction CKD4+. Pharmacy input recommended.', src:'eTG + UpToDate'},
+      {drug:'Levofloxacin', route:'PO/IV', use:'Severe CAP (alt); Legionella; penicillin allergy', std:'500–750mg daily',
+       ckd3:{d:'500mg → 250–500mg daily (eGFR 30–49)',f:'adjust'}, ckd4:{d:'500mg load → 250mg daily',f:'adjust'},
+       ckd5:{d:'500mg load → 250mg q48h',f:'adjust'}, hd:{d:'500mg load → 250mg q48h; post-HD',f:'adjust'},
+       pd:{d:'500mg load → 250mg q48h',f:'adjust'},
+       note:'Significant renal dose reduction in CKD4+. QTc prolongation risk — monitor ECG in HD.', src:'eTG + UpToDate'},
+      {drug:'Moxifloxacin', route:'PO', use:'Outpatient severe CAP; penicillin allergy (non-Legionella)', std:'400mg daily × 5d',
+       ckd3:{d:'400mg daily ✓',f:'safe'}, ckd4:{d:'400mg daily ✓',f:'safe'},
+       ckd5:{d:'400mg daily ✓ (hepatic/biliary)',f:'safe'}, hd:{d:'400mg daily ✓ (not HD-cleared)',f:'safe'},
+       pd:{d:'400mg daily ✓',f:'safe'},
+       note:'Hepatic/biliary elimination — no renal adjustment. BUT: significant QTc prolongation risk. ECG monitoring in HD. NOT for Legionella.', src:'UpToDate'},
+    ],
+    monitoring:['U&E daily if CKD4+ (AKI on CKD risk)','Blood cultures ×2 before antibiotics if hospitalised','Urinary Legionella + pneumococcal antigen if moderate-severe','Sputum MCS if productive — guide de-escalation at 48–72h','ECG at baseline if fluoroquinolone or azithromycin (QTc in HD)','Clinical reassessment at 48–72h — consider de-escalation or escalation'],
+    dialysis:['Dose timing: give HD-cleared antibiotics at end of/post-HD session','Higher MRSA risk in HD patients — lower threshold for vancomycin if risk factors','PD patients: systemic CAP treatment; PD clearance of most IV antibiotics is minimal','Confirm pneumococcal vaccination status (PCV15/20 + PPSV23 recommended)'],
+  },
+  {
+    id:'cellulitis', name:'Cellulitis / SSTI', abbr:'Cellulitis',
+    cat:'Infectious Disease', icon:'🩹', type:'infectious',
+    summary:'Non-purulent cellulitis is predominantly streptococcal; purulent/wound-associated infections increase likelihood of S. aureus including MRSA. HD patients have significantly elevated MRSA risk at vascular access sites. Flucloxacillin/dicloxacillin require NO dose adjustment; cefalexin requires reduction in CKD4/5.',
+    pearls:[
+      'Flucloxacillin / dicloxacillin: hepatically eliminated — NO dose adjustment at any CKD stage',
+      'Cefalexin: renally eliminated — dose reduce in CKD4+ (500mg BD–TDS)',
+      'Vancomycin: complex dosing in CKD — AUC/MIC-guided monitoring; engage pharmacy',
+      'TMP-SMX: avoid in CKD4/5 — hyperkalaemia (ENaC blockade), falsely elevated creatinine (blocks tubular Cr secretion)',
+      'Doxycycline: excellent MRSA SSTI option in CKD — no dose adjustment needed',
+      'HD patients: significantly elevated MRSA risk; lower threshold for empirical vancomycin at access sites',
+      'Cefazolin: practical for HD — 2g post-HD session (Mon/Wed/Fri scheduling)',
+    ],
+    pathogens:[
+      {name:'Group A Streptococcus (S. pyogenes)', freq:'Most common (non-purulent)', note:'Spreading non-purulent erythema'},
+      {name:'S. aureus MSSA', freq:'Common (purulent)', note:'Purulent, wound-associated, abscess'},
+      {name:'MRSA', freq:'↑↑ in HD patients', note:'Healthcare-associated, HD access sites, recurrent infections'},
+      {name:'Gram-negative organisms', freq:'Less common', note:'Immunocompromised, diabetic foot, water exposure'},
+    ],
+    meds:[
+      {drug:'Cefalexin', route:'PO', use:'Mild-moderate non-purulent cellulitis (first-line oral)', std:'500mg QID × 5–10d',
+       ckd3:{d:'500mg QID — no change',f:'safe'}, ckd4:{d:'500mg BD–TDS',f:'adjust'}, ckd5:{d:'250–500mg BD',f:'adjust'},
+       hd:{d:'250–500mg BD; +250mg post-HD',f:'adjust'}, pd:{d:'250–500mg BD–TDS',f:'adjust'},
+       note:'Renally eliminated. Dose reduce in CKD4+. Covers streptococci and MSSA.', src:'eTG'},
+      {drug:'Flucloxacillin / Dicloxacillin', route:'IV/PO', use:'MSSA-targeted; moderate-severe (IV fluclox)', std:'Fluclox 2g IV QID; Diclox 500mg QID PO',
+       ckd3:{d:'No adjustment ✓',f:'safe'}, ckd4:{d:'No adjustment ✓',f:'safe'}, ckd5:{d:'No adjustment ✓ (hepatic)',f:'safe'},
+       hd:{d:'No adjustment ✓ (not HD-cleared)',f:'safe'}, pd:{d:'No adjustment ✓',f:'safe'},
+       note:'Predominantly hepatic. No dose adjustment required at any stage. Narrow MSSA coverage — excellent if confirmed MSSA.', src:'eTG + UpToDate'},
+      {drug:'Cefazolin', route:'IV', use:'Moderate-severe cellulitis; practical for HD patients', std:'2g IV TDS',
+       ckd3:{d:'2g TDS — no change',f:'safe'}, ckd4:{d:'1–2g BD',f:'adjust'}, ckd5:{d:'1g BD',f:'adjust'},
+       hd:{d:'1–2g post-HD session (3×/week)',f:'adjust'}, pd:{d:'1g BD IV; 15mg/kg IP long dwell (peritonitis)',f:'adjust'},
+       note:'Practical for HD: 2g post each dialysis session (Mon/Wed/Fri). IP dosing used for PD peritonitis.', src:'eTG + UpToDate'},
+      {drug:'Vancomycin', route:'IV', use:'MRSA suspected/confirmed; healthcare-associated; HD access site infection', std:'25–30mg/kg loading; AUC/MIC-guided maintenance',
+       ckd3:{d:'15mg/kg q12–24h; AUC monitoring',f:'adjust'}, ckd4:{d:'15mg/kg q24–48h; pharmacy dosing essential',f:'adjust'},
+       ckd5:{d:'15mg/kg q48–72h; pharmacy protocol mandatory',f:'adjust'},
+       hd:{d:'Loading 25–30mg/kg; redose 500mg–1g post-HD by levels (varies by membrane type)',f:'adjust'},
+       pd:{d:'Loading 25–30mg/kg IV; then 500mg IP q5–7d or IV by levels',f:'adjust'},
+       note:'AUC/MIC-guided monitoring now preferred over trough-only. Always engage pharmacy in CKD4/5/dialysis. MRSA bacteraemia → 4–6 weeks minimum IV antibiotics.', src:'UpToDate'},
+      {drug:'TMP-SMX', route:'PO', use:'Mild-moderate MRSA SSTI; outpatient (CKD3 only — see restrictions)', std:'160/800mg BD × 5–10d',
+       ckd3:{d:'1 DS tab BD with K+ monitoring',f:'adjust'}, ckd4:{d:'1 DS tab daily with caution; K++ Cr monitoring',f:'caution'},
+       ckd5:{d:'AVOID — hyperkalaemia, falsely elevated Cr, toxicity',f:'avoid'},
+       hd:{d:'AVOID generally; if essential: 1 DS tab post-HD; strict K+ monitoring',f:'avoid'},
+       pd:{d:'1 DS tab daily with caution; K+ monitoring',f:'caution'},
+       note:'Blocks tubular Cr secretion (raises Cr without true GFR drop). ENaC blockade → hyperkalaemia in CKD. Avoid in CKD4+.', src:'eTG + UpToDate'},
+      {drug:'Doxycycline', route:'PO', use:'MRSA SSTI alternative; penicillin allergy', std:'100mg BD × 5–10d',
+       ckd3:{d:'100mg BD ✓',f:'safe'}, ckd4:{d:'100mg BD ✓',f:'safe'}, ckd5:{d:'100mg BD ✓',f:'safe'},
+       hd:{d:'100mg BD ✓ (not HD-cleared)',f:'safe'}, pd:{d:'100mg BD ✓',f:'safe'},
+       note:'Hepatic elimination. No renal dose adjustment. Good outpatient MRSA option where TMP-SMX contraindicated in CKD.', src:'eTG + UpToDate'},
+    ],
+    monitoring:['Mark cellulitis border with skin marker at baseline — reassess at 24–48h','WCC, CRP at baseline; repeat if no improvement at 48h','Blood cultures if systemic features (fever, rigors, haemodynamic instability)','Wound swab/tissue culture if purulent/wound-associated','Vancomycin AUC/trough monitoring daily if CKD4/5/HD','Potassium monitoring if TMP-SMX used in CKD','HD access site: blood cultures from access AND periphery — high bacteraemia risk'],
+    dialysis:['HD access infections: MRSA empirical coverage (vancomycin) strongly recommended','Cefazolin practical: 2g IV post each HD session (Mon/Wed/Fri)','S. aureus bacteraemia in HD: echocardiography mandatory; minimum 6 weeks IV antibiotics','PD exit-site cellulitis: high risk of tunnel infection + peritonitis — treat promptly','Chronic oedema in ESKD: elevation, compression stockings — reduces recurrent cellulitis risk'],
+  },
+  {
+    id:'pyelonephritis', name:'Pyelonephritis / Upper UTI', abbr:'Pyelonephritis',
+    cat:'Infectious Disease', icon:'🦠', type:'infectious',
+    summary:'Ceftriaxone (biliary/hepatic elimination) requires no dose adjustment and is the safest IV agent in CKD. HD patients are typically anuric — upper UTI is uncommon but can occur. Nitrofurantoin is absolutely contraindicated below eGFR 45 (CKD3b).',
+    pearls:[
+      'Ceftriaxone: NO dose adjustment — biliary/hepatic elimination; safest IV choice across all CKD stages',
+      'Nitrofurantoin: CONTRAINDICATED if eGFR <45 — toxic metabolite accumulation + loss of urinary concentration efficacy',
+      'Trimethoprim: AVOID in CKD4/5 — hyperkalaemia (ENaC blockade), blocks tubular Cr secretion, reduced efficacy',
+      'Gentamicin: avoid in CKD3-5 if possible; if essential — extended-interval + mandatory drug level monitoring',
+      'Ciprofloxacin: dose reduce in CKD4/5; always dose post-HD',
+      'HD patients: typically anuric — UTI uncommon; treat bacteriuria only if symptomatic or systemic features',
+    ],
+    pathogens:[
+      {name:'E. coli', freq:'~75–80%', note:'Most common; check local fluoroquinolone resistance rates before empirical use (~20–30%)'},
+      {name:'Klebsiella pneumoniae', freq:'Common', note:'ESBL rates higher in healthcare-associated / recurrent infections'},
+      {name:'Proteus mirabilis', freq:'Less common', note:'Associated with struvite stones'},
+      {name:'Enterococcus faecalis', freq:'Less common', note:'Consider if prior urological manipulation or hospital-acquired'},
+      {name:'Pseudomonas aeruginosa', freq:'Uncommon', note:'Healthcare-associated; structural abnormality; recurrent UTI'},
+    ],
+    meds:[
+      {drug:'Ceftriaxone', route:'IV', use:'Moderate-severe pyelonephritis (first-line IV)', std:'1–2g IV daily',
+       ckd3:{d:'1–2g daily ✓',f:'safe'}, ckd4:{d:'1–2g daily ✓',f:'safe'}, ckd5:{d:'1–2g daily ✓',f:'safe'},
+       hd:{d:'1–2g daily ✓ (not significantly HD-cleared)',f:'safe'}, pd:{d:'1–2g daily ✓',f:'safe'},
+       note:'Predominantly biliary/hepatic elimination (~40% renal). No dose adjustment across all renal stages. Preferred IV agent in CKD. Only reduce if concurrent hepatic failure.', src:'eTG + UpToDate'},
+      {drug:'Cefalexin', route:'PO', use:'Oral step-down; mild pyelonephritis (outpatient)', std:'500mg QID × 10–14d',
+       ckd3:{d:'500mg QID — no change',f:'safe'}, ckd4:{d:'500mg BD–TDS',f:'adjust'}, ckd5:{d:'250–500mg BD',f:'adjust'},
+       hd:{d:'250–500mg BD; +250mg post-HD',f:'adjust'}, pd:{d:'250–500mg BD–TDS',f:'adjust'},
+       note:'Step-down after clinical improvement. Tailor to culture/sensitivity results.', src:'eTG'},
+      {drug:'Ciprofloxacin', route:'PO/IV', use:'Susceptible organisms; outpatient pyelonephritis', std:'500mg BD PO or 400mg BD IV × 7d',
+       ckd3:{d:'500mg BD — no change (eGFR ≥30)',f:'safe'}, ckd4:{d:'250–500mg BD (reduce dose)',f:'adjust'},
+       ckd5:{d:'250–500mg daily',f:'adjust'}, hd:{d:'250–500mg daily; dose post-HD',f:'adjust'},
+       pd:{d:'250mg BD',f:'adjust'},
+       note:'Only if organism susceptible — E. coli resistance ~20–30% in AU (check local data). Dose reduce in CKD4/5.', src:'eTG + UpToDate'},
+      {drug:'Nitrofurantoin', route:'PO', use:'Lower UTI ONLY — major CKD restrictions apply', std:'100mg SR BD × 5d (women, lower UTI)',
+       ckd3:{d:'✓ only if eGFR ≥45; AVOID if eGFR <45 (CKD3b)',f:'caution'},
+       ckd4:{d:'CONTRAINDICATED',f:'avoid'}, ckd5:{d:'CONTRAINDICATED',f:'avoid'},
+       hd:{d:'CONTRAINDICATED',f:'avoid'}, pd:{d:'CONTRAINDICATED',f:'avoid'},
+       note:'Toxic hydroxylamine metabolite accumulates at eGFR <45 (peripheral neuropathy, pulmonary toxicity). Also insufficient urinary concentration for efficacy. Absolute contraindication in CKD3b and below.', src:'eTG + UpToDate'},
+      {drug:'Trimethoprim', route:'PO', use:'Lower UTI only (CKD3a with caution — multiple limitations in CKD)', std:'300mg daily × 3d (women, lower UTI)',
+       ckd3:{d:'Caution; monitor K+ + Cr (CKD3a acceptable with monitoring)',f:'adjust'},
+       ckd4:{d:'AVOID — hyperkalaemia, Cr elevation',f:'avoid'}, ckd5:{d:'CONTRAINDICATED',f:'avoid'},
+       hd:{d:'AVOID',f:'avoid'}, pd:{d:'AVOID',f:'avoid'},
+       note:'Blocks tubular creatinine secretion (raises Cr without GFR drop). Acts like K+-sparing diuretic (ENaC blockade) → hyperkalaemia. Avoid in CKD4+.', src:'eTG + UpToDate'},
+      {drug:'Gentamicin', route:'IV', use:'Severe pyelonephritis / gram-negative bacteraemia (last-line in CKD)', std:'5–7mg/kg IV q24h (extended interval)',
+       ckd3:{d:'4–5mg/kg q36–48h; peak + trough levels mandatory',f:'caution'},
+       ckd4:{d:'3–4mg/kg >48h interval; levels mandatory; avoid if possible',f:'avoid'},
+       ckd5:{d:'AVOID — high accumulation + irreversible nephrotoxicity',f:'avoid'},
+       hd:{d:'2mg/kg post-HD based on levels; ototoxicity risk',f:'avoid'},
+       pd:{d:'0.6mg/kg IP per exchange — specialist guidance only',f:'avoid'},
+       note:'Avoid in CKD3-5 if any alternative exists. Irreversible ototoxicity + nephrotoxicity. If essential: strict level monitoring, pharmacy input mandatory.', src:'eTG + UpToDate'},
+    ],
+    monitoring:['Urine MCS before antibiotics — essential for culture-directed therapy','Blood cultures ×2 if systemic features or hospitalised','U&E at baseline and daily if CKD4+ (pyelonephritis may precipitate AKI on CKD)','Clinical response at 48–72h — step down to oral when afebrile + tolerating PO','Repeat urine MCS 5–7d post-completion in CKD patients','Renal imaging (ultrasound) if: no response at 72h, suspected obstruction, recurrent UTI'],
+    dialysis:['HD patients typically anuric — pyelonephritis uncommon; consider haematogenous seeding if suspected','Treat bacteriuria only if symptomatic or systemic features (not asymptomatic bacteriuria in anuric HD)','Ceftriaxone: safest IV option in HD — no supplemental dosing required','Avoid gentamicin in HD if at all possible — accumulation unpredictable, ototoxicity risk'],
+  },
+  {
+    id:'sepsis', name:'Sepsis — Empirical Management', abbr:'Sepsis',
+    cat:'Infectious Disease', icon:'🚨', type:'infectious',
+    summary:'Blood cultures first, then broad-spectrum antibiotics within 1 hour of sepsis recognition (Surviving Sepsis). In CKD/HD, always consider vascular access as a source. MRSA bacteraemia is ~30% of HD catheter infections — empirical vancomycin is appropriate for healthcare-associated or access-related sepsis. Mandatory renally-adjusted dosing. De-escalate at 48–72h.',
+    pearls:[
+      'HD patients: ALWAYS consider vascular access as source — blood cultures from access AND periphery',
+      'MRSA bacteraemia: ~30% of HD catheter-related bloodstream infections — empirical vancomycin warranted',
+      'Ceftriaxone: no dose adjustment needed — safest gram-negative backbone in CKD',
+      'Meropenem: significant dose reduction mandatory in CKD4/5 — neurotoxicity with accumulation',
+      'De-escalate at 48–72h based on cultures — prolonged broad-spectrum antibiotics dangerous in CKD (toxicity + resistant organisms)',
+      'PD patient with sepsis: examine dialysate — cloudy bag suggests concurrent peritonitis',
+    ],
+    pathogens:[
+      {name:'E. coli / Gram-negatives (urinary/GI)', freq:'Most common community-acquired', note:'Cover with ceftriaxone or pip-tazo'},
+      {name:'S. aureus MSSA/MRSA (access-related)', freq:'Most common HD-associated', note:'MRSA ~30% HD catheters; empirical vancomycin warranted'},
+      {name:'Streptococcal spp.', freq:'Common (community)', note:'Covered by beta-lactams'},
+      {name:'Klebsiella (ESBL)', freq:'Less common', note:'Healthcare-associated; ESBL strains → meropenem'},
+      {name:'Candida spp.', freq:'Immunocompromised / prolonged ABx', note:'Consider antifungal if risk factors'},
+    ],
+    meds:[
+      {drug:'Ceftriaxone', route:'IV', use:'Community-acquired sepsis; respiratory/urinary source', std:'2g IV daily',
+       ckd3:{d:'2g daily ✓',f:'safe'}, ckd4:{d:'2g daily ✓',f:'safe'}, ckd5:{d:'2g daily ✓ (biliary elimination)',f:'safe'},
+       hd:{d:'2g daily ✓ (not significantly HD-cleared)',f:'safe'}, pd:{d:'2g daily ✓',f:'safe'},
+       note:'Preferred IV beta-lactam in CKD. Add metronidazole for anaerobic/abdominal cover. Add vancomycin for MRSA risk. Does not cover Pseudomonas.', src:'eTG + UpToDate'},
+      {drug:'Pip-Tazobactam', route:'IV', use:'Healthcare-associated; abdominal/Pseudomonas risk; severe sepsis', std:'4.5g IV q6h (extended infusion preferred)',
+       ckd3:{d:'4.5g q6h — no change',f:'safe'}, ckd4:{d:'4.5g q8h',f:'adjust'}, ckd5:{d:'2.25–4.5g q8h',f:'adjust'},
+       hd:{d:'2.25–4.5g q8h; +0.75–2.25g post-HD',f:'adjust'}, pd:{d:'2.25–4.5g q8h (minimal PD clearance)',f:'adjust'},
+       note:'Neurotoxicity (encephalopathy, myoclonus) in ESKD with unreduced doses. De-escalate when cultures available.', src:'eTG + UpToDate'},
+      {drug:'Meropenem', route:'IV', use:'ESBL-suspected; severe/ICU; Pseudomonas; immunocompromised', std:'500mg–1g IV q8h',
+       ckd3:{d:'500mg–1g q8h (eGFR 26–50: 500mg q8h)',f:'safe'}, ckd4:{d:'500mg q12h',f:'adjust'},
+       ckd5:{d:'500mg q24h or 250mg q12h',f:'adjust'}, hd:{d:'500mg q24h; +500mg post-HD (HD-cleared)',f:'adjust'},
+       pd:{d:'500mg q24h',f:'adjust'},
+       note:'Mandatory dose reduction in CKD4+. Neurotoxicity (myoclonus, seizures) with accumulation in ESKD. Pharmacy input recommended.', src:'eTG + UpToDate'},
+      {drug:'Vancomycin', route:'IV', use:'MRSA risk; HD access infection; healthcare-associated; severe penicillin allergy', std:'25–30mg/kg loading; AUC/MIC-guided maintenance',
+       ckd3:{d:'15mg/kg q12–24h; AUC monitoring',f:'adjust'}, ckd4:{d:'15mg/kg q24–48h; pharmacy dosing',f:'adjust'},
+       ckd5:{d:'15mg/kg q48–72h; pharmacy protocol mandatory',f:'adjust'},
+       hd:{d:'Loading 25–30mg/kg; redose 500mg–1g post-HD by levels',f:'adjust'},
+       pd:{d:'Loading 25–30mg/kg IV; maintenance 500mg IP q5–7d or IV by levels',f:'adjust'},
+       note:'AUC/MIC-guided monitoring preferred over trough-only. Always engage pharmacy for CKD4/5/dialysis dosing.', src:'UpToDate'},
+      {drug:'Metronidazole', route:'IV/PO', use:'Anaerobic cover; abdominal sepsis (in combination)', std:'500mg IV/PO TDS or 1g IV BD',
+       ckd3:{d:'500mg TDS — no adjustment',f:'safe'}, ckd4:{d:'500mg TDS — no adjustment',f:'safe'},
+       ckd5:{d:'500mg BD–TDS; active metabolite accumulation risk >2 weeks',f:'adjust'},
+       hd:{d:'Standard 500mg TDS; dose post-HD (metabolites cleared by HD)',f:'adjust'},
+       pd:{d:'Standard 500mg TDS',f:'safe'},
+       note:'Predominantly hepatic. Active metabolite accumulates with prolonged use in severe renal failure. Safe for short courses. Dose post-HD.', src:'eTG + UpToDate'},
+    ],
+    monitoring:['Blood cultures ×2 BEFORE antibiotics (peripheral + access if HD)','Lactate at presentation and 2–6h (perfusion and treatment response)','U&E at baseline + BD in CKD patients with sepsis (high AKI risk)','Vancomycin AUC/trough monitoring if CKD4/5/HD — pharmacy protocol','Culture review at 48–72h: de-escalation is a clinical duty — narrow antibiotics','Echocardiography if: bacteraemia, S. aureus on cultures, HD access infection','Fluid resuscitation: standard Surviving Sepsis; CKD patients vulnerable to fluid overload'],
+    dialysis:['ALWAYS blood cultures from tunnelled catheter AND peripheral vein if HD access-related sepsis','S. aureus bacteraemia from HD catheter: minimum 6 weeks IV ABx; echocardiography mandatory','Catheter removal consideration: bacteraemia not clearing at 72h; MRSA/fungal bacteraemia','PD patient: examine dialysate (cloudy?) — send for MCS to exclude concurrent peritonitis','Post-HD supplemental dosing: essential for HD-cleared antibiotics — document timing relative to HD session'],
+  },
+  {
+    id:'aki-workup', name:'AKI — Investigations Checklist', abbr:'AKI Workup',
+    cat:'Acute Presentations', icon:'🔬', type:'investigations',
+    summary:'Systematic AKI workup divides into pre-renal, intrinsic renal, and post-renal. Exclude obstruction and haemodynamic hypovolaemia first. In known CKD, establish baseline creatinine and apply KDIGO staging (≥26.5 µmol/L rise in 48h OR ≥1.5× baseline within 7 days).',
+    pearls:[
+      'CKD-EPI 2021 (race-free equation) is now the preferred eGFR equation — use this over MDRD',
+      'KDIGO AKI: Cr ≥26.5 µmol/L rise in 48h OR ≥1.5× known baseline within 7 days',
+      'FeNa unreliable if diuretics used — use FeUrea instead (<35% = pre-renal)',
+      'Urine microscopy (casts) is one of the highest-yield and most underutilised investigations — request specifically',
+      'RBC casts → GN; granular/muddy brown casts → ATN; WBC casts → interstitial nephritis',
+      'TMA screen (blood film, LDH, platelets) if haemolytic anaemia + thrombocytopaenia — urgent workup',
+    ],
+    investigations:[
+      {cat:'Pre-Renal', icon:'💧', items:[
+        {test:'Urea : Creatinine ratio', detail:'>100 (AU units) suggests pre-renal; less reliable in established CKD (baseline elevation). Urea in mmol/L, Cr in µmol/L.', urgency:'First-line'},
+        {test:'Urine sodium (spot)', detail:'<20 mEq/L suggests avid sodium retention (pre-renal). Unreliable if diuretics administered.', urgency:'First-line'},
+        {test:'FeNa (Fractional Excretion of Sodium)', detail:'<1% pre-renal; >2% intrinsic. Formula: (urine Na × plasma Cr) / (plasma Na × urine Cr) × 100. UNRELIABLE if diuretics used.', urgency:'First-line'},
+        {test:'FeUrea (Fractional Excretion of Urea)', detail:'<35% pre-renal. More reliable than FeNa if diuretics given. Formula: (urine urea × plasma Cr) / (plasma urea × urine Cr) × 100', urgency:'First-line (if on diuretics)'},
+        {test:'Urine osmolality', detail:'>500 mOsmol/kg = concentrated (pre-renal); <350 = ATN / intrinsic', urgency:'First-line'},
+        {test:'Clinical volume assessment', detail:'JVP, mucous membranes, postural BP, peripheral oedema, weight trend, strict fluid balance chart', urgency:'Mandatory'},
+      ]},
+      {cat:'Intrinsic Renal — General', icon:'🧪', items:[
+        {test:'Urine MCS + microscopy (casts)', detail:'CRITICAL: Request "fresh urine microscopy." RBC casts → GN; granular/muddy brown casts → ATN; WBC casts → interstitial nephritis/pyelonephritis; fatty casts → nephrotic', urgency:'Urgent — do before antibiotics'},
+        {test:'Urine Protein : Creatinine ratio (PCR)', detail:'>100 mg/mmol = significant proteinuria (likely glomerular cause); >300 mg/mmol = nephrotic range', urgency:'First-line'},
+        {test:'Urine Albumin : Creatinine ratio (ACR)', detail:'>3 mg/mmol = microalbuminuria; >30 mg/mmol = macroalbuminuria; key CKD staging marker', urgency:'First-line'},
+        {test:'Urine dipstick', detail:'Haematuria + proteinuria → nephritic picture; proteinuria alone → nephrotic. Dipstick haematuria must be confirmed on microscopy.', urgency:'Bedside'},
+        {test:'CK (Creatine Kinase)', detail:'If rhabdomyolysis suspected: myalgia, dark urine, muscle injury, statin use, alcohol, prolonged immobility', urgency:'If clinically indicated'},
+        {test:'Uric acid', detail:'Elevated in tumour lysis syndrome; gout nephropathy', urgency:'If clinically indicated'},
+      ]},
+      {cat:'Intrinsic Renal — GN Screen', icon:'🔭', items:[
+        {test:'ANA (Antinuclear Antibody)', detail:'Screen for lupus nephritis. If positive → anti-dsDNA, anti-Sm, complement', urgency:'GN screen'},
+        {test:'ANCA (MPO + PR3)', detail:'ANCA-associated vasculitis: MPO = microscopic polyangiitis; PR3 = GPA (Wegener\'s) / EGPA', urgency:'GN screen'},
+        {test:'Anti-GBM antibody', detail:'Goodpasture syndrome — rapidly progressive GN + haemoptysis. URGENT if pulmonary-renal syndrome.', urgency:'GN screen (URGENT if haemoptysis)'},
+        {test:'Complement C3 + C4', detail:'Low C3: post-infectious GN, MPGN, lupus. Low C3 + C4: lupus nephritis. Low C3, normal C4: MPGN/C3G, post-infectious GN', urgency:'GN screen'},
+        {test:'SPEP + serum immunoglobulins', detail:'Paraprotein → myeloma cast nephropathy, AL amyloid, cryoglobulinaemia. Send urine BJP if paraprotein detected.', urgency:'GN screen'},
+        {test:'ASOT (Anti-Streptolysin O Titre)', detail:'Post-streptococcal GN — peaks 2–4 weeks post-infection. Look for concurrent low C3.', urgency:'GN screen'},
+        {test:'Hepatitis B + C serology', detail:'HBV → membranous nephropathy; HCV → cryoglobulinaemia / MPGN', urgency:'GN screen'},
+        {test:'HIV serology', detail:'HIVAN (HIV-associated nephropathy — FSGS pattern); thrombotic microangiopathy', urgency:'GN screen'},
+        {test:'LDH + Peripheral Blood Film', detail:'TMA/TTP/HUS: schistocytes on film, elevated LDH, low platelets, haemolytic anaemia — URGENT if present', urgency:'URGENT if TMA suspected'},
+        {test:'ADAMTS13 activity', detail:'TTP: TMA + severe thrombocytopaenia + neurological features → URGENT referral + plasma exchange', urgency:'URGENT if TTP suspected'},
+      ]},
+      {cat:'Post-Renal', icon:'🔶', items:[
+        {test:'Bladder scan (post-void residual)', detail:'BEDSIDE — first step. PVR >300mL = significant retention → urinary catheter', urgency:'Urgent (bedside)'},
+        {test:'Renal tract ultrasound', detail:'Hydronephrosis = obstruction until proven otherwise. Also assesses cortical thickness (CKD chronicity), kidney size, echogenicity.', urgency:'Urgent — same day'},
+        {test:'CT KUB (non-contrast)', detail:'More sensitive for calculi than ultrasound. Use if ultrasound non-diagnostic and obstruction still suspected.', urgency:'If clinically indicated'},
+      ]},
+      {cat:'General Bloods', icon:'🩸', items:[
+        {test:'U&E, Cr, eGFR (serial)', detail:'Trend essential — establish prior baseline from records. Rate of rise guides urgency. Use CKD-EPI 2021 for eGFR.', urgency:'Mandatory'},
+        {test:'Bicarbonate / VBG', detail:'Metabolic acidosis severity; anion gap for toxic ingestion (MUDPILES)', urgency:'Mandatory'},
+        {test:'Potassium + ECG', detail:'Hyperkalaemia — life-threatening; correlate K+ with ECG (peaked T waves, wide QRS, sine wave)', urgency:'Mandatory + ECG'},
+        {test:'Phosphate + Calcium', detail:'Elevated PO4 in CKD/AKI; hypocalcaemia in rhabdomyolysis; hypercalcaemia may cause AKI', urgency:'First-line'},
+        {test:'FBC', detail:'Haemolytic anaemia + thrombocytopaenia → TMA; leucocytosis → infection/sepsis', urgency:'Mandatory'},
+        {test:'LFTs', detail:'Hepatorenal syndrome (ascites + LFTs deranged); baseline before nephrotoxic agents', urgency:'First-line'},
+        {test:'Blood cultures ×2', detail:'If sepsis possible as precipitant — before antibiotics', urgency:'First-line'},
+      ]},
+    ],
+    monitoring:['Fluid balance: strict intake/output chart + daily weights (weights more sensitive than fluid charts)','Urinary catheter for accurate output monitoring in oligo/anuric AKI','U&E at least daily until stable/improving (BD in rapidly evolving AKI)','Potassium: q4–6h if hyperkalaemic; daily once stable','Review ALL medications: hold NSAIDs, aminoglycosides, contrast, nephrotoxic agents; adjust renally-cleared drugs','Nephrology referral: KDIGO AKI Stage 2–3, suspected GN, uncertain diagnosis, renal biopsy consideration','RRT triggers: severe hyperkalaemia, refractory acidosis, uraemic encephalopathy/pericarditis, diuretic-resistant fluid overload'],
+    dialysis:['AKI in HD/PD: rising Cr above baseline or worsening uraemic symptoms may signal inadequate dialysis prescription','Consider access dysfunction if symptomatic deterioration between HD sessions','Contrast nephropathy: less relevant in anuric HD patients; pre-hydration still recommended if any residual function','PD: severe AKI may require temporary conversion to HD for more efficient clearance'],
+  },
+  {
+    id:'hyperkalaemia', name:'Hyperkalaemia — Management', abbr:'Hyperkalaemia',
+    cat:'Acute Presentations', icon:'⚡', type:'management',
+    summary:'Management is staged: (1) cardiac membrane stabilisation if ECG changes, (2) intracellular K+ shift, (3) definitive removal. ECG changes can occur at any K+ level — always perform ECG. SZC (Lokelma) and patiromer are PBS-listed in CKD/dialysis and are now preferred over resonium.',
+    pearls:[
+      'ECG changes can occur at any K+ level — always perform ECG; do not wait for lab result if clinically concerning',
+      'Salbutamol dose for hyperkalaemia: 10–20mg nebulised — NOT the standard 2.5mg bronchodilator dose',
+      'Insulin-dextrose: prolonged hypoglycaemia risk in CKD5 (slower insulin clearance) — BGL monitoring q30min × 4–6h',
+      'SZC (Lokelma): onset within 1–6 hours (faster than patiromer); PBS-listed for CKD/dialysis',
+      'Resonium largely superseded by SZC/patiromer — bowel necrosis risk with sorbitol; inconsistent efficacy',
+      'Common drug causes in CKD: ACEi/ARB, NSAIDs, trimethoprim, heparin, spironolactone, eplerenone, beta-blockers',
+      'Sodium bicarbonate: limited evidence unless metabolic acidosis is coexisting',
+    ],
+    meds:[
+      {drug:'Calcium Gluconate 10%', route:'IV', use:'STEP 1: Membrane stabilisation (ECG changes or K+ ≥6.5 mmol/L)', std:'10mL (1g) IV over 5–10 min; repeat after 5 min if needed',
+       ckd3:{d:'10mL IV — standard',f:'safe'}, ckd4:{d:'10mL IV — standard',f:'safe'},
+       ckd5:{d:'10mL IV; monitor Ca²⁺ — hypercalcaemia risk in CKD5',f:'adjust'},
+       hd:{d:'10mL IV; caution if dialysate Ca²⁺ already high; monitor serum Ca²⁺',f:'adjust'},
+       pd:{d:'10mL IV; check current dialysate Ca²⁺ composition',f:'adjust'},
+       note:'Does NOT lower serum K+. Onset 1–3 min; duration 30–60 min. Protects myocardium from hyperkalaemic effects only. Calcium chloride (3× elemental Ca²⁺) is alternative with central access.', src:'UpToDate'},
+      {drug:'Actrapid (Soluble Insulin) + Dextrose', route:'IV', use:'STEP 2: Intracellular K+ shift (primary agent)', std:'10 units actrapid in 100mL 20% dextrose IV over 15–30 min',
+       ckd3:{d:'Standard; BGL q30min ×2h (↑ hypoglycaemia risk in CKD)',f:'adjust'},
+       ckd4:{d:'Standard; BGL q30min; 100mL 20% dextrose preferred',f:'adjust'},
+       ckd5:{d:'High hypoglycaemia risk; consider 5 units; strict BGL q30min ×4–6h',f:'caution'},
+       hd:{d:'Significant hypoglycaemia risk; lower dose (5–10 units); BGL q30min ×4h',f:'caution'},
+       pd:{d:'Standard; account for glucose in PD dialysate in fluid balance',f:'adjust'},
+       note:'Lowers K+ ~0.6–1.0 mmol/L. Peak effect 60 min; duration 4–6h. Follow with 10% dextrose infusion for 4h to prevent delayed hypoglycaemia. Mandatory BGL monitoring throughout.', src:'UpToDate'},
+      {drug:'Salbutamol (nebulised)', route:'Inhaled', use:'STEP 2 (adjunct): Intracellular K+ shift', std:'10–20mg nebulised (NOT the standard 2.5mg bronchodilator dose)',
+       ckd3:{d:'10–20mg neb — standard',f:'safe'}, ckd4:{d:'10–20mg neb — standard',f:'safe'},
+       ckd5:{d:'10–20mg neb — standard; tachycardia risk',f:'safe'},
+       hd:{d:'10–20mg neb; monitor HR — HD patients often have LVH/cardiac disease',f:'adjust'},
+       pd:{d:'10–20mg neb — standard',f:'safe'},
+       note:'Lowers K+ ~0.5–1.0 mmol/L. Additive with insulin-dextrose. ~40% of ESKD patients may be non-responsive. Tachycardia common — monitor HR.', src:'UpToDate'},
+      {drug:'Sodium Bicarbonate', route:'IV', use:'STEP 2 (adjunct): K+ shift — only if metabolic acidosis coexisting', std:'100mmol (100mL of 8.4%) IV over 30–60 min',
+       ckd3:{d:'Consider if acidotic (pH <7.2 or HCO₃ <15)',f:'adjust'},
+       ckd4:{d:'Consider if acidotic; limited K+-lowering effect if pH normal',f:'adjust'},
+       ckd5:{d:'Caution — sodium load → volume overload; limited benefit without acidosis',f:'caution'},
+       hd:{d:'Generally not recommended — sodium overload; HD corrects acidosis more effectively',f:'avoid'},
+       pd:{d:'Caution — sodium load; PD corrects acidosis over time',f:'caution'},
+       note:'Limited evidence in non-acidaemic patients. Main benefit when K+ shift exacerbated by metabolic acidosis. Dialysis is preferred treatment in HD patients for both acidosis and hyperkalaemia.', src:'UpToDate'},
+      {drug:'SZC — Sodium Zirconium Cyclosilicate (Lokelma)', route:'PO', use:'STEP 3: K+ removal — acute AND maintenance (faster onset than patiromer)', std:'Acute: 10g TDS ×48h; Maintenance: 5–10g daily',
+       ckd3:{d:'10g TDS ×48h; then 5–10g daily maintenance',f:'safe'},
+       ckd4:{d:'10g TDS ×48h; maintenance 5–10g daily; PBS-listed',f:'safe'},
+       ckd5:{d:'10g TDS — rapid onset within 1–6h; very effective; PBS-listed',f:'safe'},
+       hd:{d:'10g on non-dialysis days (TDS if severe); 5g on dialysis days; PBS-listed for HD',f:'safe'},
+       pd:{d:'10g TDS ×48h; then 5–10g daily; monitor Mg²⁺ and Na⁺',f:'safe'},
+       note:'Onset 1–6 hours (faster than patiromer). Contains sodium — caution in HF / fluid overload. PBS-listed for CKD4/5 and dialysis. Preferred over resonium.', src:'UpToDate / PBS'},
+      {drug:'Patiromer (Veltassa)', route:'PO', use:'STEP 3: K+ removal — chronic maintenance ONLY (NOT for acute management)', std:'8.4g daily (with food); titrate to 25.2g daily',
+       ckd3:{d:'8.4g daily; titrate to K+',f:'safe'}, ckd4:{d:'8.4g–16.8g daily; PBS-listed',f:'safe'},
+       ckd5:{d:'8.4g–25.2g daily',f:'safe'}, hd:{d:'Use on non-dialysis days; PBS-listed for HD',f:'safe'},
+       pd:{d:'8.4g daily; PD provides ongoing K+ removal',f:'safe'},
+       note:'Onset ~7h — NOT for acute management. Must be taken with food. Do not take within 3h of other oral medications (drug interactions). PBS-listed.', src:'UpToDate / PBS'},
+      {drug:'Resonium (Polystyrene Sulfonate)', route:'PO/PR', use:'K+ removal — historical; LARGELY SUPERSEDED', std:'15–30g TDS–QID PO or 30g PR',
+       ckd3:{d:'Use SZC or patiromer if available',f:'caution'}, ckd4:{d:'Largely superseded — prefer SZC or patiromer',f:'caution'},
+       ckd5:{d:'Intestinal necrosis risk (especially with sorbitol); avoid if possible',f:'caution'},
+       hd:{d:'Largely superseded; SZC or patiromer preferred',f:'caution'},
+       pd:{d:'Largely superseded',f:'caution'},
+       note:'Associated with intestinal necrosis (particularly with sorbitol formulation). Inconsistent efficacy. Use only if newer agents unavailable.', src:'UpToDate'},
+      {drug:'Haemodialysis (RRT)', route:'RRT', use:'DEFINITIVE: K+ removal; severe / refractory hyperkalaemia', std:'Standard or expedited 4h HD session; low-K dialysate (1–2 mmol/L)',
+       ckd3:{d:'N/A (no RRT)',f:'safe'}, ckd4:{d:'Rarely needed — reserve for truly refractory cases',f:'safe'},
+       ckd5:{d:'May trigger initiation of dialysis programme',f:'safe'},
+       hd:{d:'Expedited HD session — most effective acute treatment; removes ~40–80 mmol K+ per session',f:'safe'},
+       pd:{d:'Rapid hourly PD exchanges — less efficient than HD; HD preferred for severe / cardiac hyperkalaemia',f:'safe'},
+       note:'Emergency HD for: cardiac arrest from hyperkalaemia, K+ >7.0 despite medical treatment, ESKD with acute severe hyperkalaemia. Avoid dialysate K+ <1 mmol/L (rapid correction → arrhythmia risk).', src:'KDIGO'},
+    ],
+    monitoring:['ECG: continuous monitoring if K+ ≥6.5 or ECG changes — do not wait for repeat labs','K+ recheck: 1h post-treatment for acute management','Blood glucose: q30min ×4–6h post insulin-dextrose (prolonged hypoglycaemia risk in CKD5)','U&E: minimum q4h until K+ trending down and stable','Cease contributing medications: ACEi/ARB, NSAIDs, trimethoprim, spironolactone, heparin','Dietary potassium review — dietitian referral in CKD','Identify underlying cause: missed dialysis, constipation, AKI precipitant, tissue catabolism'],
+    dialysis:['HD patients: inter-dialytic hyperkalaemia common — reassess dialysate K+ with nephrology (standard 2 mmol/L)','Missed HD sessions: common precipitant — compliance review; social work input if needed','Rapid correction risk: avoid dialysate K+ <1 mmol/L — rebound arrhythmia risk','PD patients: continuous K+ removal (lower hyperkalaemia incidence than HD); consider increasing exchange frequency if recurrent','SZC (Lokelma): PBS-listed for dialysis patients on non-dialysis days — excellent maintenance option','Telemetry during HD session if K+ >6.5 at session start'],
+  },
+  {
+    id:'acute-hf', name:'Acute Heart Failure in CKD', abbr:'Acute HF/CKD',
+    cat:'Acute Presentations', icon:'❤️‍🩹', type:'management',
+    summary:'Cardiorenal syndrome is common — CKD and HF coexist and worsen each other. Primary goal: decongestion while accepting tolerable creatinine rise (up to 30% above baseline). SGLT2 inhibitors are now first-line in HFrEF and HFpEF regardless of diabetes, with benefit maintained to eGFR ~20. Higher furosemide doses needed in CKD.',
+    pearls:[
+      'Accept Cr rise up to 30% from baseline during aggressive diuresis — haemodynamically tolerated, not true AKI',
+      'SGLT2 inhibitors: first-line in HFrEF AND HFpEF regardless of diabetes; cardiac benefit maintained to eGFR ~20',
+      'ACEi/ARB: tolerate K+ rise to 5.5 mmol/L and Cr rise up to 30% — this is the expected RAAS effect, not a reason to stop',
+      'AVOID atenolol — renally eliminated, accumulates in CKD; use carvedilol, bisoprolol, or metoprolol succinate instead',
+      'Furosemide resistance in CKD: higher doses required; consider IV infusion or adding metolazone (sequential nephron blockade)',
+      'ADVOR trial (2022): IV acetazolamide 500mg daily + loop diuretic improved decongestion in AHF',
+      'Finerenone (FIDELIO/FIGARO trials): PBS-listed for CKD + T2DM; better K+ profile than spironolactone in CKD',
+    ],
+    meds:[
+      {drug:'Furosemide', route:'IV/PO', use:'Primary decongestion — loop diuretic', std:'IV 40–80mg; PO 40–160mg daily (based on prior dose)',
+       ckd3:{d:'PO 40–80mg BD; IV 80mg or infusion; escalate as needed',f:'safe'},
+       ckd4:{d:'PO 80–160mg BD–TDS; IV 100–200mg; significantly higher doses needed',f:'adjust'},
+       ckd5:{d:'PO up to 500mg/day; IV infusion 5–20mg/h; diuretic resistance common',f:'adjust'},
+       hd:{d:'Typically anuric — limited benefit; may preserve residual renal function; add metolazone if some residual function',f:'caution'},
+       pd:{d:'PO 40–250mg/day if residual function; PD itself provides volume removal — titrate to euvolaemia',f:'adjust'},
+       note:'Dose escalation is standard in CKD ("ceiling dose" concept). For diuretic resistance: IV route, infusion, or add metolazone. ADVOR trial 2022: acetazolamide 500mg IV OD + loop diuretic improved decongestion.', src:'UpToDate / eTG'},
+      {drug:'Metolazone', route:'PO', use:'Loop diuretic augmentation (sequential nephron blockade); diuretic resistance', std:'2.5–10mg daily, 30 min before furosemide',
+       ckd3:{d:'2.5–5mg daily (30 min pre-furosemide)',f:'safe'}, ckd4:{d:'5–10mg daily; monitor electrolytes closely',f:'adjust'},
+       ckd5:{d:'5–10mg; profound electrolyte shifts — daily electrolytes mandatory',f:'caution'},
+       hd:{d:'Limited role if anuric',f:'caution'}, pd:{d:'2.5–10mg if residual function; monitor electrolytes',f:'adjust'},
+       note:'Potent augmentation of furosemide — can cause profound hypovolaemia + electrolyte disturbance. Start low, give before furosemide. Daily electrolytes mandatory during initiation.', src:'UpToDate'},
+      {drug:'Ramipril / Perindopril (ACEi)', route:'PO', use:'HFrEF; post-MI LV dysfunction; proteinuric CKD', std:'Ramipril 1.25–10mg daily; Perindopril 2.5–10mg daily',
+       ckd3:{d:'Start 1.25–2.5mg; titrate; tolerate Cr ↑ ≤30% + K⁺ ≤5.5',f:'adjust'},
+       ckd4:{d:'Start 1.25mg; titrate cautiously; strict K⁺ + Cr monitoring; nephrology recommended',f:'caution'},
+       ckd5:{d:'Use with caution; high hyperkalaemia + hypotension risk; specialist input',f:'caution'},
+       hd:{d:'Can use (removed by HD); dose post-HD; monitor BP on non-HD days',f:'adjust'},
+       pd:{d:'Can use; monitor K⁺ and BP; helpful for cardiac protection and proteinuria',f:'adjust'},
+       note:'Do NOT stop for moderate Cr rise/K⁺ rise — expected RAAS effect. Stop if: K⁺ >5.5 or Cr rise >30%. Initiate low dose and titrate up.', src:'eTG + UpToDate'},
+      {drug:'Sacubitril-Valsartan (Entresto)', route:'PO', use:'HFrEF (EF ≤40%), NYHA II–III — replaces ACEi/ARB', std:'24/26mg BD → 49/51mg BD → 97/103mg BD (target)',
+       ckd3:{d:'Start 24/26mg BD; titrate slowly; monitor K⁺ + Cr',f:'adjust'},
+       ckd4:{d:'Start 24/26mg BD (reduced starting dose); cautious titration',f:'adjust'},
+       ckd5:{d:'Start 24/26mg BD; limited data; specialist guidance',f:'caution'},
+       hd:{d:'Start 24/26mg BD; monitor BP (hypotension on dialysis common); limited HD data',f:'caution'},
+       pd:{d:'Start 24/26mg BD; monitor BP + K⁺',f:'adjust'},
+       note:'PBS-listed for HFrEF (EF ≤40%), NYHA II–III. Must wait 36h after last ACEi dose before starting (angioedema risk). Do NOT combine with ACEi.', src:'UpToDate / PBS'},
+      {drug:'SGLT2 Inhibitors (Dapagliflozin / Empagliflozin)', route:'PO', use:'HFrEF AND HFpEF — regardless of diabetes', std:'10mg daily (either dapagliflozin or empagliflozin)',
+       ckd3:{d:'10mg daily ✓ — full cardiac benefit; glucose-lowering effect reduced but cardiac/renal benefit maintained',f:'safe'},
+       ckd4:{d:'10mg daily ✓ — cardiac benefit maintained to eGFR ~20; PBS-listed for HF',f:'safe'},
+       ckd5:{d:'Generally NOT recommended (eGFR <20) — insufficient safety data',f:'caution'},
+       hd:{d:'Generally NOT recommended in HD patients — insufficient evidence',f:'avoid'},
+       pd:{d:'Generally NOT recommended in PD — insufficient evidence',f:'avoid'},
+       note:'DAPA-HF + EMPEROR-Reduced (HFrEF); DELIVER + EMPEROR-Preserved (HFpEF). Now first-line in both HFrEF and HFpEF. Benefit independent of diabetes. Counsel re genital mycotic infections.', src:'UpToDate / PBS'},
+      {drug:'Carvedilol / Bisoprolol / Metoprolol succinate', route:'PO', use:'HFrEF; rate control AF + HF; post-MI (AVOID ATENOLOL)', std:'Carvedilol 3.125–50mg BD; Bisoprolol 1.25–10mg daily',
+       ckd3:{d:'No dose adjustment ✓ (hepatic elimination)',f:'safe'}, ckd4:{d:'No dose adjustment ✓ — carvedilol preferred',f:'safe'},
+       ckd5:{d:'No dose adjustment ✓ — hepatic elimination; carvedilol or bisoprolol',f:'safe'},
+       hd:{d:'No adjustment; give PRE-HD (not post-HD — may exacerbate hypotension)',f:'safe'},
+       pd:{d:'No dose adjustment ✓',f:'safe'},
+       note:'⚠ AVOID ATENOLOL — renally eliminated, accumulates in CKD, prolonged beta-blockade. Carvedilol (non-selective + alpha-blocking) has the most evidence in CKD. Start low, titrate slowly.', src:'eTG + UpToDate'},
+      {drug:'Spironolactone / Eplerenone (MRA)', route:'PO', use:'HFrEF (NYHA II–IV, low dose) — CAUTION IN CKD', std:'12.5–25mg daily; titrate to max 50mg',
+       ckd3:{d:'Start 12.5–25mg; weekly K⁺ monitoring; acceptable if K⁺ <5.0 at baseline',f:'adjust'},
+       ckd4:{d:'Use with extreme caution; avoid if K⁺ >5.0; specialist input recommended',f:'caution'},
+       ckd5:{d:'AVOID — very high hyperkalaemia risk',f:'avoid'},
+       hd:{d:'Limited role; finerenone emerging data (FIDELIO/FIGARO) — better K⁺ profile',f:'caution'},
+       pd:{d:'Use with caution; K⁺ monitoring essential; finerenone preferred in diabetic CKD',f:'caution'},
+       note:'Not safe in CKD4/5 without specialist supervision. Finerenone (Kerendia): PBS-listed for CKD + T2DM; non-steroidal MRA; safer K⁺ profile — FIDELIO-DKD / FIGARO-DKD trials.', src:'UpToDate'},
+    ],
+    monitoring:['Fluid balance: strict daily weights + intake/output; target −0.5 to −1 L/day during decongestion','U&E daily (minimum) during active diuresis — hypokalaemia, hyponatraemia, rising Cr','Accept Cr rise up to 30% baseline during decongestion — do not reflexively stop diuretic','BNP/NT-proBNP: baseline and trend to guide decongestion endpoint','BP — hypotension during diuresis may require dose reduction','Echocardiography: assess EF, wall motion, filling pressures','Potassium monitoring with RAAS agents; ECG if K⁺ changing'],
+    dialysis:['HD patients with fluid overload: increase HD frequency or duration; adjust ultrafiltration rate','HD interdialytic weight gain target: <1 kg/day (ideally <2.5% dry weight per session)','Dry weight reassessment: regularly; especially post-hospitalisation','SGLT2 inhibitors: generally NOT used in anuric HD/PD patients','PD: adjust dialysate osmolarity (2.27% or 3.86% bags) for increased ultrafiltration in volume overload','Finerenone (Kerendia): PBS-listed for CKD + T2DM; non-steroidal MRA; better K⁺ profile than spironolactone in CKD'],
+  },
+  {
+    id:'pd-peritonitis', name:'PD Peritonitis', abbr:'PD Peritonitis',
+    cat:'Dialysis-Specific', icon:'🔴', type:'infectious',
+    summary:'PD peritonitis is the leading cause of PD technique failure. Diagnosis: cloudy effluent + abdominal pain ± fever. Confirm: dialysate WBC >100 cells/µL with >50% neutrophils. Initiate IP (intraperitoneal) antibiotics promptly — do not wait for cultures. Cover gram-positive and gram-negative empirically. ISPD Guidelines 2022.',
+    pearls:[
+      'Diagnosis: cloudy bag + effluent WBC >100 cells/µL (>50% neutrophils) = peritonitis — treat while awaiting cultures',
+      'Empirical: IP vancomycin (gram-positive cover) + IP ceftazidime (gram-negative cover) is the standard regimen',
+      'Fungal peritonitis: REMOVE PD CATHETER IMMEDIATELY — do not attempt catheter salvage; systemic antifungals',
+      'Pseudomonas peritonitis: consider catheter removal; minimum 21 days treatment',
+      'Relapsing / recurrent peritonitis: catheter removal should be strongly considered',
+      'APD patients: IP antibiotic protocols differ from CAPD — dose in the long daytime dwell',
+      'Culture-negative peritonitis (~20%): continue empirical treatment; reassess at 72h for response',
+    ],
+    pathogens:[
+      {name:'Coagulase-negative Staph (CoNS)', freq:'~30–40%', note:'Touch contamination; IP vancomycin; usually responds well'},
+      {name:'S. aureus (MSSA/MRSA)', freq:'~15–20%', note:'More severe; MRSA needs IP vancomycin; consider catheter removal if MRSA'},
+      {name:'Gram-negatives (E. coli, Klebsiella)', freq:'~20–25%', note:'Enteric source possible; cover with IP ceftazidime'},
+      {name:'Pseudomonas aeruginosa', freq:'~5–10%', note:'Catheter removal consideration; minimum 21d treatment with ceftazidime'},
+      {name:'Streptococcal spp.', freq:'~10%', note:'Touch contamination or oral source; usually responds to penicillin/vancomycin'},
+      {name:'Candida (fungal)', freq:'<5% but serious', note:'REMOVE CATHETER IMMEDIATELY; systemic antifungals — do not attempt catheter salvage'},
+      {name:'Culture-negative', freq:'~20%', note:'Continue empirical treatment; reassess at 72h'},
+    ],
+    meds:[
+      {drug:'Vancomycin (IP)', route:'Intraperitoneal', use:'Empirical gram-positive cover — standard PD peritonitis regimen', std:'25–30mg/kg IP in long dwell (≥6h) q5–7 days',
+       ckd3:{d:'N/A — PD-specific',f:'safe'}, ckd4:{d:'N/A — PD-specific',f:'safe'}, ckd5:{d:'N/A — PD-specific',f:'safe'},
+       hd:{d:'N/A — PD-specific',f:'safe'},
+       pd:{d:'25–30mg/kg IP in long dwell (6h+) q5–7 days; check levels before each dose (target ≥15 mg/L pre-dose)',f:'safe'},
+       note:'IP route achieves very high peritoneal concentrations. Preferred gram-positive IP antibiotic. Levels guide redosing — redose when level <15 mg/L. Must combine with gram-negative cover simultaneously.', src:'ISPD 2022'},
+      {drug:'Ceftazidime (IP)', route:'Intraperitoneal', use:'Empirical gram-negative cover — standard PD peritonitis regimen', std:'1.5g IP in one exchange daily',
+       ckd3:{d:'N/A — PD-specific',f:'safe'}, ckd4:{d:'N/A — PD-specific',f:'safe'}, ckd5:{d:'N/A — PD-specific',f:'safe'},
+       hd:{d:'N/A — PD-specific',f:'safe'},
+       pd:{d:'1–1.5g IP daily (CAPD) or in the long daytime dwell (APD)',f:'safe'},
+       note:'Combined with IP vancomycin = standard empirical regimen. Covers gram-negatives including Pseudomonas. If Pseudomonas isolated: continue ≥21 days; consider catheter removal.', src:'ISPD 2022'},
+      {drug:'Cefazolin (IP)', route:'Intraperitoneal', use:'Alternative gram-positive cover (if MRSA rates low / MSSA likely)', std:'15mg/kg IP daily in one long dwell',
+       ckd3:{d:'N/A — PD-specific',f:'safe'}, ckd4:{d:'N/A — PD-specific',f:'safe'}, ckd5:{d:'N/A — PD-specific',f:'safe'},
+       hd:{d:'N/A — PD-specific',f:'safe'},
+       pd:{d:'15mg/kg IP daily (CAPD); or in the long dwell (APD)',f:'safe'},
+       note:'Alternative to vancomycin for gram-positive cover if local MRSA rates are low. Does NOT cover MRSA — use vancomycin if MRSA suspected or as per local policy.', src:'ISPD 2022'},
+      {drug:'Gentamicin (IP)', route:'Intraperitoneal', use:'Alternative gram-negative cover (if ceftazidime unavailable)', std:'0.6mg/kg IP daily in one long dwell',
+       ckd3:{d:'N/A — PD-specific',f:'safe'}, ckd4:{d:'N/A — PD-specific',f:'safe'}, ckd5:{d:'N/A — PD-specific',f:'safe'},
+       hd:{d:'N/A — PD-specific',f:'safe'},
+       pd:{d:'0.6mg/kg IP daily in long dwell; monitor serum levels to avoid ototoxicity',f:'adjust'},
+       note:'IP gentamicin is absorbed systemically — ototoxicity risk with prolonged use. Prefer ceftazidime where available. Check serum gentamicin levels. Maximum 3 weeks total treatment.', src:'ISPD 2022'},
+      {drug:'Fluconazole (systemic)', route:'IV/PO', use:'Fungal peritonitis (Candida) — CATHETER REMOVAL MANDATORY', std:'400mg loading then 200mg daily (Candida susceptible)',
+       ckd3:{d:'400mg load → 200mg daily (no adjustment for Candida)',f:'safe'},
+       ckd4:{d:'200mg loading → 100mg daily in severe CKD',f:'adjust'},
+       ckd5:{d:'~50% dose reduction if not on dialysis',f:'adjust'},
+       hd:{d:'Standard dose post-HD (HD-cleared); 400mg loading → 200mg post-HD ×3/week',f:'adjust'},
+       pd:{d:'400mg loading → 200mg daily; IP route not recommended for fungal peritonitis',f:'adjust'},
+       note:'REMOVE PD CATHETER IMMEDIATELY in fungal peritonitis. Minimum 2 weeks treatment after catheter removal. Echinocandin (caspofungin) for fluconazole-resistant species.', src:'ISPD 2022'},
+    ],
+    monitoring:['Dialysate effluent MCS + cell count from ≥3 outflow samples; repeat at 48–72h','Blood cultures ×2 if systemic features (fever, haemodynamic instability)','Reassessment at 48–72h: effluent should be clearing; if not → organism, antimicrobial failure, catheter removal?','Vancomycin serum levels before each IP redose (target: ≥15 mg/L; redose if <15)','Dialysate WBC at 72h — should be <100 cells/µL if responding','Catheter removal criteria: fungal, MRSA non-responding, relapsing/recurrent, concurrent tunnel infection, mycobacterial peritonitis'],
+    dialysis:['PD catheter removal mandatory: fungal, MRSA, refractory, relapsing, or mycobacterial peritonitis','Exit-site + tunnel infections: can progress to peritonitis — treat aggressively with IP antibiotics','CAPD vs APD: IP antibiotic protocols differ — APD: dose in long daytime dwell','PD hold: severe peritonitis may reduce membrane efficiency; consider temporary HD if severe systemic illness','Time to re-insertion post-removal: minimum 4 weeks (6 weeks for fungal peritonitis)','Prevention: reinforce sterile technique, hand hygiene, exit-site care protocols with patient + family'],
+  },
+
+  {
+    id:'common-meds',name:'Common Ward Medications',abbr:'Common Meds',cat:'Ward Quick Ref',icon:'💊',type:'management',
+    summary:'Quick CKD dosing reference for common ward medications. Covers analgesia, antiemetics, anticoagulation (VTE prophylaxis and NOACs), diabetes medications, and other frequent ward prescriptions. All dose adjustments reflect Australian practice (eTG + UpToDate). Always verify against current eTG for the most recent guidance.',
+    pearls:['NSAIDs: AVOID in CKD3+ — nephrotoxic, worsen hypertension, cause AKI on CKD, reduce efficacy of diuretics/RAAS agents; use paracetamol instead','Fentanyl: preferred opioid in severe CKD — hepatic metabolism, NO active renal metabolites; preferred over morphine in CKD5/HD','Morphine: M6G (morphine-6-glucuronide) accumulates in CKD — M6G is more potent and longer-acting; start low, go slow in CKD4/5','Tramadol and codeine: active metabolites accumulate in CKD — avoid in CKD4/5/HD (seizure risk with tramadol; opioid toxicity with codeine)','Metformin: CONTRAINDICATED in eGFR <30 (lactic acidosis risk); always cease before contrast; reduce dose in eGFR 30–45','Apixaban: safest NOAC in CKD — dose reduce if ≥2 of: age ≥80, weight ≤60kg, Cr ≥133 µmol/L; OK to use in CKD3–4','Dabigatran: 85% renally cleared — contraindicated in eGFR <30; most problematic NOAC in CKD','Allopurinol: active metabolite (oxypurinol) accumulates in CKD — reduce to 50–100mg daily in CKD4/5','Gabapentin + pregabalin: significant dose reduction required in CKD4/5/HD — renally cleared; accumulation causes sedation, myoclonus'],
+    meds:[
+      {drug:'━━━ ANALGESIA ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Paracetamol',route:'PO/IV',use:'First-line analgesia in CKD — safe at all stages',std:'1g QID (max 4g/day; reduce to 2g/day if hepatic impairment)',ckd3:{d:'1g QID ✓',f:'safe'},ckd4:{d:'1g QID ✓',f:'safe'},ckd5:{d:'1g QID ✓ (hepatic)',f:'safe'},hd:{d:'1g QID ✓ (not HD-cleared significantly)',f:'safe'},pd:{d:'1g QID ✓',f:'safe'},note:'No dose adjustment required for renal impairment at any stage. Safe and effective first-line analgesic. Hepatically metabolised. Reduce in hepatic impairment (not renal).',src:'eTG + UpToDate'},
+      {drug:'NSAIDs (ibuprofen, diclofenac, naproxen)',route:'PO/topical',use:'⚠ AVOID in CKD3+ — nephrotoxic',std:'CONTRAINDICATED in CKD3–5, HD, PD',ckd3:{d:'AVOID — risk of AKI, worsened hypertension',f:'avoid'},ckd4:{d:'CONTRAINDICATED',f:'avoid'},ckd5:{d:'CONTRAINDICATED',f:'avoid'},hd:{d:'AVOID — worsen residual function, cardiovascular risk',f:'avoid'},pd:{d:'AVOID — nephrotoxic, worsen residual function',f:'avoid'},note:'Reduce renal prostaglandin synthesis → vasoconstriction → AKI on CKD. Also worsen hypertension, heart failure, reduce diuretic/RAAS efficacy. Even topical NSAIDs (diclofenac gel) have systemic absorption in CKD. Use paracetamol instead.',src:'eTG + UpToDate'},
+      {drug:'Morphine',route:'PO/IV/SC',use:'Opioid analgesia — M6G accumulates in CKD; start low, go slow',std:'Oral: 5mg q4h PRN; IV/SC: 2.5–5mg q4h PRN',ckd3:{d:'Reduce frequency: 5mg q4–6h; monitor closely',f:'adjust'},ckd4:{d:'Start 2.5mg PO; q6–8h max; M6G accumulation significant',f:'adjust'},ckd5:{d:'Avoid if possible; if essential: 1–2.5mg q6–8h with close monitoring; fentanyl preferred',f:'caution'},hd:{d:'AVOID if possible — M6G not adequately HD-cleared; use fentanyl; if essential: 1–2.5mg with close monitoring',f:'avoid'},pd:{d:'AVOID if possible; M6G accumulates — use fentanyl; if essential: lowest effective dose',f:'avoid'},note:'M6G (morphine-6-glucuronide) is renally cleared — accumulates in CKD causing prolonged/excessive opioid effect. Also opioid-induced pruritus is worse in CKD. Fentanyl is the preferred IV/SC opioid in CKD5/dialysis.',src:'eTG + UpToDate'},
+      {drug:'Oxycodone',route:'PO',use:'Oral opioid — active metabolite accumulates in CKD4/5',std:'Immediate release: 5mg q4–6h PRN; modified release: 10mg BD (opioid-naive)',ckd3:{d:'Start low 2.5–5mg q4–6h; caution',f:'adjust'},ckd4:{d:'Start 2.5mg q6–8h; oxymorphone (active metabolite) accumulates',f:'adjust'},ckd5:{d:'AVOID or extreme caution; 2.5mg q8–12h if essential; fentanyl preferred',f:'caution'},hd:{d:'AVOID — fentanyl or buprenorphine preferred; if essential: 2.5mg q8–12h; monitor',f:'avoid'},pd:{d:'AVOID or extreme caution; use fentanyl/buprenorphine',f:'avoid'},note:'Active metabolite oxymorphone is renally cleared — accumulates in CKD4/5 causing sedation and respiratory depression. Reduce dose and frequency. Fentanyl is safer in severe CKD.',src:'eTG + UpToDate'},
+      {drug:'Fentanyl',route:'IV/SC/patch',use:'Preferred opioid in severe CKD — hepatic, no active renal metabolites',std:'IV/SC: 12.5–25 mcg q1–2h PRN acute; Patch: 12mcg/h q72h (opioid-naive, CKD)',ckd3:{d:'Standard dosing; preferred for acute pain in CKD3+',f:'safe'},ckd4:{d:'Standard dosing ✓; no active renal metabolites',f:'safe'},ckd5:{d:'Preferred opioid in CKD5 — hepatic, no renal metabolite accumulation',f:'safe'},hd:{d:'Preferred opioid in HD — IV/SC or patch; start low dose patch',f:'safe'},pd:{d:'Preferred opioid in PD — hepatic metabolism',f:'safe'},note:'Hepatic metabolism with inactive renal metabolites. PREFERRED opioid in CKD5 and dialysis patients. Transdermal patch suitable for chronic pain in ESKD. Note: onset with patch delayed 12–24h; remove patch 12–24h before planned surgery.',src:'eTG + UpToDate'},
+      {drug:'Tramadol',route:'PO',use:'Weak opioid — AVOID in CKD4/5/HD (active metabolite accumulates; lowers seizure threshold)',std:'50–100mg q4–6h PRN; max 400mg/day',ckd3:{d:'50mg q6–8h; max 200–300mg/day; caution',f:'adjust'},ckd4:{d:'50mg q12h max; accumulation risk; paracetamol or fentanyl preferred',f:'caution'},ckd5:{d:'AVOID — active metabolite (O-desmethyltramadol) accumulates; seizure risk',f:'avoid'},hd:{d:'AVOID — seizure risk; not reliably HD-cleared',f:'avoid'},pd:{d:'AVOID — seizure risk',f:'avoid'},note:'Active metabolite O-desmethyltramadol (M1) is renally cleared — accumulates in CKD causing CNS toxicity and seizures. Additionally lowers seizure threshold. Avoid in CKD4/5/dialysis. Use fentanyl or paracetamol instead.',src:'eTG + UpToDate'},
+      {drug:'Codeine',route:'PO',use:'Weak opioid — AVOID in CKD4/5 (converted to morphine; M6G accumulates)',std:'30–60mg q4–6h PRN',ckd3:{d:'30mg q4–6h max; M6G accumulation starts; monitor',f:'adjust'},ckd4:{d:'AVOID — converted to morphine; M6G accumulates',f:'avoid'},ckd5:{d:'AVOID — opioid toxicity risk',f:'avoid'},hd:{d:'AVOID',f:'avoid'},pd:{d:'AVOID',f:'avoid'},note:'Codeine is a prodrug — converted to morphine by CYP2D6 (variable rate: ultra-rapid metabolisers at extreme risk). Morphine then generates M6G which accumulates in CKD. Additionally, 10% of population are poor metabolisers (no effect). Avoid in CKD4+.',src:'eTG + UpToDate'},
+      {drug:'Buprenorphine',route:'SL/patch/IV',use:'Alternative opioid — safe in CKD (hepatic, fecal elimination)',std:'Sublingual: 0.2–0.4mg q6–8h; Patch: 5–20 mcg/h weekly',ckd3:{d:'Standard dosing ✓',f:'safe'},ckd4:{d:'Standard dosing ✓ — hepatic/fecal; no major adjustment',f:'safe'},ckd5:{d:'Standard dosing ✓ — preferred alternative to morphine/oxycodone',f:'safe'},hd:{d:'Standard dosing ✓ — not significantly HD-cleared',f:'safe'},pd:{d:'Standard dosing ✓',f:'safe'},note:'Hepatic metabolism with predominantly fecal elimination. No active renal metabolites. Safe alternative to morphine/oxycodone in CKD. Transdermal patch useful in ESKD chronic pain. Partial µ-opioid agonist — ceiling effect for respiratory depression.',src:'UpToDate'},
+      {drug:'━━━ ANTIEMETICS ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Ondansetron (Zofran)',route:'PO/IV',use:'First-line antiemetic in CKD — hepatic, no dose adjustment',std:'4–8mg TDS (PO or IV); max 8mg per dose IV (QTc risk)',ckd3:{d:'4–8mg TDS ✓',f:'safe'},ckd4:{d:'4–8mg TDS ✓',f:'safe'},ckd5:{d:'4–8mg TDS ✓ (hepatic elimination)',f:'safe'},hd:{d:'4–8mg TDS ✓ (not HD-cleared); monitor QTc in HD',f:'safe'},pd:{d:'4–8mg TDS ✓',f:'safe'},note:'Preferred antiemetic in CKD. Hepatic metabolism. No dose adjustment at any CKD/dialysis stage. Monitor QTc in HD patients — baseline ECG if multiple QTc-prolonging agents. Max single IV dose 8mg to reduce QTc risk.',src:'eTG + UpToDate'},
+      {drug:'Metoclopramide (Maxolon)',route:'PO/IV',use:'Antiemetic/prokinetic — reduce in CKD4/5 (renal clearance)',std:'10mg TDS (standard)',ckd3:{d:'10mg TDS — reduce to BD–TDS if eGFR <30',f:'adjust'},ckd4:{d:'5mg TDS; risk of dystonic reactions (worse in uraemia)',f:'adjust'},ckd5:{d:'5mg BD; dystonic reactions more frequent; limit use',f:'caution'},hd:{d:'2.5–5mg TDS; post-HD; significant extrapyramidal risk',f:'caution'},pd:{d:'5mg BD–TDS; caution — CNS effects amplified',f:'caution'},note:'Renally eliminated. Dystonic reactions (acute extrapyramidal effects) are more frequent in CKD — especially in elderly. Use short courses only. Ondansetron is generally preferred in CKD4/5. Avoid concurrent antidopaminergics.',src:'eTG + UpToDate'},
+      {drug:'Prochlorperazine (Stemetil)',route:'PO/IM',use:'Antiemetic/anti-vertigo — caution in CKD4/5',std:'5–10mg TDS (PO); 12.5mg IM PRN',ckd3:{d:'Standard dose with caution',f:'adjust'},ckd4:{d:'Reduce dose; CNS effects amplified in uraemia',f:'caution'},ckd5:{d:'Use with caution — sedation and extrapyramidal effects ↑',f:'caution'},hd:{d:'Use with caution; limit dose; sedation risk',f:'caution'},pd:{d:'Use with caution; start low',f:'caution'},note:'Hepatically metabolised but CNS side effects (sedation, extrapyramidal effects) are amplified in uraemia. Use the lowest effective dose. Ondansetron preferred in CKD4/5.',src:'eTG'},
+      {drug:'Domperidone (Motilium)',route:'PO',use:'Antiemetic/prokinetic — dose reduce in CKD (50%)',std:'10mg TDS standard; max 30mg/day',ckd3:{d:'10mg TDS; caution eGFR <30',f:'adjust'},ckd4:{d:'5mg TDS (50% dose reduction)',f:'adjust'},ckd5:{d:'5mg BD–TDS; dose reduce; QTc monitoring',f:'adjust'},hd:{d:'5mg BD (50% reduction); QTc risk in HD',f:'adjust'},pd:{d:'5mg BD–TDS (50% reduction)',f:'adjust'},note:'Hepatic metabolism but renal elimination of inactive metabolites — dose reduce in CKD. QTc prolongation risk (especially in HD). Avoid concurrent QTc-prolonging agents.',src:'UpToDate'},
+      {drug:'━━━ VTE PROPHYLAXIS ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Enoxaparin 40mg (Prophylactic)',route:'SC',use:'Standard VTE prophylaxis — dose reduce in CKD4; AVOID CKD5/HD',std:'40mg SC daily (standard)',ckd3:{d:'40mg SC daily (eGFR ≥30)',f:'safe'},ckd4:{d:'20mg SC daily (eGFR 15–29); anti-Xa monitoring recommended',f:'adjust'},ckd5:{d:'AVOID — use UFH SC; unpredictable accumulation',f:'avoid'},hd:{d:'AVOID — use UFH 5000 units SC BD; LMWH accumulates in ESKD',f:'avoid'},pd:{d:'AVOID — use UFH 5000 units SC BD',f:'avoid'},note:'Renally eliminated. Accumulates in CKD4+ causing haemorrhagic risk. Use UFH in CKD5/HD/PD. Anti-Xa monitoring recommended in CKD4 (eGFR 15–29): target peak anti-Xa 0.2–0.4 IU/mL (prophylactic).',src:'eTG + UpToDate'},
+      {drug:'UFH 5000 units SC (Prophylactic)',route:'SC',use:'VTE prophylaxis — preferred in CKD5, HD, and PD',std:'5000 units SC BD–TDS',ckd3:{d:'5000 units SC BD–TDS ✓',f:'safe'},ckd4:{d:'5000 units SC BD–TDS ✓ — preferred over LMWH in CKD4',f:'safe'},ckd5:{d:'5000 units SC BD–TDS ✓ — hepatic clearance; preferred in ESKD',f:'safe'},hd:{d:'5000 units SC BD–TDS ✓ — not HD-cleared; standard HD anticoagulation separate',f:'safe'},pd:{d:'5000 units SC BD–TDS ✓',f:'safe'},note:'Predominantly hepatically eliminated — predictable pharmacokinetics in CKD unlike LMWH. Preferred VTE prophylaxis in CKD5, HD, and PD. APTT monitoring not required at prophylactic doses.',src:'eTG + UpToDate'},
+      {drug:'━━━ NOACs — ANTICOAGULATION ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Apixaban (Eliquis)',route:'PO',use:'Safest NOAC in CKD — AF or VTE; dose reduce if ≥2 criteria met',std:'AF: 5mg BD standard (2.5mg BD if ≥2 criteria); VTE: 10mg BD ×7d then 5mg BD',ckd3:{d:'AF: 5mg BD (reduce to 2.5mg BD if ≥2 criteria). VTE: standard. ✓',f:'safe'},ckd4:{d:'AF: 5mg BD or 2.5mg BD if criteria met; most evidence of any NOAC in CKD3–4',f:'adjust'},ckd5:{d:'Use with caution — insufficient data; consult haematology/cardiology; avoid if eGFR <15',f:'caution'},hd:{d:'Growing evidence for AF in HD (RENAL-AF trial); 2.5mg BD often used — consult specialist',f:'caution'},pd:{d:'Limited data — specialist guidance; 2.5mg BD if used',f:'caution'},note:'Dose reduction criteria: reduce to 2.5mg BD AF dose if ≥2 of: age ≥80 years, weight ≤60kg, serum Cr ≥133 µmol/L. ~27% renal clearance — most tolerated NOAC in CKD. Preferred NOAC over rivaroxaban/dabigatran in CKD.',src:'UpToDate'},
+      {drug:'Rivaroxaban (Xarelto)',route:'PO',use:'NOAC — AF or VTE; dose reduce in CKD3; avoid eGFR <15',std:'AF: 20mg daily with evening meal (15mg daily if eGFR 15–49); VTE acute: 15mg BD ×3wk then 20mg daily',ckd3:{d:'AF: 15mg daily (eGFR 30–49); 20mg daily (eGFR 50+). VTE: standard then reduce.',f:'adjust'},ckd4:{d:'AF: 15mg daily; VTE: use with caution — anti-Xa monitoring if used; apixaban preferred',f:'adjust'},ckd5:{d:'eGFR <15: AVOID — insufficient data; use warfarin or apixaban',f:'avoid'},hd:{d:'CONTRAINDICATED — avoid; warfarin or apixaban (specialist guidance) preferred',f:'avoid'},pd:{d:'AVOID in CKD5/PD — use warfarin or apixaban (specialist)',f:'avoid'},note:'~33% renal clearance. Must be taken WITH food (bioavailability reduced fasting). AF dose: 15mg daily if CrCl 15–49 mL/min. CI in eGFR <15. Apixaban is preferred over rivaroxaban in CKD.',src:'UpToDate'},
+      {drug:'Dabigatran (Pradaxa)',route:'PO',use:'NOAC — AF or VTE; 85% renally cleared — AVOID in CKD4+',std:'AF: 150mg BD standard; 110mg BD if high-risk bleeding or CrCl <50. VTE: 150mg BD after parenteral anticoag',ckd3:{d:'CrCl 30–50: 110mg BD (AF). VTE: 150mg BD (caution in CKD3b; monitor closely).',f:'adjust'},ckd4:{d:'CONTRAINDICATED in eGFR <30 — apixaban or warfarin instead',f:'avoid'},ckd5:{d:'CONTRAINDICATED',f:'avoid'},hd:{d:'CONTRAINDICATED — 85% renally cleared; major accumulation risk',f:'avoid'},pd:{d:'CONTRAINDICATED',f:'avoid'},note:'85% renally eliminated — most problematic NOAC in CKD. Avoid in CKD4/5. Very sensitive to renal function changes. Reversal agent: idarucizumab (Praxbind) — available in Australia.',src:'UpToDate'},
+      {drug:'Warfarin',route:'PO',use:'Anticoagulation for AF/VTE/mechanical valves — no dose adjustment but increased monitoring in CKD',std:'Individualised — start 5mg daily; target INR 2–3 (AF/VTE) or 2.5–3.5 (mechanical mitral)',ckd3:{d:'Standard dosing; more INR variability — increase monitoring frequency',f:'safe'},ckd4:{d:'Standard dosing; INR variability ↑; weekly monitoring during any change',f:'adjust'},ckd5:{d:'Standard dosing; higher haemorrhagic complication rate in ESKD; risk-benefit discussion',f:'adjust'},hd:{d:'Standard INR targets; INR variability common; monitor 2-weekly when stable; ↑ bleeding risk vs benefit debate — apixaban emerging evidence for AF',f:'adjust'},pd:{d:'Standard dosing; INR monitoring; PD patients often stable if medication-consistent',f:'adjust'},note:'No pharmacokinetic dose adjustment. CKD causes ↑ INR variability (diet, uremia alters Vit K metabolism, drug interactions). Higher hemorrhagic risk in ESKD. For HD AF: emerging evidence for apixaban over warfarin (discuss with haematology/cardiology).',src:'eTG + UpToDate'},
+      {drug:'━━━ DIABETES MEDICATIONS ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Metformin',route:'PO',use:'T2DM — CONTRAINDICATED in eGFR <30; always stop before contrast',std:'500mg–1g BD (standard)',ckd3:{d:'eGFR 45–59: max 1g BD. eGFR 30–44: reduce to 500mg BD; hold if acutely unwell or before contrast.',f:'adjust'},ckd4:{d:'CONTRAINDICATED (eGFR <30) — lactic acidosis risk',f:'avoid'},ckd5:{d:'CONTRAINDICATED',f:'avoid'},hd:{d:'CONTRAINDICATED',f:'avoid'},pd:{d:'CONTRAINDICATED',f:'avoid'},note:'Lactic acidosis risk with metformin accumulation in CKD — impaired renal excretion. Always cease 48h before contrast, procedures, or any acute illness causing AKI risk. Resume only when eGFR confirmed stable. Australian guidelines: OK in CKD3a (eGFR ≥45) at standard dose; reduce in CKD3b (eGFR 30–44); STOP if eGFR <30.',src:'eTG + UpToDate'},
+      {drug:'Insulin (ward sliding scale / BD dosing)',route:'SC/IV',use:'Glucose management in CKD — requirements ↓ in CKD4/5 (reduced renal insulin degradation)',std:'Individualised per BSL; reduce sliding scale by 25–50% in CKD4/5',ckd3:{d:'Standard BSL monitoring; slight reduction in requirements may occur',f:'safe'},ckd4:{d:'Reduce sliding scale by ~25%; hypoglycaemia risk ↑; BGL q4–6h',f:'adjust'},ckd5:{d:'Reduce sliding scale by 25–50%; insulin half-life prolonged; BGL q4h; frequent hypos',f:'caution'},hd:{d:'Requirements often ↓↓ in ESKD; BGL q4–6h; post-HD glucose may fall (dialysate glucose 5.5 mmol/L)',f:'caution'},pd:{d:'PD dialysate contains dextrose — glucose load; requirements may ↑; peritoneal insulin delivery option for T1DM in PD',f:'adjust'},note:'Kidneys degrade 30–40% of circulating insulin. In CKD4/5: insulin half-life prolonged, requirements decrease → high hypoglycaemia risk. Reduce starting doses and monitor BGL frequently. Post-HD glucose often falls as dialysate glucose equilibrates.',src:'eTG + UpToDate'},
+      {drug:'━━━ COMMON WARD MEDICATIONS ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Omeprazole / Pantoprazole (PPI)',route:'PO/IV',use:'Acid suppression — no dose adjustment at any CKD stage',std:'Omeprazole 20–40mg daily; pantoprazole 40mg daily',ckd3:{d:'Standard ✓',f:'safe'},ckd4:{d:'Standard ✓',f:'safe'},ckd5:{d:'Standard ✓ (hepatic)',f:'safe'},hd:{d:'Standard ✓ (not HD-cleared)',f:'safe'},pd:{d:'Standard ✓',f:'safe'},note:'Predominantly hepatic metabolism. No dose adjustment at any CKD/dialysis stage. ⚠ Long-term PPI use associated with PPI-induced hypomagnesaemia — inhibits intestinal TRPM6 magnesium transporter. Monitor Mg²⁺ in CKD patients on long-term PPIs.',src:'eTG'},
+      {drug:'Allopurinol',route:'PO',use:'Gout prevention — active metabolite (oxypurinol) accumulates in CKD',std:'Standard: 300mg daily; CKD: dose based on eGFR',ckd3:{d:'eGFR 30–59: max 100–200mg daily; titrate slowly',f:'adjust'},ckd4:{d:'50–100mg daily maximum; oxypurinol accumulates',f:'adjust'},ckd5:{d:'50mg daily maximum; significant oxypurinol accumulation',f:'adjust'},hd:{d:'100mg post-HD 3×/week (HD-cleared); or 50–100mg daily with monitoring',f:'adjust'},pd:{d:'50–100mg daily; minimal PD clearance',f:'adjust'},note:'Oxypurinol (active metabolite) is renally eliminated — accumulates in CKD causing severe hypersensitivity reactions (allopurinol hypersensitivity syndrome, Stevens-Johnson syndrome) at standard doses. Always start low and titrate based on eGFR and uric acid response. HLA-B*5801 testing before starting (high-risk populations: Korean, Han Chinese, Thai).',src:'eTG + UpToDate'},
+      {drug:'Colchicine',route:'PO',use:'Acute gout treatment and prevention — reduce dose in CKD4/5',std:'Acute: 1mg then 0.5mg 1h later (max); Prevention: 0.5mg daily',ckd3:{d:'Acute: 1mg then 0.5mg ✓; Prevention: 0.5mg daily; monitor',f:'safe'},ckd4:{d:'Acute: 0.5mg once only; Prevention: 0.5mg every 2–3 days; myopathy risk',f:'adjust'},ckd5:{d:'Acute: 0.5mg once; avoid repeat dosing; do not use for prevention in ESKD',f:'caution'},hd:{d:'Acute: 0.5mg once only; not removed by HD; toxicity risk; avoid maintenance',f:'avoid'},pd:{d:'Acute: 0.5mg once; caution — minimal PD clearance; avoid maintenance',f:'caution'},note:'Renally and hepatically eliminated. Accumulates in CKD causing colchicine toxicity (myopathy, neuropathy, cytopaenia, multi-organ failure). Many drug interactions (clarithromycin, cyclosporin — serious toxicity). Reduce dose significantly in CKD4+.',src:'eTG + UpToDate'},
+      {drug:'Gabapentin',route:'PO',use:'Neuropathic pain, seizures, restless legs (RLS common in CKD) — significant dose reduction in CKD',std:'Neuropathic pain: 300mg TDS (standard); RLS in ESKD: 100–300mg post-HD',ckd3:{d:'eGFR 30–59: max 300mg BD–TDS; sedation monitoring',f:'adjust'},ckd4:{d:'100–300mg BD; significant dose reduction; sedation and myoclonus risk',f:'adjust'},ckd5:{d:'100–300mg daily; accumulation causes sedation, myoclonus, encephalopathy',f:'adjust'},hd:{d:'100–300mg post-HD 3×/week (HD-cleared); EXCELLENT for RLS in HD',f:'adjust'},pd:{d:'100mg daily; monitor for sedation; PD clearance minimal',f:'adjust'},note:'Renally eliminated — significant accumulation in CKD causing sedation, myoclonus, encephalopathy. Very effective for restless legs syndrome (RLS) in HD patients — give 100–300mg post-HD. AVOID pre-HD dosing (sedation during dialysis). Pregabalin has similar restrictions.',src:'eTG + UpToDate'},
+      {drug:'Pregabalin',route:'PO',use:'Neuropathic pain, anxiety, RLS — significant dose reduction in CKD (renally cleared)',std:'Neuropathic pain: 75–150mg BD (standard)',ckd3:{d:'eGFR 30–59: max 75mg BD; titrate slowly',f:'adjust'},ckd4:{d:'25–75mg daily; significant accumulation risk',f:'adjust'},ckd5:{d:'25–50mg daily; significant accumulation — sedation, myoclonus',f:'adjust'},hd:{d:'25–50mg post-HD (HD-cleared); similar to gabapentin for RLS',f:'adjust'},pd:{d:'25–50mg daily with close monitoring',f:'adjust'},note:'Renally eliminated — similar restrictions to gabapentin. Significant accumulation in CKD causing sedation, myoclonus, encephalopathy. Effective for neuropathic pain and RLS in CKD. Dose post-HD like gabapentin.',src:'eTG + UpToDate'},
+      {drug:'Bisphosphonates (zoledronic acid, alendronate)',route:'IV/PO',use:'Osteoporosis, hypercalcaemia — CONTRAINDICATED in eGFR <30–35',std:'Zoledronic acid 5mg IV annual; alendronate 70mg weekly PO',ckd3:{d:'eGFR ≥35: standard dosing. eGFR 30–35: caution; specialist guidance.',f:'adjust'},ckd4:{d:'CONTRAINDICATED (eGFR <30–35) — nephrotoxic, accumulation',f:'avoid'},ckd5:{d:'CONTRAINDICATED',f:'avoid'},hd:{d:'CONTRAINDICATED — dialysis does not adequately remove bisphosphonates',f:'avoid'},pd:{d:'CONTRAINDICATED',f:'avoid'},note:'Renally eliminated. Accumulation in CKD causes nephrotoxicity and atypical bone disease (adynamic bone). Contraindicated in eGFR <30–35. For osteoporosis in CKD5/HD: denosumab is an alternative (monitor for hypocalcaemia — common and can be severe).',src:'UpToDate'},
+    ],
+    monitoring:['Analgesia: BGL q4–6h if opioids used in CKD4/5 (opioid half-life prolonged); pain reassessment q4–6h','NOAC safety: renal function check at each prescription (eGFR) — dose adjust as CKD progresses; do not continue fixed dose if eGFR has declined','Metformin: eGFR before each prescription; never prescribe if eGFR <30 or if acute illness','Gabapentin/pregabalin: sedation assessment; myoclonus is an early sign of accumulation — reduce dose immediately if present','Allopurinol: uric acid level + skin/mucosal reactions (hypersensitivity); LFTs if rash develops','Colchicine: CK if weakness (myopathy); FBC (cytopaenia); monitor for drug interactions (clarithromycin, cyclosporin — serious)','Insulin: BGL q4h in CKD4/5; adjust sliding scale for reduced insulin requirements'],
+    dialysis:['Gabapentin/pregabalin: POST-HD dose for RLS in dialysis — excellent efficacy; avoid pre-HD dosing (sedation risk)','Warfarin in HD: growing evidence that apixaban 2.5mg BD may be preferred over warfarin for AF in HD (discuss haematology/cardiology)','Metformin: NEVER in dialysis patients — lactic acidosis risk is absolute','VTE prophylaxis: UFH 5000 units SC BD preferred in all dialysis patients; do not use LMWH','PD insulin: glucose load from dextrose dialysate increases insulin requirements; intraperitoneal insulin delivery possible (T1DM in PD)','Colchicine in HD: use with extreme caution — single 0.5mg dose only for acute gout; not for maintenance'],
+  },
+
+  {
+    id:'transplant-fever',name:'Renal Transplant + Fever',abbr:'Transplant Fever',cat:'Transplant',icon:'🔵',type:'investigations',
+    summary:'Fever in a renal transplant recipient requires urgent structured evaluation. Timing post-transplant is critical: <1 month (surgical/nosocomial), 1–6 months (peak opportunistic infection risk), >6 months (community-acquired ± late opportunistic). ALWAYS check tacrolimus level with any fever or new antibiotic — multiple clinically significant drug interactions.',
+    pearls:['CMV is the most important opportunistic pathogen 1–6 months post-transplant — check CMV viral load urgently','ALWAYS check tacrolimus trough level with any fever AND when starting/stopping antibiotics','⚠ Macrolides (azithromycin, clarithromycin): significantly ↑ tacrolimus levels (CYP3A4 inhibition) — check level 48h after starting','⚠ Azoles (fluconazole, voriconazole, posaconazole): markedly ↑ tacrolimus — reduce tacrolimus dose 50–70% when starting; daily levels','⚠ Rifampicin: dramatically ↓ tacrolimus levels — avoid if possible; if essential, daily level monitoring','BK virus nephropathy: no specific antiviral — reduce immunosuppression (transplant team only)','Do NOT adjust immunosuppression without transplant team guidance — risk of acute rejection','Fluoroquinolones: generally safe with tacrolimus (minor interaction; check level at 48h)'],
+    investigations:[
+      {cat:'First-Line — All Transplant Fevers',icon:'🚨',items:[
+        {test:'Tacrolimus trough level',detail:'MANDATORY with any fever. Also essential when starting/stopping antibiotics (macrolides, azoles, rifampicin). Target trough typically 5–12 ng/mL (year 1); 4–8 ng/mL (year 2+) — centre-specific.',urgency:'Mandatory'},
+        {test:'U&E + creatinine (vs baseline)',detail:'Rising Cr may indicate: rejection, CNI nephrotoxicity, dehydration, CMV nephritis, BK nephropathy. Establish trend vs documented baseline.',urgency:'Mandatory'},
+        {test:'FBC + differential',detail:'Leucopenia → CMV/viral or immunosuppression toxicity; leucocytosis → bacterial infection; thrombocytopaenia → TTP, viral. Neutropenia → reduce MMF, consider G-CSF.',urgency:'Mandatory'},
+        {test:'Blood cultures ×2',detail:'Both peripheral sites. Bacteraemia more common due to immunosuppression.',urgency:'Mandatory'},
+        {test:'Urine MCS + protein/ACR',detail:'UTI common in transplant recipients. Protein/ACR as marker of graft function.',urgency:'Mandatory'},
+        {test:'CMV viral load (plasma PCR)',detail:'Urgent if 1–6 months post-transplant or CMV D+/R- mismatch. CMV disease: viral load >1000 IU/mL + symptoms (fever, malaise, GI, hepatitis, pneumonitis).',urgency:'Urgent — same day'},
+        {test:'CRP + LDH',detail:'LDH elevated in CMV disease, rejection, EBV-related disease.',urgency:'Mandatory'},
+        {test:'Chest X-ray',detail:'PCP: diffuse bilateral perihilar infiltrates; CMV pneumonitis; bacterial pneumonia.',urgency:'Urgent — same day'},
+      ]},
+      {cat:'Timing-Based Workup',icon:'📅',items:[
+        {test:'<1 Month Post-Transplant',detail:'Wound infection, UTI, urinary leak, line infection, donor-derived infection. Investigations: wound review, transplant ultrasound (collection, anastomotic leak), blood + urine cultures.',urgency:'First-line'},
+        {test:'1–6 Months (Peak Opportunistic Period)',detail:'CMV viral load, BK viral load (plasma + urine decoy cells), induced sputum/BAL for PCP if respiratory, beta-D-glucan + galactomannan if pulmonary infiltrate.',urgency:'First-line'},
+        {test:'>6 Months Post-Transplant',detail:'Community-acquired infections predominate. Also: late CMV, BK nephropathy (BK viral load), PTLD (LDH, EBV viral load, CT if lymphadenopathy). Check annual vaccination status.',urgency:'First-line'},
+        {test:'BK Virus (plasma PCR + urine decoy cells)',detail:'BK nephropathy: plasma viral load >10,000 copies/mL or rising trend. Management = reduce immunosuppression (transplant team — no specific antiviral). Confirm with biopsy if Cr rising.',urgency:'First-line'},
+        {test:'Renal Transplant Ultrasound (Doppler)',detail:'Graft hydronephrosis, perinephric collection, graft vascularity. Consider if Cr rising or localising signs.',urgency:'If clinically indicated'},
+        {test:'Renal Transplant Biopsy',detail:'If: acute rejection suspected, rising Cr without clear infectious cause, BK nephropathy confirmation. Urgent transplant/nephrology referral.',urgency:'If clinically indicated'},
+      ]},
+      {cat:'Specific Infection Tests',icon:'🧫',items:[
+        {test:'PCP — Induced Sputum or BAL',detail:'Pneumocystis jiroveci: diffuse bilateral perihilar infiltrates on CXR/CT; elevated beta-D-glucan; elevated LDH. Immunofluorescence and PCR on sputum/BAL. Treat: high-dose TMP-SMX IV (renally adjusted).',urgency:'If respiratory symptoms'},
+        {test:'Fungal (galactomannan + beta-D-glucan)',detail:'Aspergillus: serum galactomannan; CT chest = halo sign (early) or cavitation. Beta-D-glucan elevated in most fungal infections. CT chest mandatory if positive.',urgency:'If pulmonary infiltrate'},
+        {test:'Respiratory Virus PCR Panel',detail:'Influenza A/B, RSV, COVID-19, parainfluenza. Consider empirical oseltamivir in influenza season.',urgency:'If respiratory symptoms'},
+        {test:'EBV viral load (plasma PCR)',detail:'PTLD — especially EBV D+/R- patients; elevated LDH; lymphadenopathy. Urgent haematology/transplant review.',urgency:'If clinically indicated'},
+      ]},
+    ],
+    meds:[
+      {drug:'Valganciclovir',route:'PO',use:'CMV treatment (higher dose) and CMV prophylaxis (lower dose)',std:'Treatment: 900mg BD; Prophylaxis: 900mg daily (3–6 months post-transplant)',ckd3:{d:'eGFR 40–59: 450mg BD (Tx); 450mg daily (Px)',f:'adjust'},ckd4:{d:'eGFR 25–39: 450mg daily (Tx); 450mg q2d (Px)',f:'adjust'},ckd5:{d:'eGFR 10–24: 450mg q2d (Tx); 450mg 2×/week (Px)',f:'adjust'},hd:{d:'eGFR <10/HD: 200mg 3×/week post-HD (Tx); 100mg post-HD 3×/week (Px). Severe CMV → IV ganciclovir.',f:'adjust'},pd:{d:'Dose per renal function (as eGFR <10); transplant team guidance',f:'adjust'},note:'Significant renal dose adjustment — consult pharmacy + transplant team. Monitor FBC weekly (myelosuppression). IV ganciclovir preferred for severe/systemic CMV disease.',src:'UpToDate'},
+      {drug:'Tacrolimus (Prograf/Advagraf)',route:'PO',use:'Standard immunosuppression — check level with ANY fever or antibiotic change',std:'Target trough: 5–12 ng/mL (year 1); 4–8 ng/mL (year 2+) — centre-specific',ckd3:{d:'Check level urgently; dose adjust per level + transplant team',f:'adjust'},ckd4:{d:'Level check; nephrotoxic at supratherapeutic levels; transplant team',f:'adjust'},ckd5:{d:'Level monitoring critical; transplant team mandatory',f:'caution'},hd:{d:'Not significantly HD-cleared; level monitoring critical',f:'adjust'},pd:{d:'Not significantly removed by PD; level monitoring critical',f:'adjust'},note:'↑ tacrolimus: azithromycin (~50–100%), clarithromycin, fluconazole (markedly), voriconazole, diltiazem, grapefruit. ↓ tacrolimus: rifampicin (dramatically), carbamazepine, phenytoin. Check level when starting/stopping any interacting drug.',src:'UpToDate'},
+      {drug:'Fluconazole',route:'PO/IV',use:'Candida infections — ⚠ MAJOR tacrolimus interaction',std:'Treatment: 400mg load then 200–400mg daily; Prophylaxis: 50–200mg daily',ckd3:{d:'Standard dose (hepatic)',f:'adjust'},ckd4:{d:'Reduce ~50% if eGFR <20; monitor tacrolimus',f:'adjust'},ckd5:{d:'200mg load then 100mg daily; daily tacrolimus levels',f:'adjust'},hd:{d:'Standard dose post-HD; supplement post-HD; daily tacrolimus levels',f:'adjust'},pd:{d:'Standard dose; daily tacrolimus levels when starting',f:'adjust'},note:'⚠ MAJOR TACROLIMUS INTERACTION: Reduce tacrolimus dose by 50–70% when starting fluconazole; daily tacrolimus levels until stable. Voriconazole/posaconazole have similar or greater interaction.',src:'UpToDate'},
+      {drug:'TMP-SMX (PCP prophylaxis)',route:'PO',use:'PCP prophylaxis (low dose); treatment requires high-dose IV (see notes)',std:'Prophylaxis: 80/400mg (SS) daily or 160/800mg (DS) 3×/week',ckd3:{d:'SS daily with K+ + Cr monitoring',f:'adjust'},ckd4:{d:'Use with extreme caution; prefer atovaquone 1500mg daily',f:'caution'},ckd5:{d:'Avoid standard TMP-SMX; atovaquone 1500mg daily preferred for prophylaxis',f:'avoid'},hd:{d:'Prophylaxis: dapsone or atovaquone preferred. PCP treatment: extreme caution; strict K+ monitoring.',f:'avoid'},pd:{d:'Atovaquone preferred for prophylaxis in CKD4/5',f:'caution'},note:'Note: TMP-SMX is used post-transplant despite CKD (PCP is fatal without prophylaxis — benefit outweighs risk). Transplant team monitors carefully. Atovaquone 1500mg daily is preferred alternative in CKD4/5.',src:'UpToDate'},
+    ],
+    monitoring:['Tacrolimus level: urgently with any fever AND with any new antibiotic (especially macrolides, azoles)','U&E + Cr daily if unwell — current vs baseline trend essential','CMV viral load: weekly during risk period (1–6 months); urgently if symptomatic','BK viral load: monthly for first year; if rising → transplant team for immunosuppression reduction','FBC: leucopenia → CMV/viral/MMF toxicity','ALWAYS contact the transplant team for any fever in a transplant recipient — immunosuppression management is theirs to guide'],
+    dialysis:['Functioning transplant patients are not on dialysis — this section applies to failing graft scenarios','Failing graft (returning to dialysis): tacrolimus typically ceased — discuss with transplant team','CMV prophylaxis dosing in any residual renal dysfunction: valganciclovir per renal function — pharmacy essential'],
+  },
+  {
+    id:'acs-ckd',name:'ACS / MI in CKD',abbr:'ACS / MI',cat:'Acute Presentations',icon:'💔',type:'management',
+    summary:'ACS management in CKD follows the same principles as the general population with critical drug adjustments. LMWH should be avoided in CKD4/5 and HD — use UFH (not renally cleared). Ticagrelor is preferred over prasugrel in advanced CKD. Contrast for PCI is acceptable; HD will remove it post-procedure. Troponin is chronically elevated at baseline in ESKD — trending matters more than absolute value.',
+    pearls:['UFH (unfractionated heparin) preferred over LMWH in CKD4/5 and HD — UFH is hepatically cleared, not renally','Enoxaparin: avoid in eGFR <30; dose reduce to once-daily in eGFR 15–29; anti-Xa monitoring in CKD3b+','Fondaparinux: contraindicated if eGFR <20 — use UFH instead','Ticagrelor: preferred over prasugrel in CKD — hepatic metabolism, no dose adjustment; avoid prasugrel in eGFR <15/HD','Aspirin: no dose adjustment needed across all CKD/dialysis stages','PCI + contrast: proceed if indicated; HD will remove contrast post-procedure; pre-hydrate if any residual function','AVOID atenolol post-MI — renally eliminated; use carvedilol, bisoprolol, or metoprolol succinate','Troponin in ESKD: chronically elevated — always trend (serial measurements) rather than relying on absolute values'],
+    meds:[
+      {drug:'Aspirin',route:'PO',use:'Antiplatelet — all ACS (loading + maintenance)',std:'300mg loading; then 100mg daily',ckd3:{d:'300mg load → 100mg daily ✓',f:'safe'},ckd4:{d:'300mg load → 100mg daily ✓',f:'safe'},ckd5:{d:'300mg load → 100mg daily ✓',f:'safe'},hd:{d:'300mg load → 100mg daily ✓ (not HD-cleared)',f:'safe'},pd:{d:'300mg load → 100mg daily ✓',f:'safe'},note:'No dose adjustment across all CKD/dialysis stages. ESKD patients have platelet dysfunction and ↑ bleeding risk — benefit vs risk should be considered case by case.',src:'eTG + UpToDate'},
+      {drug:'Ticagrelor',route:'PO',use:'P2Y12 antiplatelet — preferred in CKD (over prasugrel)',std:'180mg loading; then 90mg BD × 12 months',ckd3:{d:'180mg → 90mg BD ✓ (no renal adjustment)',f:'safe'},ckd4:{d:'180mg → 90mg BD ✓ — preferred over prasugrel',f:'safe'},ckd5:{d:'180mg → 90mg BD ✓ — strongly preferred over prasugrel',f:'safe'},hd:{d:'180mg → 90mg BD ✓ (not HD-cleared; preferred agent in HD)',f:'safe'},pd:{d:'180mg → 90mg BD ✓',f:'safe'},note:'Hepatic metabolism — no dose adjustment. Dyspnoea side effect common. Avoid if: prior intracranial haemorrhage, severe hepatic impairment.',src:'eTG + UpToDate'},
+      {drug:'UFH — Unfractionated Heparin',route:'IV',use:'Anticoagulation in ACS — PREFERRED in CKD4/5 and HD',std:'60 units/kg IV loading (max 4000 units); infusion 12 units/kg/h; titrate APTT to 60–100 sec',ckd3:{d:'Standard UFH; APTT-guided',f:'safe'},ckd4:{d:'UFH preferred over LMWH; APTT-guided',f:'safe'},ckd5:{d:'UFH strongly preferred — not renally cleared; APTT-guided',f:'safe'},hd:{d:'UFH preferred; APTT-guided; safe in HD',f:'safe'},pd:{d:'UFH preferred in CKD5/PD; APTT-guided',f:'safe'},note:'Hepatically eliminated — not renally cleared. APTT monitoring essential. Preferred over LMWH in CKD4/5 and dialysis.',src:'eTG + UpToDate'},
+      {drug:'Enoxaparin (LMWH)',route:'SC',use:'Anticoagulation in ACS — with CKD restrictions',std:'1mg/kg BD SC (therapeutic); 40mg daily SC (prophylactic)',ckd3:{d:'Standard 1mg/kg BD; anti-Xa monitoring in CKD3b (eGFR 30–44)',f:'adjust'},ckd4:{d:'1mg/kg once daily only; anti-Xa monitoring mandatory',f:'adjust'},ckd5:{d:'AVOID — unpredictable accumulation, haemorrhagic risk; use UFH',f:'avoid'},hd:{d:'AVOID — accumulation in ESKD; use UFH',f:'avoid'},pd:{d:'AVOID — use UFH in CKD5/PD',f:'avoid'},note:'Renally eliminated — accumulates in CKD4/5. Anti-Xa monitoring in CKD3b+ (peak target 0.6–1.0 IU/mL BD dosing). Use UFH in CKD4/5/dialysis.',src:'eTG + UpToDate'},
+      {drug:'Atorvastatin / Rosuvastatin',route:'PO',use:'High-intensity statin — all ACS regardless of baseline LDL',std:'Atorvastatin 40–80mg daily; Rosuvastatin 20–40mg daily',ckd3:{d:'Atorvastatin full dose ✓; rosuvastatin 20–40mg (preferred atorvastatin)',f:'safe'},ckd4:{d:'Atorvastatin full dose ✓; rosuvastatin reduce to max 10mg daily',f:'adjust'},ckd5:{d:'Atorvastatin full dose ✓; rosuvastatin max 10mg daily',f:'adjust'},hd:{d:'Atorvastatin full dose ✓; rosuvastatin max 10mg',f:'adjust'},pd:{d:'Atorvastatin full dose ✓; rosuvastatin max 10mg',f:'adjust'},note:'Atorvastatin: predominantly hepatic — no renal dose adjustment. Rosuvastatin: ~28% renal elimination — dose reduce in CKD4/5. Atorvastatin is the preferred statin in CKD.',src:'eTG + UpToDate'},
+      {drug:'Carvedilol / Bisoprolol (Beta-blocker)',route:'PO',use:'Beta-blocker — post-MI LV protection; HFrEF; rate control (AVOID ATENOLOL)',std:'Carvedilol 3.125–25mg BD; Bisoprolol 2.5–10mg daily',ckd3:{d:'No adjustment ✓ (hepatic)',f:'safe'},ckd4:{d:'No adjustment ✓',f:'safe'},ckd5:{d:'No adjustment ✓ — carvedilol preferred',f:'safe'},hd:{d:'No adjustment; give PRE-HD (post-HD may exacerbate hypotension)',f:'safe'},pd:{d:'No adjustment ✓',f:'safe'},note:'⚠ AVOID ATENOLOL — renally eliminated, accumulates in CKD. Carvedilol has most evidence for post-MI LV protection in CKD. Start low, titrate up.',src:'eTG + UpToDate'},
+    ],
+    monitoring:['Serial ECGs and troponin (6–12h); trend matters more than absolute value in CKD (baseline troponin elevated)','U&E BD — ACS + contrast/anticoagulation → AKI on CKD risk','APTT q4–6h if UFH infusion; adjust per nomogram','Renal function at 24–48h post-contrast (contrast-induced nephropathy)','Potassium: K+ rises post-MI (catecholamine surge); monitor q4–6h acutely','Echocardiography: LV function, wall motion, mechanical complications'],
+    dialysis:['HD patients: higher baseline cardiovascular risk; ACS is the leading cause of mortality in ESKD','Vascular access: DO NOT use fistula arm for IV medications — peripheral IV or central access only','PCI + contrast: proceed if indicated clinically; HD removes contrast post-procedure','Timing of HD: avoid during acute ACS if possible; if urgent for hyperkalaemia/fluid overload → gentle HD with continuous cardiac monitoring','Troponin in ESKD: chronically elevated at baseline — troponin TREND (serial measurements) is essential for diagnosis'],
+  },
+
+  {
+    id:'hyperphosphataemia',name:'Hyperphosphataemia — Management',abbr:'Hyperphosphataemia',cat:'CKD Management',icon:'⚗️',type:'management',
+    summary:'Hyperphosphataemia is near-universal in CKD4/5 and dialysis, driving secondary hyperparathyroidism, vascular calcification, and CKD-MBD. Management: dietary restriction (<800mg phosphate/day) + phosphate binders taken WITH meals + active vitamin D only once phosphate is controlled. KDIGO target: 0.8–1.5 mmol/L.',
+    pearls:['Phosphate binders MUST be taken with meals — not at other times; timing is the most common adherence error','Calcium-based binders: risk of hypercalcaemia and vascular calcification in CKD5 — prefer non-calcium binders in dialysis patients','Sevelamer (Renvela): non-calcium binder, also reduces LDL cholesterol (~20%); PBS-listed for CKD4/5 and dialysis','Lanthanum carbonate (Fosrenol): must be CHEWED not swallowed whole; very effective; PBS-listed','HD removes ~800–1000mg phosphate per session — dietary restriction + binders still essential between sessions','Active vitamin D (calcitriol, alfacalcidol): risk of worsening hyperphosphataemia — only initiate if phosphate is controlled','FGF-23 rises early in CKD (before phosphate becomes elevated) — key early biomarker of CKD-MBD','Common high-phosphate foods: processed meats, dairy, nuts, cola drinks, fast food (phosphate additives)'],
+    meds:[
+      {drug:'Calcium Carbonate',route:'PO',use:'Phosphate binder (calcium-based) — taken WITH MEALS',std:'500mg–1.5g with each meal; titrate',ckd3:{d:'Generally well-tolerated; monitor Ca²⁺',f:'safe'},ckd4:{d:'Use with caution; monitor Ca²⁺',f:'adjust'},ckd5:{d:'Avoid high doses — calcium overload + vascular calcification risk; prefer non-calcium binders',f:'caution'},hd:{d:'Limit calcium binders — total calcium load high in dialysis; prefer sevelamer or lanthanum',f:'caution'},pd:{d:'Use with caution; calcium overload risk; prefer non-calcium binders',f:'caution'},note:'Cheap and widely available. Risk of hypercalcaemia and vascular calcification in CKD5/dialysis at high doses. Prefer non-calcium binders in dialysis patients (KDIGO recommendation).',src:'KDIGO'},
+      {drug:'Sevelamer Carbonate (Renvela)',route:'PO',use:'Non-calcium phosphate binder — preferred in CKD5/dialysis',std:'800–2400mg TDS with meals; titrate to phosphate target',ckd3:{d:'Can use; less commonly needed in CKD3',f:'safe'},ckd4:{d:'800mg TDS with meals; PBS-listed from CKD4',f:'safe'},ckd5:{d:'800–2400mg TDS with meals; PBS-listed; preferred over calcium binders',f:'safe'},hd:{d:'800–2400mg TDS with meals; PBS-listed for HD; preferred agent',f:'safe'},pd:{d:'800–2400mg TDS with meals; PBS-listed; preferred agent',f:'safe'},note:'Non-calcium, non-metallic binder. PBS-listed for CKD4/5 and dialysis. Also reduces LDL cholesterol (~20%). Must be taken WITH food. May cause constipation/nausea. Sevelamer hydrochloride (Renagel) also available.',src:'KDIGO / PBS'},
+      {drug:'Lanthanum Carbonate (Fosrenol)',route:'PO',use:'Non-calcium phosphate binder; highly effective; low pill burden',std:'250–500mg per tablet; 750–3000mg/day in 3 divided doses with meals',ckd3:{d:'Can use; less commonly needed in CKD3',f:'safe'},ckd4:{d:'250–500mg with each meal; PBS-listed',f:'safe'},ckd5:{d:'250–500mg with each meal; PBS-listed; effective alternative to sevelamer',f:'safe'},hd:{d:'250–500mg with each meal; PBS-listed for HD; very effective',f:'safe'},pd:{d:'250–500mg with each meal; PBS-listed',f:'safe'},note:'Must be CHEWED thoroughly before swallowing — not swallowed whole. Minimal systemic absorption. PBS-listed. Very effective. Tablet palatability can be an issue for some patients.',src:'KDIGO / PBS'},
+      {drug:'Sucroferric Oxyhydroxide (Velphoro)',route:'PO',use:'Iron-based phosphate binder; lower pill burden than sevelamer',std:'1000mg (2 chewable tabs) TDS with meals; titrate; max 3000mg/day',ckd3:{d:'Less commonly needed in CKD3',f:'safe'},ckd4:{d:'1000mg TDS with meals; PBS-listed',f:'safe'},ckd5:{d:'1000mg TDS with meals; PBS-listed; lower pill burden vs sevelamer',f:'safe'},hd:{d:'1000mg TDS with meals; PBS-listed for HD',f:'safe'},pd:{d:'1000mg TDS with meals; PBS-listed',f:'safe'},note:'Iron-based (ferric) — minimal systemic iron absorption (unlike ferrous iron supplements). Must be chewed. Stool discolouration (dark) is common and benign. Lower pill burden than sevelamer.',src:'KDIGO / PBS'},
+      {drug:'Calcitriol / Alfacalcidol (Active Vitamin D)',route:'PO/IV',use:'Secondary hyperparathyroidism — only initiate if phosphate is CONTROLLED first',std:'Calcitriol 0.25–0.5 mcg daily; alfacalcidol 0.25–1 mcg daily',ckd3:{d:'If PTH elevated and phosphate controlled; calcitriol 0.25mcg daily; monitor Ca²⁺ + PO₄',f:'adjust'},ckd4:{d:'Phosphate must be controlled first; calcitriol 0.25mcg daily; monitor Ca²⁺ + PO₄',f:'adjust'},ckd5:{d:'Phosphate must be controlled — active VitD worsens hyperphosphataemia if uncontrolled',f:'adjust'},hd:{d:'IV calcitriol post-HD or oral alfacalcidol; monitor Ca²⁺ + PO₄; paricalcitol alternative',f:'adjust'},pd:{d:'Oral calcitriol or alfacalcidol; monitor Ca²⁺ + PO₄',f:'adjust'},note:'Do NOT initiate if phosphate >1.5 mmol/L — will worsen hyperphosphataemia. Paricalcitol (selective VDR activator) may have less effect on Ca/P than calcitriol. Monitor Ca²⁺ and PO₄ regularly to avoid hypercalcaemia.',src:'KDIGO'},
+    ],
+    monitoring:['Phosphate: monthly in CKD4/5 and dialysis; target 0.8–1.5 mmol/L','Calcium (corrected for albumin): monthly — avoid hypercalcaemia (vascular calcification risk)','PTH: 3–6 monthly in CKD4/5; KDIGO target 2–9× upper limit of normal in dialysis','25-OH Vitamin D: at baseline; correct deficiency before starting active VitD therapy','Alkaline phosphatase: marker of bone turnover; elevated with high PTH/osteomalacia','FGF-23: rising early in CKD before phosphate elevates — useful prognostic marker','Dietary review: dietitian referral; identify high-phosphate foods; phosphate additives in processed foods'],
+    dialysis:['HD removes ~800–1000mg phosphate per 4h session; dietary restriction + binders still essential between sessions (HD alone is insufficient)','Three sessions/week HD cannot control phosphate without dietary + pharmacological management','PD removes ~500–600mg phosphate/day continuously — lower phosphate burden than HD but binders still usually required','High-flux membranes and prolonged/frequent HD modalities improve phosphate clearance','PBS criteria for phosphate binders: CKD4/5 with documented hyperphosphataemia — discuss with nephrologist for appropriate listing'],
+  },
+  {
+    id:'anaemia-ckd',name:'Anaemia of CKD',abbr:'Anaemia of CKD',cat:'CKD Management',icon:'🩸',type:'management',
+    summary:'Anaemia of CKD is primarily due to relative EPO deficiency and functional/absolute iron deficiency. Target Hb 100–115 g/L (KDIGO 2012) — avoid targeting >130 g/L (↑ cardiovascular events). IV iron is preferred over oral in HD patients. ESA therapy requires concomitant iron repletion for efficacy — do not start ESA if iron-deficient.',
+    pearls:['Target Hb: 100–115 g/L (KDIGO); avoid >130 g/L — demonstrated ↑ cardiovascular event risk','Iron deficiency is the most common correctable cause — always check TSAT and ferritin before starting ESA','IV iron preferred over oral in CKD4/5 and HD: better absorption, less GI side effects, IV access available','Do NOT start ESA if iron-deficient (TSAT <20% or ferritin <100 µg/L) — ESA will be ineffective without adequate iron','ESA hyporesponsiveness: think iron deficiency, infection/inflammation, folate/B12 deficiency, hyperparathyroidism, anti-EPO antibodies','Ferric carboxymaltose (Ferinject) 500–1000mg IV: most commonly used IV iron in Australia; single infusion, PBS-listed','HIF-PHI (roxadustat): oral agent; TGA approved for dialysis patients; PBS listing evolving in Australia','ESA can worsen hypertension in 20–30% — monitor BP with each dose titration'],
+    meds:[
+      {drug:'Ferric Carboxymaltose (Ferinject)',route:'IV',use:'IV iron repletion — first-line in CKD4/5 and dialysis',std:'500–1000mg IV infusion over 15–60 min; repeat based on iron studies',ckd3:{d:'500–1000mg IV; one infusion often sufficient',f:'safe'},ckd4:{d:'500–1000mg IV; PBS-listed for CKD',f:'safe'},ckd5:{d:'500–1000mg IV; PBS-listed; very effective',f:'safe'},hd:{d:'500–1000mg IV via HD circuit at end of session; PBS-listed for HD',f:'safe'},pd:{d:'500–1000mg IV infusion; PBS-listed',f:'safe'},note:'PBS-listed for CKD with documented iron deficiency. Can give via HD circuit at end of dialysis session. Hypersensitivity reactions rare (<0.1%) — monitor 30 min post-infusion. Transient hypophosphataemia may occur post-dose.',src:'KDIGO / PBS'},
+      {drug:'Iron Sucrose (Venofer)',route:'IV',use:'IV iron repletion — alternative; convenient for HD via circuit',std:'200mg IV per HD session; or 200mg slow IV infusion',ckd3:{d:'200mg IV infusion; repeat as needed',f:'safe'},ckd4:{d:'200mg IV; repeat based on iron studies',f:'safe'},ckd5:{d:'200mg IV per dose; PBS-listed',f:'safe'},hd:{d:'200mg IV at end of each HD session (via HD circuit); PBS-listed',f:'safe'},pd:{d:'200mg IV infusion; PBS-listed',f:'safe'},note:'Slower repletion than ferric carboxymaltose (multiple doses needed). Very convenient for HD patients — given via HD circuit. Lower hypersensitivity risk than iron dextran.',src:'KDIGO / PBS'},
+      {drug:'Oral Iron (ferrous sulfate)',route:'PO',use:'Iron repletion in CKD3 (non-dialysis) — not preferred in CKD4/5',std:'Ferrous sulfate 325mg (105mg elemental iron) BD–TDS',ckd3:{d:'325mg BD–TDS; reasonable in CKD3 if IV access difficult',f:'safe'},ckd4:{d:'Poor GI absorption in CKD; GI side effects; IV iron preferred',f:'adjust'},ckd5:{d:'Oral iron poorly absorbed in uraemia; IV iron strongly preferred',f:'caution'},hd:{d:'NOT recommended in HD — poor absorption, GI side effects; use IV iron',f:'avoid'},pd:{d:'Less effective in CKD5; IV iron preferred if iron-deficient',f:'caution'},note:'GI absorption impaired in CKD (elevated hepcidin). Oral iron interferes with phosphate binder absorption — space by 2h. IV iron strongly preferred in CKD4/5/dialysis.',src:'KDIGO'},
+      {drug:'Darbepoetin Alfa (Aranesp)',route:'SC/IV',use:'ESA therapy — once iron-replete (TSAT ≥20%, ferritin ≥100)',std:'6.25–100 mcg SC weekly or fortnightly; titrate to Hb 100–115 g/L',ckd3:{d:'SC; start 6.25mcg weekly; titrate; PBS-listed if Hb <100 and iron-replete',f:'safe'},ckd4:{d:'SC preferred; 6.25–25mcg weekly; PBS-listed',f:'safe'},ckd5:{d:'SC or IV; 6.25–50mcg weekly; PBS-listed',f:'safe'},hd:{d:'IV via HD circuit or SC; weekly or fortnightly; PBS-listed for HD',f:'safe'},pd:{d:'SC injection; 6.25–50mcg weekly; PBS-listed',f:'safe'},note:'PBS-listed for CKD (Hb <100 g/L, iron-replete). Do NOT start if TSAT <20% or ferritin <100 — ESA ineffective without iron. Reduce dose 25–50% if Hb approaches 115 g/L. Monitor BP.',src:'KDIGO / PBS'},
+      {drug:'Roxadustat (Evrenzo)',route:'PO',use:'HIF-PHI — oral ESA alternative; TGA approved for dialysis',std:'70mg 3×/week (non-dialysis CKD); 100mg 3×/week (dialysis)',ckd3:{d:'70mg 3×/week; titrate to Hb 100–120 g/L; PBS listing evolving',f:'adjust'},ckd4:{d:'70mg 3×/week; monitor Hb and BP',f:'adjust'},ckd5:{d:'100mg 3×/week; TGA approved',f:'safe'},hd:{d:'100mg 3×/week on dialysis days (give post-HD); TGA approved; PBS evolving',f:'safe'},pd:{d:'70–100mg 3×/week; TGA approved',f:'safe'},note:'HIF prolyl hydroxylase inhibitor — stimulates endogenous EPO production. Oral administration advantage. Multiple drug interactions: space by 1h from phosphate binders. TGA approved; PBS listing still evolving in Australia.',src:'UpToDate'},
+    ],
+    monitoring:['Hb: monthly during ESA initiation/titration; 3-monthly once stable; target 100–115 g/L','Iron studies (TSAT + ferritin): before starting ESA; monthly during ESA; 3-monthly once stable','Reticulocyte count: useful to assess ESA response (should ↑ within 2–4 weeks of starting ESA)','Blood pressure: monitor — ESA can worsen hypertension in 20–30% of patients','ESA hyporesponsive (no Hb ↑ after 4 weeks): check iron, CRP/infection, PTH, B12/folate, medication adherence','Potassium: iron infusions can occasionally cause transient hypokalaemia'],
+    dialysis:['HD patients: give darbepoetin IV via HD circuit at end of session — no additional injection needed','IV iron via HD circuit at end of session — ideal for compliance','ESA dose typically higher in HD patients (chronic inflammation, losses via HD circuit, blood sampling)','Hb often more stable in PD than HD (continuous vs intermittent dialysis)','Transferrin losses via peritoneum in PD may worsen iron deficiency','PBS criteria: Hb <100 g/L + iron-replete (TSAT ≥20%, ferritin ≥100) before ESA initiation'],
+  },
+  {
+    id:'metabolic-acidosis',name:'Metabolic Acidosis in CKD',abbr:'Metabolic Acidosis',cat:'CKD Management',icon:'⚖️',type:'management',
+    summary:'Metabolic acidosis is common in CKD4/5 due to reduced ammoniagenesis and impaired acid excretion. KDIGO recommends maintaining serum bicarbonate ≥22 mmol/L. Correction slows CKD progression, preserves muscle mass, improves bone health, and reduces hyperkalaemia. Sodium bicarbonate supplementation is the primary pharmacological treatment.',
+    pearls:['Target: serum bicarbonate ≥22 mmol/L (KDIGO 2012); Australian practice often targets 22–26 mmol/L','Sodium bicarbonate tablets: 500mg = ~6 mmol HCO₃; 840mg = ~10 mmol HCO₃; start low and titrate','Dietary acid load reduction (less red meat, more fruits and vegetables) can raise serum HCO₃ by 1–3 mmol/L','SGLT2 inhibitors have a modest alkalinising effect in CKD — secondary benefit','Correct metabolic acidosis before interpreting PTH/bone disease — acidosis worsens bone resorption and suppresses 1-alpha hydroxylase','Sodium load: each 500mg NaHCO₃ tablet delivers ~6mmol Na — relevant in hypertension, fluid overload, HD patients','VBG vs serum total CO₂: use VBG for pH, pCO₂, anion gap, compensation; use serum total CO₂ for monitoring trend','Winters formula for expected pCO₂: (1.5 × HCO₃) + 8 ± 2 — use to confirm appropriate respiratory compensation'],
+    meds:[
+      {drug:'Sodium Bicarbonate Tablets',route:'PO',use:'First-line alkalinisation in CKD metabolic acidosis',std:'500mg TDS (start); titrate to HCO₃ ≥22 mmol/L; typical dose 500mg–1g TDS',ckd3:{d:'500mg BD–TDS; titrate; monitor BP (sodium load ~6mmol/tab)',f:'safe'},ckd4:{d:'500mg TDS; titrate; monitor BP and fluid status',f:'safe'},ckd5:{d:'500mg–1g TDS; dialysis partially corrects acidosis; oral may still be needed',f:'safe'},hd:{d:'Dialysis bicarbonate bath corrects acidosis during session; oral may be needed between sessions; check pre-HD level',f:'adjust'},pd:{d:'PD dialysate corrects acidosis continuously; oral supplementation sometimes still needed; monitor HCO₃',f:'adjust'},note:'Sodium load: 500mg tab = ~6mmol Na. Use with caution in hypertension, HF, or fluid overload. Check pre-dialysis (not post-dialysis) HCO₃ for true picture.',src:'KDIGO'},
+      {drug:'Sodium Citrate / Citric Acid (Shohl\'s Solution)',route:'PO',use:'Oral alkalinisation — liquid alternative if tablets not tolerated',std:'15–30mL TDS (1 mEq HCO₃ equivalent per mL); titrate to HCO₃ ≥22',ckd3:{d:'15–30mL TDS; well-tolerated oral liquid',f:'safe'},ckd4:{d:'15–30mL TDS; titrate to serum HCO₃',f:'safe'},ckd5:{d:'15–30mL TDS; citrate ↑ aluminium absorption — avoid concurrent aluminium antacids',f:'adjust'},hd:{d:'Citrate ↑ aluminium absorption — avoid concurrent aluminium-based antacids/binders; dialysis corrects most acidosis',f:'adjust'},pd:{d:'15–30mL TDS; monitor HCO₃',f:'safe'},note:'Citrate metabolised to bicarbonate in liver. Useful if tablets poorly tolerated. ⚠ Citrate significantly enhances intestinal aluminium absorption — avoid concurrent aluminium-containing antacids (e.g. aluminium hydroxide). May need compounding pharmacy.',src:'UpToDate'},
+      {drug:'SGLT2 Inhibitors (Dapagliflozin/Empagliflozin)',route:'PO',use:'Alkalinising secondary benefit — primary indications: CKD + cardiac/renoprotection',std:'10mg daily',ckd3:{d:'10mg daily ✓ — cardiac + renoprotection; modest alkalinising effect',f:'safe'},ckd4:{d:'10mg daily ✓; benefit maintained to eGFR ~20',f:'safe'},ckd5:{d:'Generally NOT recommended (eGFR <20)',f:'caution'},hd:{d:'Generally NOT recommended in HD',f:'avoid'},pd:{d:'Generally NOT recommended in PD',f:'avoid'},note:'SGLT2 inhibitors reduce metabolic acidosis via glycosuria (less urinary acid load). Metabolic acidosis improvement is a secondary benefit — primary indication is CKD + cardiac protection (DAPA-CKD, EMPA-KIDNEY, DAPA-HF). Not used primarily for acid-base management.',src:'UpToDate / PBS'},
+      {drug:'Dietary Acid Load Reduction',route:'Dietary',use:'Adjunct to pharmacological alkalinisation',std:'Reduce dietary acid load; increase alkali-generating foods',ckd3:{d:'Dietary counselling: ↓ red meat + processed foods; ↑ fruits and vegetables',f:'safe'},ckd4:{d:'Effective adjunct; dietitian essential; balance with K+ and PO₄ restrictions',f:'adjust'},ckd5:{d:'Important adjunct; must balance with phosphate and potassium restrictions — dietitian essential',f:'adjust'},hd:{d:'High-fruit diet may ↑ K+ in HD patients — balance carefully; focus on processed food reduction',f:'adjust'},pd:{d:'Lower K+ restriction than HD — more dietary flexibility; fruits/vegetables generally acceptable',f:'safe'},note:'High acid-generating foods: red meat, processed meats, cheese, grains. Low-acid/alkaline: most fruits and vegetables. Diet alone can raise serum HCO₃ by 1–3 mmol/L. Must be balanced with K+ and PO₄ restrictions in CKD — dietitian referral essential.',src:'KDIGO'},
+    ],
+    monitoring:['Serum bicarbonate (total CO₂): baseline; monthly during supplementation titration; 3-monthly once stable at ≥22 mmol/L','VBG if acute decompensation — for pH, pCO₂, anion gap, respiratory compensation (Winters formula)','Potassium: correcting acidosis shifts K+ into cells — may lower K+ (generally beneficial but monitor)','Blood pressure + fluid status: sodium bicarbonate adds sodium load — monitor BP and oedema especially in CKD4/5','Serum albumin: hypoalbuminaemia lowers measured bicarbonate (less buffer); corrected anion gap = AG + (40-albumin) × 0.25','PTH and bone markers: correct acidosis before interpreting PTH — acidosis suppresses 1-alpha hydroxylase and worsens bone resorption','Re-check HCO₃ at 4–6 weeks after dose escalation'],
+    dialysis:['HD: bicarbonate dialysate corrects acidosis during session (dialysate HCO₃ typically 30–35 mmol/L); oral supplementation may still be needed between sessions','Pre-HD bicarbonate often low; normalises post-HD — check levels PRE-dialysis for true clinical picture','PD: lactate or bicarbonate-buffered dialysate corrects acidosis continuously; oral supplementation usually not needed but check HCO₃','Sodium bicarbonate in HD: additional sodium load — use with care in oliguric/anuric patients with fluid overload','Aggressive correction (HCO₃ >26): risk of rebound alkalosis post-HD — target 22–24 pre-dialysis'],
+  },
+
+];
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- APP CODE (React + JSX — compiled by Babel)                -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <script type="text/babel">
+// ─── NEPHRO-REF APP ─────────────────────────────────────────
+const { useState, useEffect } = React;
+
+// ─── HELPER COMPONENTS ────────────────────────────────────────────────────────
+function SourceBadge({ src }) {
+  return <span className={`text-xs px-2 py-0.5 rounded-full font-medium border ${SRC[src] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>{src}</span>;
+}
+function FlagLegend() {
+  return (
+    <div className="flex flex-wrap gap-2 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <span className="text-xs text-gray-500 font-medium self-center mr-1">Dosing key:</span>
+      {Object.entries(FL_LEGEND).map(([k,v]) => (
+        <span key={k} className={`text-xs px-2 py-0.5 rounded border font-medium ${FL[k]}`}>{v}</span>
+      ))}
+    </div>
+  );
+}
+function MedTable({ meds }) {
+  const cols = ['ckd3','ckd4','ckd5','hd','pd'];
+  const colLabels = ['CKD3\n(eGFR 30–59)','CKD4\n(eGFR 15–29)','CKD5/ESKD\n(eGFR <15)','Haemodialysis','Peritoneal\nDialysis'];
+  return (
+    <div className="space-y-6">
+      <FlagLegend />
+      {meds.map((m, i) => m.isHeader ? (
+        <div key={i} className="flex items-center gap-3 py-3 px-1 mt-4 first:mt-0">
+          <div className="flex-1 h-px bg-gray-200"></div>
+          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest px-2 whitespace-nowrap">{m.drug.replace(/━/g,'').trim()}</span>
+          <div className="flex-1 h-px bg-gray-200"></div>
+        </div>
+      ) : (
+        <div key={i} className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex flex-wrap items-start gap-2">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-gray-900 text-sm font-mono">{m.drug}</span>
+                <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">{m.route}</span>
+                <SourceBadge src={m.src} />
+              </div>
+              <div className="text-xs text-gray-500 mt-1">{m.use}</div>
+              <div className="text-xs text-gray-600 mt-1"><span className="font-medium">Standard dose:</span> {m.std}</div>
+            </div>
+          </div>
+          <div className="p-3">
+            <div className="grid grid-cols-5 gap-2 mb-3">
+              {cols.map((col, ci) => (
+                <div key={col} className="flex flex-col gap-1">
+                  <div className="text-xs text-gray-400 font-medium text-center leading-tight whitespace-pre-line">{colLabels[ci]}</div>
+                  <div className={`rounded-lg p-2 text-xs text-center leading-tight border ${FL[m[col].f] || FL.adjust}`}>{m[col].d}</div>
+                </div>
+              ))}
+            </div>
+            {m.note && <div className="text-xs text-gray-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mt-2"><span className="font-medium text-blue-700">💡 Note: </span>{m.note}</div>}
+          </div>
+        </div>
+      ))
+      )}
+    </div>
+  );
+}
+function InvestigationList({ investigations }) {
+  const URGENCY_PRIORITY = {'Mandatory':0,'Mandatory + ECG':0,'URGENT if TMA suspected':1,'URGENT if TTP suspected':1,'GN screen (URGENT if haemoptysis)':1,'Urgent (bedside)':2,'Urgent — same day':2,'Urgent — do before antibiotics':2,'First-line':3,'First-line (if on diuretics)':3,'Bedside':3,'GN screen':4,'If clinically indicated':5};
+  return (
+    <div className="space-y-6">
+      {investigations.map((section, i) => (
+        <div key={i} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 bg-slate-800 text-white flex items-center gap-2">
+            <span className="text-xl">{section.icon}</span>
+            <span className="font-semibold text-sm">{section.cat}</span>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {section.items.map((item, j) => {
+              const uc = URGENCY_COLORS[item.urgency] || 'bg-gray-100 text-gray-600';
+              return (
+                <div key={j} className="px-4 py-3 flex gap-3 hover:bg-gray-50 transition-colors">
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <span className="font-semibold text-sm text-gray-900">{item.test}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${uc}`}>{item.urgency}</span>
+                    </div>
+                    <p className="text-xs text-gray-600 leading-relaxed">{item.detail}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── MAIN APP ──────────────────────────────────────────────────────────────────
+const CATS = ['Ward Quick Ref','Infectious Disease','Transplant','Acute Presentations','CKD Management','Dialysis-Specific','Custom'];
+const TABS_INFECTIOUS = ['Overview','Pathogens','Medications','Monitoring','My Notes'];
+const TABS_INVESTIGATIONS = ['Overview','Investigations','Monitoring','My Notes'];
+const TABS_MANAGEMENT = ['Overview','Medications','Monitoring','My Notes'];
+
+function App() {
+  const [selectedId, setSelectedId] = useState('common-meds');
+  const [tab, setTab] = useState('Overview');
+  const [notes, setNotes] = useState({});
+  const [noteText, setNoteText] = useState('');
+  const [editingNote, setEditingNote] = useState(false);
+  const [customList, setCustomList] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newCustom, setNewCustom] = useState({name:'',cat:'Custom',summary:'',pearls:''});
+  const [search, setSearch] = useState('');
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    try { const n = localStorage.getItem('nephroref_notes_v2'); if (n) setNotes(JSON.parse(n)); } catch(e) {}
+    try { const c = localStorage.getItem('nephroref_custom_v2'); if (c) setCustomList(JSON.parse(c)); } catch(e) {}
+    setLoaded(true);
+  }, []);
+
+  const allPresentations = [...PRESENTATIONS, ...customList];
+  const current = allPresentations.find(p => p.id === selectedId) || PRESENTATIONS[0];
+
+  const getTabs = (p) => {
+    if (p.type === 'investigations') return TABS_INVESTIGATIONS;
+    if (p.type === 'management') return TABS_MANAGEMENT;
+    return TABS_INFECTIOUS;
+  };
+  const tabs = getTabs(current);
+
+  const selectPresentation = (id) => {
+    setSelectedId(id);
+    const p = allPresentations.find(x => x.id === id);
+    if (p) setTab(getTabs(p)[0]);
+    setEditingNote(false);
+    setSearch('');
+  };
+
+  const saveNote = () => {
+    const newNotes = {...notes, [current.id]: noteText};
+    setNotes(newNotes);
+    localStorage.setItem('nephroref_notes_v2', JSON.stringify(newNotes));
+    setEditingNote(false);
+  };
+
+  const openNote = () => {
+    setNoteText(notes[current.id] || '');
+    setEditingNote(true);
+  };
+
+  const addCustomPresentation = () => {
+    if (!newCustom.name.trim()) return;
+    const newP = {
+      id: 'custom_' + Date.now(),
+      name: newCustom.name.trim(),
+      abbr: newCustom.name.trim().slice(0,12),
+      cat: 'Custom',
+      icon: '📌',
+      type: 'management',
+      summary: newCustom.summary.trim() || 'Custom presentation added manually.',
+      pearls: newCustom.pearls.trim() ? newCustom.pearls.trim().split('\n').filter(Boolean) : [],
+      meds: [],
+      monitoring: [],
+      dialysis: [],
+    };
+    const updated = [...customList, newP];
+    setCustomList(updated);
+    localStorage.setItem('nephroref_custom_v2', JSON.stringify(updated));
+    setShowAddModal(false);
+    setNewCustom({name:'',cat:'Custom',summary:'',pearls:''});
+    selectPresentation(newP.id);
+  };
+
+  const deleteCustom = (id) => {
+    const updated = customList.filter(p => p.id !== id);
+    setCustomList(updated);
+    localStorage.setItem('nephroref_custom_v2', JSON.stringify(updated));
+    if (selectedId === id) selectPresentation('cap');
+  };
+
+  const filteredPresentations = allPresentations.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    p.abbr.toLowerCase().includes(search.toLowerCase()) ||
+    p.cat.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const catColor = (cat) => {
+    if (cat === 'Ward Quick Ref') return 'text-cyan-300';
+    if (cat === 'Infectious Disease') return 'text-amber-400';
+    if (cat === 'Transplant') return 'text-blue-400';
+    if (cat === 'Acute Presentations') return 'text-red-400';
+    if (cat === 'CKD Management') return 'text-emerald-400';
+    if (cat === 'Dialysis-Specific') return 'text-teal-400';
+    return 'text-purple-400';
+  };
+
+  if (!loaded) return (
+    <div className="h-screen flex items-center justify-center bg-slate-900 text-white">
+      <div className="text-center">
+        <div className="text-3xl mb-3">⚕️</div>
+        <div className="text-slate-300 text-sm">Loading Nephro-Ref...</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex h-screen bg-gray-50 overflow-hidden" style={{fontFamily:"'IBM Plex Sans', system-ui, sans-serif"}}>
+      {/* ── SIDEBAR ── */}
+      <div className="w-64 bg-slate-900 flex flex-col flex-shrink-0 overflow-hidden">
+        <div className="px-4 pt-5 pb-3 border-b border-slate-700">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">⚕️</span>
+            <div>
+              <div className="text-white font-bold text-sm tracking-wide">Nephro-Ref</div>
+              <div className="text-slate-400 text-xs">Australian Clinical Reference</div>
+            </div>
+          </div>
+        </div>
+        <div className="px-3 py-2 border-b border-slate-800">
+          <input
+            className="w-full bg-slate-800 text-white placeholder-slate-500 text-xs rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-teal-500"
+            placeholder="Search presentations..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="flex-1 overflow-y-auto py-2">
+          {CATS.filter(cat => filteredPresentations.some(p => p.cat === cat)).map(cat => (
+            <div key={cat} className="mb-1">
+              <div className={`px-4 py-1.5 text-xs font-bold uppercase tracking-widest ${catColor(cat)}`}>{cat}</div>
+              {filteredPresentations.filter(p => p.cat === cat).map(p => (
+                <div
+                  key={p.id}
+                  onClick={() => selectPresentation(p.id)}
+                  className={`mx-2 px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2 mb-0.5 transition-colors group ${selectedId === p.id ? 'bg-teal-700 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`}
+                >
+                  <span className="text-base flex-shrink-0">{p.icon}</span>
+                  <span className="text-xs font-medium leading-tight flex-1">{p.abbr || p.name}</span>
+                  {p.cat === 'Custom' && (
+                    <button
+                      onClick={e => { e.stopPropagation(); deleteCustom(p.id); }}
+                      className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-400 text-xs ml-auto px-1"
+                    >✕</button>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="p-3 border-t border-slate-800">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="w-full bg-teal-700 hover:bg-teal-600 text-white text-xs rounded-lg py-2.5 px-3 font-medium transition-colors flex items-center justify-center gap-2"
+          >
+            <span>+</span> Add Custom Presentation
+          </button>
+        </div>
+      </div>
+
+      {/* ── MAIN CONTENT ── */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
+          <div className="flex items-start gap-3">
+            <span className="text-3xl mt-0.5">{current.icon}</span>
+            <div className="flex-1">
+              <h1 className="text-xl font-bold text-gray-900" style={{fontFamily:"'IBM Plex Sans', sans-serif"}}>{current.name}</h1>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <span className={`text-xs font-semibold uppercase tracking-wide ${catColor(current.cat)}`}>{current.cat}</span>
+                <span className="text-gray-300">·</span>
+                <span className="text-xs text-gray-400">Australian clinical practice (eTG + UpToDate)</span>
+                {notes[current.id] && <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full">📝 Notes saved</span>}
+              </div>
+            </div>
+          </div>
+          {/* Tabs */}
+          <div className="flex gap-1 mt-4 border-b border-gray-100 -mb-4 -mx-6 px-6">
+            {tabs.map(t => (
+              <button
+                key={t}
+                onClick={() => { setTab(t); if (t === 'My Notes') openNote(); }}
+                className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === t ? 'border-teal-600 text-teal-700' : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'}`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto px-6 py-6">
+          {/* OVERVIEW */}
+          {tab === 'Overview' && (
+            <div className="max-w-3xl space-y-5">
+              <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <h2 className="font-bold text-gray-900 mb-2 text-sm uppercase tracking-wide text-gray-500">Summary</h2>
+                <p className="text-gray-700 text-sm leading-relaxed">{current.summary}</p>
+              </div>
+              {current.pearls && current.pearls.length > 0 && (
+                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                  <h2 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wide text-gray-500">Key CKD/Dialysis Considerations</h2>
+                  <ul className="space-y-2">
+                    {current.pearls.map((p, i) => (
+                      <li key={i} className="flex gap-2 text-sm text-gray-700">
+                        <span className="text-teal-500 font-bold flex-shrink-0">→</span>
+                        <span className="leading-relaxed">{p}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <p className="text-xs text-amber-700"><span className="font-bold">⚠ Educational reference only.</span> Always verify against current eTG, UpToDate, and local guidelines. Consult clinical pharmacy for complex dosing decisions in CKD/dialysis. Patient-specific factors always apply.</p>
+              </div>
+            </div>
+          )}
+
+          {/* PATHOGENS */}
+          {tab === 'Pathogens' && current.pathogens && (
+            <div className="max-w-3xl">
+              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                  <h2 className="font-bold text-sm text-gray-700">Common Pathogens</h2>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-100">
+                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Organism</th>
+                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Frequency</th>
+                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {current.pathogens.map((p, i) => (
+                      <tr key={i} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 font-mono text-xs font-medium text-gray-900">{p.name}</td>
+                        <td className="px-4 py-3 text-xs text-gray-600">{p.freq}</td>
+                        <td className="px-4 py-3 text-xs text-gray-500">{p.note}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* INVESTIGATIONS */}
+          {tab === 'Investigations' && current.investigations && (
+            <div className="max-w-4xl">
+              <InvestigationList investigations={current.investigations} />
+            </div>
+          )}
+
+          {/* MEDICATIONS */}
+          {tab === 'Medications' && current.meds && (
+            <div className="max-w-5xl">
+              {current.meds.length === 0
+                ? <div className="text-gray-500 text-sm bg-white rounded-xl p-6 border border-gray-200">No medications added yet. Use My Notes tab to add your own medication notes.</div>
+                : <MedTable meds={current.meds} />
+              }
+            </div>
+          )}
+
+          {/* MONITORING */}
+          {tab === 'Monitoring' && (
+            <div className="max-w-3xl space-y-5">
+              {current.monitoring && current.monitoring.length > 0 && (
+                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                  <h2 className="font-bold text-sm text-gray-500 uppercase tracking-wide mb-3">Monitoring Parameters</h2>
+                  <ul className="space-y-2">
+                    {current.monitoring.map((m, i) => (
+                      <li key={i} className="flex gap-2 text-sm text-gray-700">
+                        <span className="text-blue-400 font-bold flex-shrink-0 mt-0.5">•</span>
+                        <span className="leading-relaxed">{m}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {current.dialysis && current.dialysis.length > 0 && (
+                <div className="bg-white rounded-xl border border-teal-200 p-5 shadow-sm">
+                  <h2 className="font-bold text-sm text-teal-600 uppercase tracking-wide mb-3">🔵 Dialysis-Specific Considerations</h2>
+                  <ul className="space-y-2">
+                    {current.dialysis.map((d, i) => (
+                      <li key={i} className="flex gap-2 text-sm text-gray-700">
+                        <span className="text-teal-500 font-bold flex-shrink-0 mt-0.5">→</span>
+                        <span className="leading-relaxed">{d}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* MY NOTES */}
+          {tab === 'My Notes' && (
+            <div className="max-w-3xl space-y-4">
+              <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="font-bold text-sm text-gray-500 uppercase tracking-wide">My Notes & Clinical Pearls</h2>
+                  {!editingNote
+                    ? <button onClick={openNote} className="text-xs bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg font-medium transition-colors">{notes[current.id] ? 'Edit Notes' : '+ Add Notes'}</button>
+                    : <div className="flex gap-2">
+                        <button onClick={() => setEditingNote(false)} className="text-xs text-gray-500 hover:text-gray-700 px-3 py-1.5 rounded-lg border border-gray-200 font-medium">Cancel</button>
+                        <button onClick={saveNote} className="text-xs bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg font-medium transition-colors">💾 Save</button>
+                      </div>
+                  }
+                </div>
+                {editingNote ? (
+                  <div>
+                    <p className="text-xs text-gray-400 mb-2">Add clinical pearls, consultant tips, local protocol differences, or case learnings. These save permanently across sessions.</p>
+                    <textarea
+                      value={noteText}
+                      onChange={e => setNoteText(e.target.value)}
+                      className="w-full border border-gray-200 rounded-lg p-3 text-sm text-gray-700 focus:outline-none focus:border-teal-400 leading-relaxed resize-none"
+                      rows={14}
+                      placeholder={`Add your notes here, e.g.:\n• Senior consultant says: always check Mg2+ with pip-tazo in HD patients\n• Local protocol: vancomycin loading dose per pharmacy chart\n• Case pearl: patient had FeNa >2% but was on frusemide — used FeUrea instead\n• Remember: check fungal cultures if PD patient doesn't respond at 72h`}
+                      autoFocus
+                    />
+                  </div>
+                ) : notes[current.id] ? (
+                  <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap bg-gray-50 rounded-lg p-4 border border-gray-100">{notes[current.id]}</div>
+                ) : (
+                  <div className="text-center py-8 text-gray-400">
+                    <div className="text-3xl mb-2">📝</div>
+                    <p className="text-sm">No notes yet for this presentation.</p>
+                    <p className="text-xs mt-1">Add clinical pearls, consultant tips, or local protocol notes.</p>
+                    <button onClick={openNote} className="mt-3 text-xs bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">+ Add Notes</button>
+                  </div>
+                )}
+              </div>
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                <p className="text-xs text-blue-600"><span className="font-bold">💡 Tip:</span> Notes are permanently saved to this browser. Use this space for consultant pearls, local protocol differences, memorable cases, and anything not captured in the standard content.</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── ADD CUSTOM MODAL ── */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="font-bold text-gray-900">Add Custom Presentation</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+            </div>
+            <div className="px-6 py-5 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Presentation Name *</label>
+                <input
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400"
+                  placeholder="e.g., Dialysis Catheter Removal Protocol, Fluid Overload Assessment..."
+                  value={newCustom.name}
+                  onChange={e => setNewCustom({...newCustom, name: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Summary / Overview</label>
+                <textarea
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400 resize-none"
+                  placeholder="Brief clinical summary or context..."
+                  rows={3}
+                  value={newCustom.summary}
+                  onChange={e => setNewCustom({...newCustom, summary: e.target.value})}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Key Pearls (one per line)</label>
+                <textarea
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400 resize-none"
+                  placeholder="Consultant pearl 1&#10;Local protocol note&#10;Memorable case learning..."
+                  rows={5}
+                  value={newCustom.pearls}
+                  onChange={e => setNewCustom({...newCustom, pearls: e.target.value})}
+                />
+              </div>
+              <p className="text-xs text-gray-400">After creating, use the My Notes tab to add detailed clinical notes, medication info, and more.</p>
+            </div>
+            <div className="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end">
+              <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-lg font-medium">Cancel</button>
+              <button
+                onClick={addCustomPresentation}
+                disabled={!newCustom.name.trim()}
+                className="px-4 py-2 text-sm bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >Add Presentation</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- VERSION INFO + UPDATE CHECKER                             -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <script>
+    // App version — update this string when releasing new versions
+    window.NEPHROREF_VERSION = '1.2.0';
+    window.NEPHROREF_DATE = '2025';
+    console.log('Nephro-Ref v' + window.NEPHROREF_VERSION + ' loaded. Notes stored in localStorage.');
+  </script>
+
+</body>
+</html>
