@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Nephro-Ref</title>
+  <title>Nephro-Ref | Australian Clinical Reference</title>
 
-  <!-- PWA / Add to Home Screen support -->
+  <!-- iOS PWA / Add to Home Screen -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Nephro-Ref">
@@ -22,67 +22,50 @@
 
   <style>
     body { font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif; }
-    code, .font-mono { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
-    /* iOS safe area */
-    .sidebar-safe { padding-bottom: env(safe-area-inset-bottom, 0); }
-    /* Smooth scroll */
-    * { -webkit-tap-highlight-color: transparent; }
-    /* Custom scrollbar */
+    .font-mono, code { font-family: 'IBM Plex Mono', 'Courier New', monospace; }
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    button, input, textarea { touch-action: manipulation; }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
-    /* Loading spinner */
     @keyframes spin { to { transform: rotate(360deg); } }
     .spinner { animation: spin 1s linear infinite; }
-    /* Prevent zoom on double-tap iOS */
-    button, input, textarea { touch-action: manipulation; }
+    /* iOS safe areas */
+    .pb-safe { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+    .pt-safe { padding-top: env(safe-area-inset-top); }
   </style>
 
-  <!-- Inline PWA Manifest -->
+  <!-- Inline PWA manifest -->
   <script>
-    const manifestData = {
-      name: "Nephro-Ref",
-      short_name: "Nephro-Ref",
-      description: "Australian Nephrology Clinical Reference",
-      start_url: "./",
-      display: "standalone",
-      background_color: "#0f172a",
-      theme_color: "#0f172a",
-      icons: [{
-        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230f172a'/%3E%3Ctext y='.9em' font-size='80' x='10'%3E⚕️%3C/text%3E%3C/svg%3E",
-        sizes: "192x192",
-        type: "image/svg+xml"
-      }]
-    };
-    const manifestBlob = new Blob([JSON.stringify(manifestData)], {type: 'application/manifest+json'});
-    const manifestURL = URL.createObjectURL(manifestBlob);
-    const manifestLink = document.createElement('link');
-    manifestLink.rel = 'manifest';
-    manifestLink.href = manifestURL;
-    document.head.appendChild(manifestLink);
+    const _mf = JSON.stringify({
+      name:"Nephro-Ref",short_name:"Nephro-Ref",
+      description:"Australian Nephrology Clinical Reference",
+      start_url:"./",display:"standalone",
+      background_color:"#0f172a",theme_color:"#0f172a"
+    });
+    const _ml = document.createElement('link');
+    _ml.rel='manifest'; _ml.href='data:application/manifest+json,'+encodeURIComponent(_mf);
+    document.head.appendChild(_ml);
   </script>
 </head>
-<body class="bg-gray-50 overflow-hidden">
-  <div id="root" class="h-screen">
-    <div class="h-screen flex items-center justify-center bg-slate-900">
-      <div class="text-center text-white">
-        <div class="text-5xl mb-4">⚕️</div>
-        <div class="text-slate-300 text-sm mb-3">Loading Nephro-Ref...</div>
-        <div class="w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full spinner mx-auto"></div>
+<body class="overflow-hidden">
+  <div id="root" style="height:100dvh">
+    <div style="height:100dvh;display:flex;align-items:center;justify-content:center;background:#0f172a">
+      <div style="text-align:center;color:white">
+        <div style="font-size:3rem;margin-bottom:1rem">⚕️</div>
+        <div style="color:#94a3b8;font-size:0.875rem;margin-bottom:0.75rem">Loading Nephro-Ref...</div>
+        <div class="spinner" style="width:2rem;height:2rem;border:2px solid #14b8a6;border-top-color:transparent;border-radius:50%;margin:0 auto"></div>
       </div>
     </div>
   </div>
 
-  <!-- React + ReactDOM (production builds) -->
+  <!-- React 18 (production) -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-  <!-- Babel Standalone (JSX compiler) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- PRESENTATION DATA (plain JS — no Babel needed)            -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- CLINICAL DATA (plain JS — no compilation)      -->
+  <!-- ═══════════════════════════════════════════════ -->
   <script>
 // ─── FLAG & SOURCE STYLES ──────────────────────────────────────────────────────
 const FL = {
@@ -726,107 +709,145 @@ const PRESENTATIONS = [
 ];
   </script>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- APP CODE (React + JSX — compiled by Babel)                -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <script type="text/babel">
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- APP CODE (pre-compiled — no Babel at runtime)  -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <script>
+const useState = React.useState;
+const useEffect = React.useEffect;
+import React, { useState, useEffect } from 'react';
 // ─── NEPHRO-REF APP ─────────────────────────────────────────
-const { useState, useEffect } = React;
 
 // ─── HELPER COMPONENTS ────────────────────────────────────────────────────────
-function SourceBadge({ src }) {
-  return <span className={`text-xs px-2 py-0.5 rounded-full font-medium border ${SRC[src] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>{src}</span>;
+function SourceBadge({
+  src
+}) {
+  return /*#__PURE__*/React.createElement("span", {
+    className: `text-xs px-2 py-0.5 rounded-full font-medium border ${SRC[src] || 'bg-gray-100 text-gray-600 border-gray-200'}`
+  }, src);
 }
 function FlagLegend() {
-  return (
-    <div className="flex flex-wrap gap-2 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-      <span className="text-xs text-gray-500 font-medium self-center mr-1">Dosing key:</span>
-      {Object.entries(FL_LEGEND).map(([k,v]) => (
-        <span key={k} className={`text-xs px-2 py-0.5 rounded border font-medium ${FL[k]}`}>{v}</span>
-      ))}
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-2 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-gray-500 font-medium self-center mr-1"
+  }, "Dosing key:"), Object.entries(FL_LEGEND).map(([k, v]) => /*#__PURE__*/React.createElement("span", {
+    key: k,
+    className: `text-xs px-2 py-0.5 rounded border font-medium ${FL[k]}`
+  }, v)));
 }
-function MedTable({ meds }) {
-  const cols = ['ckd3','ckd4','ckd5','hd','pd'];
-  const colLabels = ['CKD3\n(eGFR 30–59)','CKD4\n(eGFR 15–29)','CKD5/ESKD\n(eGFR <15)','Haemodialysis','Peritoneal\nDialysis'];
-  return (
-    <div className="space-y-6">
-      <FlagLegend />
-      {meds.map((m, i) => m.isHeader ? (
-        <div key={i} className="flex items-center gap-3 py-3 px-1 mt-4 first:mt-0">
-          <div className="flex-1 h-px bg-gray-200"></div>
-          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest px-2 whitespace-nowrap">{m.drug.replace(/━/g,'').trim()}</span>
-          <div className="flex-1 h-px bg-gray-200"></div>
-        </div>
-      ) : (
-        <div key={i} className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
-          <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex flex-wrap items-start gap-2">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-gray-900 text-sm font-mono">{m.drug}</span>
-                <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">{m.route}</span>
-                <SourceBadge src={m.src} />
-              </div>
-              <div className="text-xs text-gray-500 mt-1">{m.use}</div>
-              <div className="text-xs text-gray-600 mt-1"><span className="font-medium">Standard dose:</span> {m.std}</div>
-            </div>
-          </div>
-          <div className="p-3">
-            <div className="grid grid-cols-5 gap-2 mb-3">
-              {cols.map((col, ci) => (
-                <div key={col} className="flex flex-col gap-1">
-                  <div className="text-xs text-gray-400 font-medium text-center leading-tight whitespace-pre-line">{colLabels[ci]}</div>
-                  <div className={`rounded-lg p-2 text-xs text-center leading-tight border ${FL[m[col].f] || FL.adjust}`}>{m[col].d}</div>
-                </div>
-              ))}
-            </div>
-            {m.note && <div className="text-xs text-gray-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mt-2"><span className="font-medium text-blue-700">💡 Note: </span>{m.note}</div>}
-          </div>
-        </div>
-      ))
-      )}
-    </div>
-  );
+function MedTable({
+  meds
+}) {
+  const cols = ['ckd3', 'ckd4', 'ckd5', 'hd', 'pd'];
+  const colLabels = ['CKD3\n(eGFR 30–59)', 'CKD4\n(eGFR 15–29)', 'CKD5/ESKD\n(eGFR <15)', 'Haemodialysis', 'Peritoneal\nDialysis'];
+  return /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement(FlagLegend, null), meds.map((m, i) => {
+    if (m.isHeader) return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "flex items-center gap-3 py-3 px-1 mt-4"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex-1 h-px bg-gray-200"
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "text-xs font-bold text-gray-500 uppercase tracking-widest px-2 whitespace-nowrap"
+    }, m.drug.replace(/━/g, '').trim()), /*#__PURE__*/React.createElement("div", {
+      className: "flex-1 h-px bg-gray-200"
+    }));
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "px-4 py-3 bg-gray-50 border-b border-gray-200 flex flex-wrap items-start gap-2"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex-1 min-w-0"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2 flex-wrap"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "font-bold text-gray-900 text-sm font-mono"
+    }, m.drug), /*#__PURE__*/React.createElement("span", {
+      className: "text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded"
+    }, m.route), /*#__PURE__*/React.createElement(SourceBadge, {
+      src: m.src
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "text-xs text-gray-500 mt-1"
+    }, m.use), /*#__PURE__*/React.createElement("div", {
+      className: "text-xs text-gray-600 mt-1"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "font-medium"
+    }, "Standard dose:"), " ", m.std))), /*#__PURE__*/React.createElement("div", {
+      className: "p-3"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "grid grid-cols-5 gap-2 mb-3"
+    }, cols.map((col, ci) => /*#__PURE__*/React.createElement("div", {
+      key: col,
+      className: "flex flex-col gap-1"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-xs text-gray-400 font-medium text-center leading-tight whitespace-pre-line"
+    }, colLabels[ci]), /*#__PURE__*/React.createElement("div", {
+      className: `rounded-lg p-2 text-xs text-center leading-tight border ${FL[m[col].f] || FL.adjust}`
+    }, m[col].d)))), m.note && /*#__PURE__*/React.createElement("div", {
+      className: "text-xs text-gray-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mt-2"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "font-medium text-blue-700"
+    }, "\uD83D\uDCA1 Note: "), m.note)));
+  }));
 }
-function InvestigationList({ investigations }) {
-  const URGENCY_PRIORITY = {'Mandatory':0,'Mandatory + ECG':0,'URGENT if TMA suspected':1,'URGENT if TTP suspected':1,'GN screen (URGENT if haemoptysis)':1,'Urgent (bedside)':2,'Urgent — same day':2,'Urgent — do before antibiotics':2,'First-line':3,'First-line (if on diuretics)':3,'Bedside':3,'GN screen':4,'If clinically indicated':5};
-  return (
-    <div className="space-y-6">
-      {investigations.map((section, i) => (
-        <div key={i} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-          <div className="px-4 py-3 bg-slate-800 text-white flex items-center gap-2">
-            <span className="text-xl">{section.icon}</span>
-            <span className="font-semibold text-sm">{section.cat}</span>
-          </div>
-          <div className="divide-y divide-gray-100">
-            {section.items.map((item, j) => {
-              const uc = URGENCY_COLORS[item.urgency] || 'bg-gray-100 text-gray-600';
-              return (
-                <div key={j} className="px-4 py-3 flex gap-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="font-semibold text-sm text-gray-900">{item.test}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${uc}`}>{item.urgency}</span>
-                    </div>
-                    <p className="text-xs text-gray-600 leading-relaxed">{item.detail}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+function InvestigationList({
+  investigations
+}) {
+  const URGENCY_PRIORITY = {
+    'Mandatory': 0,
+    'Mandatory + ECG': 0,
+    'URGENT if TMA suspected': 1,
+    'URGENT if TTP suspected': 1,
+    'GN screen (URGENT if haemoptysis)': 1,
+    'Urgent (bedside)': 2,
+    'Urgent — same day': 2,
+    'Urgent — do before antibiotics': 2,
+    'First-line': 3,
+    'First-line (if on diuretics)': 3,
+    'Bedside': 3,
+    'GN screen': 4,
+    'If clinically indicated': 5
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, investigations.map((section, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "border border-gray-200 rounded-xl overflow-hidden shadow-sm"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-3 bg-slate-800 text-white flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xl"
+  }, section.icon), /*#__PURE__*/React.createElement("span", {
+    className: "font-semibold text-sm"
+  }, section.cat)), /*#__PURE__*/React.createElement("div", {
+    className: "divide-y divide-gray-100"
+  }, section.items.map((item, j) => {
+    const uc = URGENCY_COLORS[item.urgency] || 'bg-gray-100 text-gray-600';
+    return /*#__PURE__*/React.createElement("div", {
+      key: j,
+      className: "px-4 py-3 flex gap-3 hover:bg-gray-50 transition-colors"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex-1"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-wrap items-center gap-2 mb-1"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "font-semibold text-sm text-gray-900"
+    }, item.test), /*#__PURE__*/React.createElement("span", {
+      className: `text-xs px-2 py-0.5 rounded-full font-medium ${uc}`
+    }, item.urgency)), /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-gray-600 leading-relaxed"
+    }, item.detail)));
+  })))));
 }
 
 // ─── MAIN APP ──────────────────────────────────────────────────────────────────
-const CATS = ['Ward Quick Ref','Infectious Disease','Transplant','Acute Presentations','CKD Management','Dialysis-Specific','Custom'];
-const TABS_INFECTIOUS = ['Overview','Pathogens','Medications','Monitoring','My Notes'];
-const TABS_INVESTIGATIONS = ['Overview','Investigations','Monitoring','My Notes'];
-const TABS_MANAGEMENT = ['Overview','Medications','Monitoring','My Notes'];
-
+const CATS = ['Ward Quick Ref', 'Infectious Disease', 'Transplant', 'Acute Presentations', 'CKD Management', 'Dialysis-Specific', 'Custom'];
+const TABS_INFECTIOUS = ['Overview', 'Pathogens', 'Medications', 'Monitoring', 'My Notes'];
+const TABS_INVESTIGATIONS = ['Overview', 'Investigations', 'Monitoring', 'My Notes'];
+const TABS_MANAGEMENT = ['Overview', 'Medications', 'Monitoring', 'My Notes'];
 function App() {
   const [selectedId, setSelectedId] = useState('common-meds');
   const [tab, setTab] = useState('Overview');
@@ -835,52 +856,59 @@ function App() {
   const [editingNote, setEditingNote] = useState(false);
   const [customList, setCustomList] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newCustom, setNewCustom] = useState({name:'',cat:'Custom',summary:'',pearls:''});
+  const [newCustom, setNewCustom] = useState({
+    name: '',
+    cat: 'Custom',
+    summary: '',
+    pearls: ''
+  });
   const [search, setSearch] = useState('');
   const [loaded, setLoaded] = useState(false);
-
   useEffect(() => {
-    try { const n = localStorage.getItem('nephroref_notes_v2'); if (n) setNotes(JSON.parse(n)); } catch(e) {}
-    try { const c = localStorage.getItem('nephroref_custom_v2'); if (c) setCustomList(JSON.parse(c)); } catch(e) {}
+    try {
+      const n = localStorage.getItem('nephroref_notes_v2');
+      if (n) setNotes(JSON.parse(n));
+    } catch (e) {}
+    try {
+      const c = localStorage.getItem('nephroref_custom_v2');
+      if (c) setCustomList(JSON.parse(c));
+    } catch (e) {}
     setLoaded(true);
   }, []);
-
   const allPresentations = [...PRESENTATIONS, ...customList];
   const current = allPresentations.find(p => p.id === selectedId) || PRESENTATIONS[0];
-
-  const getTabs = (p) => {
+  const getTabs = p => {
     if (p.type === 'investigations') return TABS_INVESTIGATIONS;
     if (p.type === 'management') return TABS_MANAGEMENT;
     return TABS_INFECTIOUS;
   };
   const tabs = getTabs(current);
-
-  const selectPresentation = (id) => {
+  const selectPresentation = id => {
     setSelectedId(id);
     const p = allPresentations.find(x => x.id === id);
     if (p) setTab(getTabs(p)[0]);
     setEditingNote(false);
     setSearch('');
   };
-
   const saveNote = () => {
-    const newNotes = {...notes, [current.id]: noteText};
+    const newNotes = {
+      ...notes,
+      [current.id]: noteText
+    };
     setNotes(newNotes);
     localStorage.setItem('nephroref_notes_v2', JSON.stringify(newNotes));
     setEditingNote(false);
   };
-
   const openNote = () => {
     setNoteText(notes[current.id] || '');
     setEditingNote(true);
   };
-
   const addCustomPresentation = () => {
     if (!newCustom.name.trim()) return;
     const newP = {
       id: 'custom_' + Date.now(),
       name: newCustom.name.trim(),
-      abbr: newCustom.name.trim().slice(0,12),
+      abbr: newCustom.name.trim().slice(0, 12),
       cat: 'Custom',
       icon: '📌',
       type: 'management',
@@ -888,30 +916,28 @@ function App() {
       pearls: newCustom.pearls.trim() ? newCustom.pearls.trim().split('\n').filter(Boolean) : [],
       meds: [],
       monitoring: [],
-      dialysis: [],
+      dialysis: []
     };
     const updated = [...customList, newP];
     setCustomList(updated);
     localStorage.setItem('nephroref_custom_v2', JSON.stringify(updated));
     setShowAddModal(false);
-    setNewCustom({name:'',cat:'Custom',summary:'',pearls:''});
+    setNewCustom({
+      name: '',
+      cat: 'Custom',
+      summary: '',
+      pearls: ''
+    });
     selectPresentation(newP.id);
   };
-
-  const deleteCustom = (id) => {
+  const deleteCustom = id => {
     const updated = customList.filter(p => p.id !== id);
     setCustomList(updated);
     localStorage.setItem('nephroref_custom_v2', JSON.stringify(updated));
     if (selectedId === id) selectPresentation('cap');
   };
-
-  const filteredPresentations = allPresentations.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.abbr.toLowerCase().includes(search.toLowerCase()) ||
-    p.cat.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const catColor = (cat) => {
+  const filteredPresentations = allPresentations.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.abbr.toLowerCase().includes(search.toLowerCase()) || p.cat.toLowerCase().includes(search.toLowerCase()));
+  const catColor = cat => {
     if (cat === 'Ward Quick Ref') return 'text-cyan-300';
     if (cat === 'Infectious Disease') return 'text-amber-400';
     if (cat === 'Transplant') return 'text-blue-400';
@@ -920,319 +946,307 @@ function App() {
     if (cat === 'Dialysis-Specific') return 'text-teal-400';
     return 'text-purple-400';
   };
-
-  if (!loaded) return (
-    <div className="h-screen flex items-center justify-center bg-slate-900 text-white">
-      <div className="text-center">
-        <div className="text-3xl mb-3">⚕️</div>
-        <div className="text-slate-300 text-sm">Loading Nephro-Ref...</div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden" style={{fontFamily:"'IBM Plex Sans', system-ui, sans-serif"}}>
-      {/* ── SIDEBAR ── */}
-      <div className="w-64 bg-slate-900 flex flex-col flex-shrink-0 overflow-hidden">
-        <div className="px-4 pt-5 pb-3 border-b border-slate-700">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">⚕️</span>
-            <div>
-              <div className="text-white font-bold text-sm tracking-wide">Nephro-Ref</div>
-              <div className="text-slate-400 text-xs">Australian Clinical Reference</div>
-            </div>
-          </div>
-        </div>
-        <div className="px-3 py-2 border-b border-slate-800">
-          <input
-            className="w-full bg-slate-800 text-white placeholder-slate-500 text-xs rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-teal-500"
-            placeholder="Search presentations..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        </div>
-        <div className="flex-1 overflow-y-auto py-2">
-          {CATS.filter(cat => filteredPresentations.some(p => p.cat === cat)).map(cat => (
-            <div key={cat} className="mb-1">
-              <div className={`px-4 py-1.5 text-xs font-bold uppercase tracking-widest ${catColor(cat)}`}>{cat}</div>
-              {filteredPresentations.filter(p => p.cat === cat).map(p => (
-                <div
-                  key={p.id}
-                  onClick={() => selectPresentation(p.id)}
-                  className={`mx-2 px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2 mb-0.5 transition-colors group ${selectedId === p.id ? 'bg-teal-700 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`}
-                >
-                  <span className="text-base flex-shrink-0">{p.icon}</span>
-                  <span className="text-xs font-medium leading-tight flex-1">{p.abbr || p.name}</span>
-                  {p.cat === 'Custom' && (
-                    <button
-                      onClick={e => { e.stopPropagation(); deleteCustom(p.id); }}
-                      className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-400 text-xs ml-auto px-1"
-                    >✕</button>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-        <div className="p-3 border-t border-slate-800">
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="w-full bg-teal-700 hover:bg-teal-600 text-white text-xs rounded-lg py-2.5 px-3 font-medium transition-colors flex items-center justify-center gap-2"
-          >
-            <span>+</span> Add Custom Presentation
-          </button>
-        </div>
-      </div>
-
-      {/* ── MAIN CONTENT ── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0">
-          <div className="flex items-start gap-3">
-            <span className="text-3xl mt-0.5">{current.icon}</span>
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-gray-900" style={{fontFamily:"'IBM Plex Sans', sans-serif"}}>{current.name}</h1>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <span className={`text-xs font-semibold uppercase tracking-wide ${catColor(current.cat)}`}>{current.cat}</span>
-                <span className="text-gray-300">·</span>
-                <span className="text-xs text-gray-400">Australian clinical practice (eTG + UpToDate)</span>
-                {notes[current.id] && <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full">📝 Notes saved</span>}
-              </div>
-            </div>
-          </div>
-          {/* Tabs */}
-          <div className="flex gap-1 mt-4 border-b border-gray-100 -mb-4 -mx-6 px-6">
-            {tabs.map(t => (
-              <button
-                key={t}
-                onClick={() => { setTab(t); if (t === 'My Notes') openNote(); }}
-                className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === t ? 'border-teal-600 text-teal-700' : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'}`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-6">
-          {/* OVERVIEW */}
-          {tab === 'Overview' && (
-            <div className="max-w-3xl space-y-5">
-              <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                <h2 className="font-bold text-gray-900 mb-2 text-sm uppercase tracking-wide text-gray-500">Summary</h2>
-                <p className="text-gray-700 text-sm leading-relaxed">{current.summary}</p>
-              </div>
-              {current.pearls && current.pearls.length > 0 && (
-                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                  <h2 className="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wide text-gray-500">Key CKD/Dialysis Considerations</h2>
-                  <ul className="space-y-2">
-                    {current.pearls.map((p, i) => (
-                      <li key={i} className="flex gap-2 text-sm text-gray-700">
-                        <span className="text-teal-500 font-bold flex-shrink-0">→</span>
-                        <span className="leading-relaxed">{p}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                <p className="text-xs text-amber-700"><span className="font-bold">⚠ Educational reference only.</span> Always verify against current eTG, UpToDate, and local guidelines. Consult clinical pharmacy for complex dosing decisions in CKD/dialysis. Patient-specific factors always apply.</p>
-              </div>
-            </div>
-          )}
-
-          {/* PATHOGENS */}
-          {tab === 'Pathogens' && current.pathogens && (
-            <div className="max-w-3xl">
-              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                  <h2 className="font-bold text-sm text-gray-700">Common Pathogens</h2>
-                </div>
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-gray-50 border-b border-gray-100">
-                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Organism</th>
-                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Frequency</th>
-                      <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {current.pathogens.map((p, i) => (
-                      <tr key={i} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 font-mono text-xs font-medium text-gray-900">{p.name}</td>
-                        <td className="px-4 py-3 text-xs text-gray-600">{p.freq}</td>
-                        <td className="px-4 py-3 text-xs text-gray-500">{p.note}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* INVESTIGATIONS */}
-          {tab === 'Investigations' && current.investigations && (
-            <div className="max-w-4xl">
-              <InvestigationList investigations={current.investigations} />
-            </div>
-          )}
-
-          {/* MEDICATIONS */}
-          {tab === 'Medications' && current.meds && (
-            <div className="max-w-5xl">
-              {current.meds.length === 0
-                ? <div className="text-gray-500 text-sm bg-white rounded-xl p-6 border border-gray-200">No medications added yet. Use My Notes tab to add your own medication notes.</div>
-                : <MedTable meds={current.meds} />
-              }
-            </div>
-          )}
-
-          {/* MONITORING */}
-          {tab === 'Monitoring' && (
-            <div className="max-w-3xl space-y-5">
-              {current.monitoring && current.monitoring.length > 0 && (
-                <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                  <h2 className="font-bold text-sm text-gray-500 uppercase tracking-wide mb-3">Monitoring Parameters</h2>
-                  <ul className="space-y-2">
-                    {current.monitoring.map((m, i) => (
-                      <li key={i} className="flex gap-2 text-sm text-gray-700">
-                        <span className="text-blue-400 font-bold flex-shrink-0 mt-0.5">•</span>
-                        <span className="leading-relaxed">{m}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {current.dialysis && current.dialysis.length > 0 && (
-                <div className="bg-white rounded-xl border border-teal-200 p-5 shadow-sm">
-                  <h2 className="font-bold text-sm text-teal-600 uppercase tracking-wide mb-3">🔵 Dialysis-Specific Considerations</h2>
-                  <ul className="space-y-2">
-                    {current.dialysis.map((d, i) => (
-                      <li key={i} className="flex gap-2 text-sm text-gray-700">
-                        <span className="text-teal-500 font-bold flex-shrink-0 mt-0.5">→</span>
-                        <span className="leading-relaxed">{d}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* MY NOTES */}
-          {tab === 'My Notes' && (
-            <div className="max-w-3xl space-y-4">
-              <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-bold text-sm text-gray-500 uppercase tracking-wide">My Notes & Clinical Pearls</h2>
-                  {!editingNote
-                    ? <button onClick={openNote} className="text-xs bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg font-medium transition-colors">{notes[current.id] ? 'Edit Notes' : '+ Add Notes'}</button>
-                    : <div className="flex gap-2">
-                        <button onClick={() => setEditingNote(false)} className="text-xs text-gray-500 hover:text-gray-700 px-3 py-1.5 rounded-lg border border-gray-200 font-medium">Cancel</button>
-                        <button onClick={saveNote} className="text-xs bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg font-medium transition-colors">💾 Save</button>
-                      </div>
-                  }
-                </div>
-                {editingNote ? (
-                  <div>
-                    <p className="text-xs text-gray-400 mb-2">Add clinical pearls, consultant tips, local protocol differences, or case learnings. These save permanently across sessions.</p>
-                    <textarea
-                      value={noteText}
-                      onChange={e => setNoteText(e.target.value)}
-                      className="w-full border border-gray-200 rounded-lg p-3 text-sm text-gray-700 focus:outline-none focus:border-teal-400 leading-relaxed resize-none"
-                      rows={14}
-                      placeholder={`Add your notes here, e.g.:\n• Senior consultant says: always check Mg2+ with pip-tazo in HD patients\n• Local protocol: vancomycin loading dose per pharmacy chart\n• Case pearl: patient had FeNa >2% but was on frusemide — used FeUrea instead\n• Remember: check fungal cultures if PD patient doesn't respond at 72h`}
-                      autoFocus
-                    />
-                  </div>
-                ) : notes[current.id] ? (
-                  <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap bg-gray-50 rounded-lg p-4 border border-gray-100">{notes[current.id]}</div>
-                ) : (
-                  <div className="text-center py-8 text-gray-400">
-                    <div className="text-3xl mb-2">📝</div>
-                    <p className="text-sm">No notes yet for this presentation.</p>
-                    <p className="text-xs mt-1">Add clinical pearls, consultant tips, or local protocol notes.</p>
-                    <button onClick={openNote} className="mt-3 text-xs bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">+ Add Notes</button>
-                  </div>
-                )}
-              </div>
-              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-                <p className="text-xs text-blue-600"><span className="font-bold">💡 Tip:</span> Notes are permanently saved to this browser. Use this space for consultant pearls, local protocol differences, memorable cases, and anything not captured in the standard content.</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── ADD CUSTOM MODAL ── */}
-      {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="font-bold text-gray-900">Add Custom Presentation</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
-            </div>
-            <div className="px-6 py-5 space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Presentation Name *</label>
-                <input
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400"
-                  placeholder="e.g., Dialysis Catheter Removal Protocol, Fluid Overload Assessment..."
-                  value={newCustom.name}
-                  onChange={e => setNewCustom({...newCustom, name: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Summary / Overview</label>
-                <textarea
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400 resize-none"
-                  placeholder="Brief clinical summary or context..."
-                  rows={3}
-                  value={newCustom.summary}
-                  onChange={e => setNewCustom({...newCustom, summary: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Key Pearls (one per line)</label>
-                <textarea
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400 resize-none"
-                  placeholder="Consultant pearl 1&#10;Local protocol note&#10;Memorable case learning..."
-                  rows={5}
-                  value={newCustom.pearls}
-                  onChange={e => setNewCustom({...newCustom, pearls: e.target.value})}
-                />
-              </div>
-              <p className="text-xs text-gray-400">After creating, use the My Notes tab to add detailed clinical notes, medication info, and more.</p>
-            </div>
-            <div className="px-6 py-4 border-t border-gray-100 flex gap-3 justify-end">
-              <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-lg font-medium">Cancel</button>
-              <button
-                onClick={addCustomPresentation}
-                disabled={!newCustom.name.trim()}
-                className="px-4 py-2 text-sm bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >Add Presentation</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  if (!loaded) return /*#__PURE__*/React.createElement("div", {
+    className: "h-screen flex items-center justify-center bg-slate-900 text-white"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-3xl mb-3"
+  }, "\u2695\uFE0F"), /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-300 text-sm"
+  }, "Loading Nephro-Ref...")));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex h-screen bg-gray-50 overflow-hidden",
+    style: {
+      fontFamily: "'IBM Plex Sans', system-ui, sans-serif"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-64 bg-slate-900 flex flex-col flex-shrink-0 overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-4 pt-5 pb-3 border-b border-slate-700"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-2xl"
+  }, "\u2695\uFE0F"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "text-white font-bold text-sm tracking-wide"
+  }, "Nephro-Ref"), /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-400 text-xs"
+  }, "Australian Clinical Reference")))), /*#__PURE__*/React.createElement("div", {
+    className: "px-3 py-2 border-b border-slate-800"
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "w-full bg-slate-800 text-white placeholder-slate-500 text-xs rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-teal-500",
+    placeholder: "Search presentations...",
+    value: search,
+    onChange: e => setSearch(e.target.value)
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto py-2"
+  }, CATS.filter(cat => filteredPresentations.some(p => p.cat === cat)).map(cat => /*#__PURE__*/React.createElement("div", {
+    key: cat,
+    className: "mb-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `px-4 py-1.5 text-xs font-bold uppercase tracking-widest ${catColor(cat)}`
+  }, cat), filteredPresentations.filter(p => p.cat === cat).map(p => /*#__PURE__*/React.createElement("div", {
+    key: p.id,
+    onClick: () => selectPresentation(p.id),
+    className: `mx-2 px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2 mb-0.5 transition-colors group ${selectedId === p.id ? 'bg-teal-700 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'}`
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-base flex-shrink-0"
+  }, p.icon), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-medium leading-tight flex-1"
+  }, p.abbr || p.name), p.cat === 'Custom' && /*#__PURE__*/React.createElement("button", {
+    onClick: e => {
+      e.stopPropagation();
+      deleteCustom(p.id);
+    },
+    className: "opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-400 text-xs ml-auto px-1"
+  }, "\u2715")))))), /*#__PURE__*/React.createElement("div", {
+    className: "p-3 border-t border-slate-800"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowAddModal(true),
+    className: "w-full bg-teal-700 hover:bg-teal-600 text-white text-xs rounded-lg py-2.5 px-3 font-medium transition-colors flex items-center justify-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", null, "+"), " Add Custom Presentation"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 flex flex-col overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white border-b border-gray-200 px-6 py-4 flex-shrink-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-start gap-3"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-3xl mt-0.5"
+  }, current.icon), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "text-xl font-bold text-gray-900",
+    style: {
+      fontFamily: "'IBM Plex Sans', sans-serif"
+    }
+  }, current.name), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mt-1 flex-wrap"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: `text-xs font-semibold uppercase tracking-wide ${catColor(current.cat)}`
+  }, current.cat), /*#__PURE__*/React.createElement("span", {
+    className: "text-gray-300"
+  }, "\xB7"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-gray-400"
+  }, "Australian clinical practice (eTG + UpToDate)"), notes[current.id] && /*#__PURE__*/React.createElement("span", {
+    className: "text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full"
+  }, "\uD83D\uDCDD Notes saved")))), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1 mt-4 border-b border-gray-100 -mb-4 -mx-6 px-6"
+  }, tabs.map(t => /*#__PURE__*/React.createElement("button", {
+    key: t,
+    onClick: () => {
+      setTab(t);
+      if (t === 'My Notes') openNote();
+    },
+    className: `px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${tab === t ? 'border-teal-600 text-teal-700' : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'}`
+  }, t)))), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto px-6 py-6"
+  }, tab === 'Overview' && /*#__PURE__*/React.createElement("div", {
+    className: "max-w-3xl space-y-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-gray-200 p-5 shadow-sm"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "font-bold text-gray-900 mb-2 text-sm uppercase tracking-wide text-gray-500"
+  }, "Summary"), /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-700 text-sm leading-relaxed"
+  }, current.summary)), current.pearls && current.pearls.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-gray-200 p-5 shadow-sm"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "font-bold text-gray-900 mb-3 text-sm uppercase tracking-wide text-gray-500"
+  }, "Key CKD/Dialysis Considerations"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2"
+  }, current.pearls.map((p, i) => /*#__PURE__*/React.createElement("li", {
+    key: i,
+    className: "flex gap-2 text-sm text-gray-700"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-teal-500 font-bold flex-shrink-0"
+  }, "\u2192"), /*#__PURE__*/React.createElement("span", {
+    className: "leading-relaxed"
+  }, p))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-amber-50 border border-amber-200 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-amber-700"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-bold"
+  }, "\u26A0 Educational reference only."), " Always verify against current eTG, UpToDate, and local guidelines. Consult clinical pharmacy for complex dosing decisions in CKD/dialysis. Patient-specific factors always apply."))), tab === 'Pathogens' && current.pathogens && /*#__PURE__*/React.createElement("div", {
+    className: "max-w-3xl"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-3 bg-gray-50 border-b border-gray-200"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "font-bold text-sm text-gray-700"
+  }, "Common Pathogens")), /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-sm"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "bg-gray-50 border-b border-gray-100"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide"
+  }, "Organism"), /*#__PURE__*/React.createElement("th", {
+    className: "px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide"
+  }, "Frequency"), /*#__PURE__*/React.createElement("th", {
+    className: "px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide"
+  }, "Notes"))), /*#__PURE__*/React.createElement("tbody", {
+    className: "divide-y divide-gray-100"
+  }, current.pathogens.map((p, i) => /*#__PURE__*/React.createElement("tr", {
+    key: i,
+    className: "hover:bg-gray-50"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "px-4 py-3 font-mono text-xs font-medium text-gray-900"
+  }, p.name), /*#__PURE__*/React.createElement("td", {
+    className: "px-4 py-3 text-xs text-gray-600"
+  }, p.freq), /*#__PURE__*/React.createElement("td", {
+    className: "px-4 py-3 text-xs text-gray-500"
+  }, p.note))))))), tab === 'Investigations' && current.investigations && /*#__PURE__*/React.createElement("div", {
+    className: "max-w-4xl"
+  }, /*#__PURE__*/React.createElement(InvestigationList, {
+    investigations: current.investigations
+  })), tab === 'Medications' && current.meds && /*#__PURE__*/React.createElement("div", {
+    className: "max-w-5xl"
+  }, current.meds.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "text-gray-500 text-sm bg-white rounded-xl p-6 border border-gray-200"
+  }, "No medications added yet. Use My Notes tab to add your own medication notes.") : /*#__PURE__*/React.createElement(MedTable, {
+    meds: current.meds
+  })), tab === 'Monitoring' && /*#__PURE__*/React.createElement("div", {
+    className: "max-w-3xl space-y-5"
+  }, current.monitoring && current.monitoring.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-gray-200 p-5 shadow-sm"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "font-bold text-sm text-gray-500 uppercase tracking-wide mb-3"
+  }, "Monitoring Parameters"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2"
+  }, current.monitoring.map((m, i) => /*#__PURE__*/React.createElement("li", {
+    key: i,
+    className: "flex gap-2 text-sm text-gray-700"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-blue-400 font-bold flex-shrink-0 mt-0.5"
+  }, "\u2022"), /*#__PURE__*/React.createElement("span", {
+    className: "leading-relaxed"
+  }, m))))), current.dialysis && current.dialysis.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-teal-200 p-5 shadow-sm"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "font-bold text-sm text-teal-600 uppercase tracking-wide mb-3"
+  }, "\uD83D\uDD35 Dialysis-Specific Considerations"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2"
+  }, current.dialysis.map((d, i) => /*#__PURE__*/React.createElement("li", {
+    key: i,
+    className: "flex gap-2 text-sm text-gray-700"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-teal-500 font-bold flex-shrink-0 mt-0.5"
+  }, "\u2192"), /*#__PURE__*/React.createElement("span", {
+    className: "leading-relaxed"
+  }, d)))))), tab === 'My Notes' && /*#__PURE__*/React.createElement("div", {
+    className: "max-w-3xl space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-xl border border-gray-200 p-5 shadow-sm"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-3"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "font-bold text-sm text-gray-500 uppercase tracking-wide"
+  }, "My Notes & Clinical Pearls"), !editingNote ? /*#__PURE__*/React.createElement("button", {
+    onClick: openNote,
+    className: "text-xs bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg font-medium transition-colors"
+  }, notes[current.id] ? 'Edit Notes' : '+ Add Notes') : /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setEditingNote(false),
+    className: "text-xs text-gray-500 hover:text-gray-700 px-3 py-1.5 rounded-lg border border-gray-200 font-medium"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    onClick: saveNote,
+    className: "text-xs bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg font-medium transition-colors"
+  }, "\uD83D\uDCBE Save"))), editingNote ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-gray-400 mb-2"
+  }, "Add clinical pearls, consultant tips, local protocol differences, or case learnings. These save permanently across sessions."), /*#__PURE__*/React.createElement("textarea", {
+    value: noteText,
+    onChange: e => setNoteText(e.target.value),
+    className: "w-full border border-gray-200 rounded-lg p-3 text-sm text-gray-700 focus:outline-none focus:border-teal-400 leading-relaxed resize-none",
+    rows: 14,
+    placeholder: `Add your notes here, e.g.:\n• Senior consultant says: always check Mg2+ with pip-tazo in HD patients\n• Local protocol: vancomycin loading dose per pharmacy chart\n• Case pearl: patient had FeNa >2% but was on frusemide — used FeUrea instead\n• Remember: check fungal cultures if PD patient doesn't respond at 72h`,
+    autoFocus: true
+  })) : notes[current.id] ? /*#__PURE__*/React.createElement("div", {
+    className: "text-sm text-gray-700 leading-relaxed whitespace-pre-wrap bg-gray-50 rounded-lg p-4 border border-gray-100"
+  }, notes[current.id]) : /*#__PURE__*/React.createElement("div", {
+    className: "text-center py-8 text-gray-400"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-3xl mb-2"
+  }, "\uD83D\uDCDD"), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm"
+  }, "No notes yet for this presentation."), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs mt-1"
+  }, "Add clinical pearls, consultant tips, or local protocol notes."), /*#__PURE__*/React.createElement("button", {
+    onClick: openNote,
+    className: "mt-3 text-xs bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+  }, "+ Add Notes"))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-blue-50 border border-blue-100 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-blue-600"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-bold"
+  }, "\uD83D\uDCA1 Tip:"), " Notes are permanently saved to this browser. Use this space for consultant pearls, local protocol differences, memorable cases, and anything not captured in the standard content."))))), showAddModal && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl shadow-2xl w-full max-w-lg"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-6 py-4 border-b border-gray-100 flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "font-bold text-gray-900"
+  }, "Add Custom Presentation"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowAddModal(false),
+    className: "text-gray-400 hover:text-gray-600 text-xl leading-none"
+  }, "\xD7")), /*#__PURE__*/React.createElement("div", {
+    className: "px-6 py-5 space-y-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1"
+  }, "Presentation Name *"), /*#__PURE__*/React.createElement("input", {
+    className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400",
+    placeholder: "e.g., Dialysis Catheter Removal Protocol, Fluid Overload Assessment...",
+    value: newCustom.name,
+    onChange: e => setNewCustom({
+      ...newCustom,
+      name: e.target.value
+    })
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1"
+  }, "Summary / Overview"), /*#__PURE__*/React.createElement("textarea", {
+    className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400 resize-none",
+    placeholder: "Brief clinical summary or context...",
+    rows: 3,
+    value: newCustom.summary,
+    onChange: e => setNewCustom({
+      ...newCustom,
+      summary: e.target.value
+    })
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1"
+  }, "Key Pearls (one per line)"), /*#__PURE__*/React.createElement("textarea", {
+    className: "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400 resize-none",
+    placeholder: "Consultant pearl 1\nLocal protocol note\nMemorable case learning...",
+    rows: 5,
+    value: newCustom.pearls,
+    onChange: e => setNewCustom({
+      ...newCustom,
+      pearls: e.target.value
+    })
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-gray-400"
+  }, "After creating, use the My Notes tab to add detailed clinical notes, medication info, and more.")), /*#__PURE__*/React.createElement("div", {
+    className: "px-6 py-4 border-t border-gray-100 flex gap-3 justify-end"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setShowAddModal(false),
+    className: "px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-lg font-medium"
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    onClick: addCustomPresentation,
+    disabled: !newCustom.name.trim(),
+    className: "px-4 py-2 text-sm bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+  }, "Add Presentation")))));
 }
-
-ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
-
+ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App));
   </script>
 
-  <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- VERSION INFO + UPDATE CHECKER                             -->
-  <!-- ═══════════════════════════════════════════════════════════ -->
   <script>
-    // App version — update this string when releasing new versions
-    window.NEPHROREF_VERSION = '1.2.0';
-    window.NEPHROREF_DATE = '2025';
-    console.log('Nephro-Ref v' + window.NEPHROREF_VERSION + ' loaded. Notes stored in localStorage.');
+    // Version: 1.2.0 | Generated for igscalia.github.io/kidneypro
+    // Notes stored in device localStorage — private to this browser
+    console.log('[Nephro-Ref] Loaded. Notes are stored locally on this device.');
   </script>
-
 </body>
 </html>
