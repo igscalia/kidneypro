@@ -12,54 +12,67 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script>
-  // Generate kidney bean icon for Add to Home Screen
-  function _mkIcon() {
-    try {
-      var c=document.createElement('canvas'); c.width=c.height=180;
-      var x=c.getContext('2d');
-      // Rounded dark background
-      x.fillStyle='#0f172a';
-      var r=38,w=180;
-      x.beginPath(); x.moveTo(r,0); x.lineTo(w-r,0);
-      x.arcTo(w,0,w,r,r); x.lineTo(w,w-r);
-      x.arcTo(w,w,w-r,w,r); x.lineTo(r,w);
-      x.arcTo(0,w,0,w-r,r); x.lineTo(0,r);
-      x.arcTo(0,0,r,0,r); x.closePath(); x.fill();
-      // Kidney bean (teal)
-      x.fillStyle='#14b8a6';
+  function _mkIcon(){
+    try{
+      var c=document.createElement('canvas');c.width=c.height=180;
+      var x=c.getContext('2d'),w=180;
+      x.fillStyle='#FFF0EC';
+      var rd=40;
+      x.beginPath();x.moveTo(rd,0);x.lineTo(w-rd,0);
+      x.arcTo(w,0,w,rd,rd);x.lineTo(w,w-rd);
+      x.arcTo(w,w,w-rd,w,rd);x.lineTo(rd,w);
+      x.arcTo(0,w,0,w-rd,rd);x.lineTo(0,rd);
+      x.arcTo(0,0,rd,0,rd);x.closePath();x.fill();
+      x.fillStyle='rgba(200,115,105,0.18)';
+      x.beginPath();x.ellipse(90,170,22,5,0,0,Math.PI*2);x.fill();
+      x.fillStyle='#D88080';
       x.beginPath();
-      x.moveTo(90,28);
-      x.bezierCurveTo(142,28,158,62,158,90);
-      x.bezierCurveTo(158,120,140,152,90,152);
-      x.bezierCurveTo(60,152,36,134,30,110);
-      x.bezierCurveTo(22,90,34,82,48,84);
-      x.bezierCurveTo(56,85,55,80,52,74);
-      x.bezierCurveTo(47,62,50,42,60,33);
-      x.bezierCurveTo(70,24,80,28,90,28);
-      x.closePath(); x.fill();
-      // Inner highlight
-      x.fillStyle='rgba(255,255,255,0.12)';
+      x.moveTo(132,32);x.bezierCurveTo(154,32,168,52,168,82);
+      x.bezierCurveTo(168,113,152,136,130,136);
+      x.bezierCurveTo(119,136,110,129,107,119);
+      x.bezierCurveTo(104,109,111,101,112,94);
+      x.bezierCurveTo(114,87,108,79,110,70);
+      x.bezierCurveTo(112,57,120,32,132,32);x.closePath();x.fill();
+      x.strokeStyle='rgba(255,255,255,0.38)';x.lineWidth=5;x.lineCap='round';
+      x.beginPath();x.moveTo(156,44);x.bezierCurveTo(163,54,166,68,162,82);x.stroke();
+      x.fillStyle='rgba(255,255,255,0.38)';
+      x.beginPath();x.arc(157,42,3.5,0,Math.PI*2);x.fill();
+      x.fillStyle='#E89090';
       x.beginPath();
-      x.moveTo(88,36); x.bezierCurveTo(120,34,148,58,148,84);
-      x.bezierCurveTo(145,72,125,48,96,46);
-      x.bezierCurveTo(84,45,74,36,82,32);
-      x.bezierCurveTo(84,30,87,36,88,36);
-      x.closePath(); x.fill();
-      // Small white hilum dot
-      x.fillStyle='rgba(255,255,255,0.35)';
-      x.beginPath(); x.arc(48,88,5,0,Math.PI*2); x.fill();
-      // Set as touch icon
-      var lk=document.createElement('link');
-      lk.rel='apple-touch-icon'; lk.href=c.toDataURL('image/png');
-      document.head.appendChild(lk);
-      // Also set manifest icon
-      var lk2=document.querySelector('link[rel="icon"]');
-      if(!lk2){lk2=document.createElement('link');lk2.rel='icon';document.head.appendChild(lk2);}
-      lk2.href=c.toDataURL('image/png');
-    } catch(e){}
+      x.moveTo(48,32);x.bezierCurveTo(26,32,12,52,12,82);
+      x.bezierCurveTo(12,113,28,136,50,136);
+      x.bezierCurveTo(61,136,70,129,73,119);
+      x.bezierCurveTo(76,109,69,101,68,94);
+      x.bezierCurveTo(66,87,72,79,70,70);
+      x.bezierCurveTo(68,57,60,32,48,32);x.closePath();x.fill();
+      x.strokeStyle='rgba(255,255,255,0.45)';x.lineWidth=5;x.lineCap='round';
+      x.beginPath();x.moveTo(24,44);x.bezierCurveTo(17,54,14,68,18,82);x.stroke();
+      x.fillStyle='rgba(255,255,255,0.45)';
+      x.beginPath();x.arc(23,42,3.5,0,Math.PI*2);x.fill();
+      x.strokeStyle='#C87070';x.lineWidth=5.5;x.lineCap='round';
+      x.beginPath();x.moveTo(73,116);x.quadraticCurveTo(80,140,87,157);
+      x.quadraticCurveTo(89,163,90,167);x.stroke();
+      x.beginPath();x.moveTo(107,116);x.quadraticCurveTo(100,140,93,157);
+      x.quadraticCurveTo(91,163,90,167);x.stroke();
+      x.fillStyle='#C87070';
+      x.beginPath();x.arc(90,167,4.5,0,Math.PI*2);x.fill();
+      x.fillStyle='#C85060';
+      x.beginPath();
+      x.moveTo(90,34);
+      x.bezierCurveTo(90,34,83,23,75,23);
+      x.bezierCurveTo(67,23,62,29,62,36);
+      x.bezierCurveTo(62,46,73,55,90,66);
+      x.bezierCurveTo(107,55,118,46,118,36);
+      x.bezierCurveTo(118,29,113,23,105,23);
+      x.bezierCurveTo(97,23,90,34,90,34);x.closePath();x.fill();
+      var img=c.toDataURL('image/png');
+      var lk=document.createElement('link');lk.rel='apple-touch-icon';lk.setAttribute('sizes','180x180');lk.href=img;document.head.appendChild(lk);
+      var fv=document.createElement('link');fv.rel='icon';fv.type='image/png';fv.href=img;document.head.appendChild(fv);
+    }catch(e){}
   }
   _mkIcon();
   </script>
+  
   <style>
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     body { margin:0; overflow:hidden; }
@@ -774,6 +787,115 @@ const PRESENTATIONS = [
     monitoring:['Fanconi syndrome (generalised PCT dysfunction): glucosuria with normal BSL, phosphaturia, aminoaciduria, uricosuria, bicarbonaturia, type 2 (proximal) RTA. Key acquired cause: tenofovir disoproxil (TDF) → check urine glucose in all patients on TDF','RTA types: Type 1 (distal) — inability to acidify urine (<5.3); Type 2 (proximal) — bicarbonate wasting; Type 4 — hyperkalaemic (↓aldosterone effect or tubular resistance)','Urine electrolyte interpretation: urine Na <20 = avid Na retention (pre-renal/RAAS activation). Urine K >40 = renal K wasting (hyperaldosteronism, diuretics, Bartter/Gitelman)','Fractional excretion of Mg²⁺ (FEMg): >4% = renal Mg wasting (diuretics, PPIs, cisplatin, aminoglycosides, calcineurin inhibitors)'],
     dialysis:['Patients on HD are anuric — nephron-level physiology does not apply to solute handling. All electrolyte balance is through dialysis + dietary restriction.','However, nephron pharmacology still relevant: drugs that act on tubules (frusemide, thiazides) have limited benefit in anuric ESKD patients but may preserve residual renal function in early HD/PD patients','Residual renal function (RRF): important in both HD and PD — preserves phosphate/potassium/fluid handling. Avoid nephrotoxins, volume depletion, and contrast wherever possible.'],
   },
+
+  {
+    id:'home',name:'Home',abbr:'Home',cat:'__home__',icon:'⚕️',type:'home',
+    summary:'',pearls:[],meds:[],monitoring:[],dialysis:[]
+  },
+  {
+    id:'elyte-replace',name:'Electrolyte Replacement',abbr:'Electrolyte Replacement',cat:'Ward Quick Ref',icon:'🧪',type:'management',
+    summary:'Practical guide to safe electrolyte replacement on the ward. Magnesium must be corrected before potassium will correct — always check both simultaneously. IV potassium via peripheral line is limited to 10 mmol/h maximum. Calcium chloride causes phlebitis — always use gluconate via peripheral line.',
+    pearls:[
+      'Fix Mg²⁺ first — hypokalaemia often fails to correct until hypomagnesaemia is treated (Mg²⁺ required for Na/K-ATPase function)',
+      'Peripheral IV K⁺: maximum 10 mmol/h, maximum concentration 40 mmol/L — concentrated K⁺ causes burning and phlebitis',
+      'Central IV K⁺: up to 40 mmol/h — requires ICU/CCU/HDU and continuous telemetry',
+      'Calcium chloride 10%: 3× the elemental calcium of gluconate BUT causes severe phlebitis — central line ONLY or cardiac arrest',
+      'Calcium gluconate 10%: preferred via peripheral line; also used for cardiac membrane stabilisation in hyperkalaemia',
+      'IV phosphate contains potassium — each mmol IV phosphate = 1 mmol K⁺; monitor K⁺ closely',
+      'Refeeding syndrome: anticipate phosphate, K⁺, and Mg²⁺ drops when starting nutrition in malnourished patients — replace prophylactically',
+      'CKD/HD patients: be very cautious with potassium replacement — reduced urinary excretion; check K⁺ before each infusion bag',
+    ],
+    meds:[
+      {drug:'━━━ POTASSIUM ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Oral Potassium (Slow-K)',route:'PO',use:'Mild-moderate hypokalaemia (K⁺ ≥3.0); maintenance',std:'Slow-K 600mg (8mmol) 2–4 tabs TDS with meals; target K⁺ rise 0.1–0.2 mmol/L per 10mmol',ckd3:{d:'Use with caution; check K⁺ frequently — reduced clearance',f:'adjust'},ckd4:{d:'High risk of over-correction — consider half doses with daily K⁺ monitoring',f:'caution'},ckd5:{d:'Generally AVOID oral K⁺ replacement — usually managing hyperkalaemia instead',f:'avoid'},hd:{d:'Oral K⁺ replacement rarely needed in HD (more often managing hypERkalaemia)',f:'avoid'},pd:{d:'Lower risk than HD; use with caution; K⁺ monitoring',f:'adjust'},note:'Onset of replacement is slow (6–12h). Take with food to reduce GI irritation. Slow-K 600mg = 8mmol elemental K⁺. Combined K+ Cl⁻ preferred over bicarbonate preparations unless concurrent metabolic acidosis.',src:'eTG'},
+      {drug:'IV Potassium Chloride',route:'IV',use:'Severe/symptomatic hypokalaemia (K⁺ <3.0 or ECG changes)',std:'20mmol KCl in 100mL NaCl 0.9% over 2h via peripheral line (max 10 mmol/h peripheral)',ckd3:{d:'Proceed carefully; recheck K⁺ after each 20mmol infusion',f:'adjust'},ckd4:{d:'High risk of overcorrection; max 10mmol then recheck',f:'caution'},ckd5:{d:'Replacement rarely needed; extreme caution; cardiology/nephrology input',f:'avoid'},hd:{d:'Almost never needed in HD — risk of life-threatening hyperkalaemia; specialist only',f:'avoid'},pd:{d:'Use with extreme caution; K⁺ monitoring after every 10mmol',f:'caution'},note:'PERIPHERAL LINE MAX: 10 mmol/h, max concentration 40 mmol/L. Central line: up to 40 mmol/h with telemetry. Always check K⁺ and ECG before and after infusion in CKD. Continuous ECG monitoring if K⁺ <2.5 or ECG changes.',src:'eTG'},
+      {drug:'━━━ MAGNESIUM ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Magnesium Sulfate IV',route:'IV',use:'Symptomatic or severe hypomagnesaemia (Mg²⁺ <0.5); refractory hypokalaemia',std:'10mmol MgSO₄ (2.5g) in 100mL over 20–60 min; repeat if Mg²⁺ <0.7; severe: 40mmol (10g) over 12–24h',ckd3:{d:'Standard dose; check Mg²⁺ after each infusion',f:'adjust'},ckd4:{d:'Reduce dose by 50% — Mg²⁺ renally excreted; risk of hypermagnesaemia',f:'adjust'},ckd5:{d:'AVOID or extreme caution — hypermagnesaemia risk; half dose maximum; specialist input',f:'caution'},hd:{d:'Dialysis removes Mg²⁺; can use cautiously; check Mg²⁺ at end of infusion',f:'caution'},pd:{d:'Dialysate removes Mg²⁺; use with caution; check Mg²⁺ levels',f:'adjust'},note:'Signs of hypermagnesaemia: loss of reflexes (>4 mmol/L), respiratory depression (>6 mmol/L), cardiac arrest (>7.5 mmol/L). Antidote: IV calcium gluconate 10mL 10% over 5–10 min. Monitor BP and reflexes during infusion in CKD.',src:'eTG + UpToDate'},
+      {drug:'Oral Magnesium',route:'PO',use:'Mild-moderate hypomagnesaemia; maintenance; PPI-induced hypomagnesaemia',std:'Magnesium glycinate 200–400mg elemental Mg daily; or magnesium oxide 400mg BD',ckd3:{d:'Acceptable; monitor Mg²⁺ levels with dose >200mg elemental/day',f:'adjust'},ckd4:{d:'Use with caution; limit to 150–200mg elemental daily; check Mg²⁺ weekly',f:'caution'},ckd5:{d:'Avoid magnesium-containing compounds — hypermagnesaemia risk (also includes antacids like Mylanta)',f:'avoid'},hd:{d:'Avoid; HD removes Mg²⁺ but IV supplementation preferred if needed',f:'avoid'},pd:{d:'Use with caution; limit doses; monitor Mg²⁺',f:'caution'},note:'Oral Mg²⁺ is poorly absorbed and causes osmotic diarrhoea at higher doses (particularly oxide formulations). Glycinate/citrate better tolerated. Address underlying cause of hypomagnesaemia — most commonly PPIs (TRPM6 inhibition in DCT).',src:'eTG'},
+      {drug:'━━━ PHOSPHATE ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'IV Potassium Phosphate',route:'IV',use:'Moderate-severe hypophosphataemia (<0.5 mmol/L); refeeding syndrome',std:'20–40mmol KH₂PO₄ IV over 6–12h; note: each mmol phosphate = ~1 mmol K⁺',ckd3:{d:'Use carefully; each mmol PO₄ = ~1 mmol K⁺ — monitor K⁺ and PO₄',f:'adjust'},ckd4:{d:'Rarely needed in CKD4 (usually treating hypERphosphataemia); if essential: small dose with close monitoring',f:'caution'},ckd5:{d:'Generally contraindicated — CKD5 almost always has HYPERphosphataemia',f:'avoid'},hd:{d:'Contraindicated — HD patients have hyperphosphataemia',f:'avoid'},pd:{d:'Contraindicated — PD patients have hyperphosphataemia',f:'avoid'},note:'Note K⁺ co-administration: 20mmol IV phosphate delivers ~20mmol K⁺. Monitor ECG and K⁺ during infusion. Consider refeeding syndrome prophylaxis when starting TPN/nutrition after prolonged starvation.',src:'eTG + UpToDate'},
+      {drug:'━━━ CALCIUM ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Calcium Gluconate 10% IV',route:'IV',use:'Symptomatic hypocalcaemia; cardiac membrane stabilisation (hyperkalaemia); Mg²⁺ antidote',std:'10mL (2.25mmol Ca²⁺) IV over 5–10 min; repeat q10min if cardiac arrest/ECG changes',ckd3:{d:'Standard dose; monitor Ca²⁺ post-infusion',f:'safe'},ckd4:{d:'Standard dose for acute indication; check serum Ca²⁺; vascular calcification risk with chronic use',f:'adjust'},ckd5:{d:'Use for acute indications; avoid chronic supplementation (vascular calcification); correct PO₄ first',f:'adjust'},hd:{d:'Can use; check dialysate Ca²⁺ composition; avoid in hypercalcaemia',f:'adjust'},pd:{d:'Can use; check PD dialysate Ca²⁺; avoid in hypercalcaemia',f:'adjust'},note:'PREFERRED for peripheral IV access — safe in peripheral veins. Contains 2.25 mmol Ca²⁺ per 10mL. For hyperkalaemia: this is cardiac MEMBRANE PROTECTION only (does NOT lower K⁺). Onset 1–3 min, duration 30–60 min.',src:'eTG + UpToDate'},
+      {drug:'Calcium Chloride 10% IV',route:'IV',use:'Cardiac arrest (Ca²⁺ responsive PEA); severe hyperkalaemia with haemodynamic compromise',std:'10mL (6.8mmol Ca²⁺) IV — significantly more Ca²⁺ than gluconate',ckd3:{d:'Use for acute cardiac indication only',f:'adjust'},ckd4:{d:'Acute indication only; CENTRAL LINE required',f:'adjust'},ckd5:{d:'Acute indication only; CENTRAL LINE required',f:'adjust'},hd:{d:'Acute indication only; CENTRAL LINE required',f:'adjust'},pd:{d:'Acute indication only; CENTRAL LINE required',f:'adjust'},note:'⚠ CENTRAL LINE ONLY (or large-bore antecubital in emergency) — calcium chloride causes severe phlebitis/tissue necrosis in peripheral veins. Contains 3× more elemental Ca²⁺ than gluconate. Preferred in cardiac arrest when more rapid Ca²⁺ rise needed.',src:'eTG + UpToDate'},
+    ],
+    monitoring:['K⁺ and ECG: before each IV K⁺ infusion bag, and 1–2h after each 20mmol infusion','Mg²⁺: recheck 1–2h post IV infusion; ensure Mg²⁺ >0.8 before declaring K⁺ refractory','PO₄: recheck 4h post IV infusion; monitor for co-administration K⁺ load','Corrected Ca²⁺ = measured Ca²⁺ + 0.02 × (40 − albumin g/L); ionised Ca²⁺ on VBG is more reliable','Reflexes during IV Mg²⁺ infusion (loss of patellar reflex = early hypermagnesaemia warning)','Refeeding syndrome monitoring: PO₄, K⁺, Mg²⁺ daily for first week of refeeding; replace prophylactically'],
+    dialysis:['HD patients: almost never need K⁺ or Mg²⁺ replacement — focus is on management of excess','HD: Mg²⁺ dialysate typically 0.3–0.5 mmol/L — provides some supplementation if serum Mg²⁺ low','PD: continuous losses mean mild K⁺ supplementation occasionally needed (unlike HD where K⁺ accumulates)','Phosphate: HD removes ~800–1000mg/session but dietary + binders still needed','Ca²⁺ in dialysis: dialysate Ca²⁺ is already 1.25–1.5 mmol/L — routine supplementation rarely needed; risk of hypercalcaemia'],
+  },
+  {
+    id:'anticoag-reversal',name:'Anticoagulation — Reversal & VTE',abbr:'Anticoag Reversal',cat:'Ward Quick Ref',icon:'🩸',type:'management',
+    summary:'Anticoagulation reversal is required for life-threatening bleeding or urgent surgery. Strategy depends on the specific agent. Idarucizumab (Praxbind) reverses dabigatran within minutes and is widely available in Australian hospitals. Andexanet alfa (Ondexxya) reverses Factor Xa inhibitors but has limited availability and is expensive — 4F-PCC is the practical alternative.',
+    pearls:[
+      'Dabigatran reversal: idarucizumab (Praxbind) 5g IV — specific, fast, PBS-listed in Australia; available most hospitals',
+      'Rivaroxaban/apixaban reversal: andexanet alfa (Ondexxya) if available; otherwise 4F-PCC (Beriplex) 25–50 units/kg is the practical alternative',
+      'Warfarin reversal: Vitamin K + 4F-PCC (Beriplex) for major bleeding — PCC acts within 15 min, Vit K secures for 12–24h',
+      'Heparin/LMWH reversal: protamine sulfate — 1mg per 100 units UFH; only partially reverses enoxaparin (~60%)',
+      'Activated charcoal: effective if DOAC ingested within 2h (consider in large overdose, no contraindications)',
+      'Wait-and-see: for minor bleeding and short-acting agents — half-life of rivaroxaban/apixaban is 8–15h; dabigatran 12–17h',
+      'In HD patients: dabigatran can be partially removed by dialysis (~60% over 4h) if idarucizumab unavailable',
+      'Always consider: is the anticoagulation actually therapeutic? (e.g. mechanical valve, PE within 3 months) — stopping anticoagulation has its own risks',
+    ],
+    meds:[
+      {drug:'━━━ WARFARIN REVERSAL ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Vitamin K (Phytomenadione)',route:'IV/PO',use:'Warfarin reversal; over-anticoagulation (no active bleed vs minor bleed vs major)',std:'No bleed: oral 1–2.5mg. Minor bleed: IV 5mg slow. Major/life-threatening: IV 10mg slow',ckd3:{d:'Standard dose across all CKD stages',f:'safe'},ckd4:{d:'Standard dose',f:'safe'},ckd5:{d:'Standard dose',f:'safe'},hd:{d:'Standard dose',f:'safe'},pd:{d:'Standard dose',f:'safe'},note:'Onset: IV Vit K takes 4–6h to lower INR; oral takes 12–24h. Always combine with PCC (not just Vit K) for major bleeding — PCC works in 15 min, Vit K sustains the reversal. Vit K alone insufficient for urgent reversal.',src:'eTG + UpToDate'},
+      {drug:'4F-PCC (Beriplex / Octaplex)',route:'IV',use:'Major or life-threatening warfarin bleeding; urgent surgery; DOAC reversal if specific agents unavailable',std:'Warfarin: INR 2–4 → 25 units/kg; INR 4–6 → 35 units/kg; INR >6 → 50 units/kg (max 3000 units)',ckd3:{d:'Standard dose; no adjustment for CKD',f:'safe'},ckd4:{d:'Standard dose',f:'safe'},ckd5:{d:'Standard dose',f:'safe'},hd:{d:'Standard dose',f:'safe'},pd:{d:'Standard dose',f:'safe'},note:'Contains Factors II, VII, IX, X + Protein C and S. Onset within 15 minutes. Always combine with IV Vitamin K 10mg (otherwise INR will re-rise when PCC wears off in 6–12h). Check INR 30 min post-infusion.',src:'eTG + UpToDate'},
+      {drug:'━━━ DABIGATRAN REVERSAL ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Idarucizumab (Praxbind)',route:'IV',use:'Dabigatran reversal — life-threatening bleeding or urgent surgery',std:'5g IV total (2 × 2.5g vials given sequentially) over 5–10 min',ckd3:{d:'Standard dose — no renal dose adjustment',f:'safe'},ckd4:{d:'Standard dose',f:'safe'},ckd5:{d:'Standard dose',f:'safe'},hd:{d:'Standard dose; note dabigatran itself can be partially removed by HD if idarucizumab unavailable',f:'safe'},pd:{d:'Standard dose',f:'safe'},note:'Humanised monoclonal antibody fragment — specific antidote for dabigatran. Reversal is complete within minutes. PBS-listed and available at most Australian hospitals. No need to monitor dabigatran levels post-reversal (clinical assessment). Single dose sufficient in most cases.',src:'UpToDate'},
+      {drug:'━━━ FACTOR Xa INHIBITOR REVERSAL ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Andexanet Alfa (Ondexxya)',route:'IV',use:'Rivaroxaban or apixaban reversal — life-threatening/uncontrolled bleeding',std:'Low dose (last rivarox/apix >8h or apixaban ≤5mg): 400mg bolus + 4mg/min × 120min. High dose: 800mg bolus + 8mg/min × 120min',ckd3:{d:'Standard dose',f:'safe'},ckd4:{d:'Standard dose',f:'safe'},ckd5:{d:'Standard dose',f:'safe'},hd:{d:'Standard dose; limited data in HD',f:'adjust'},pd:{d:'Standard dose',f:'safe'},note:'Limited availability in Australia — check hospital pharmacy stock before relying on this. Expensive (~$30,000 per dose). If unavailable: use 4F-PCC (Beriplex) 25–50 units/kg as best available alternative. Activated charcoal if within 2h of ingestion.',src:'UpToDate'},
+      {drug:'4F-PCC (Beriplex) — DOAC alternative',route:'IV',use:'Rivaroxaban/apixaban reversal when andexanet unavailable (off-label but widely used)',std:'25–50 units/kg IV (max 2500–3000 units)',ckd3:{d:'Standard dose',f:'safe'},ckd4:{d:'Standard dose',f:'safe'},ckd5:{d:'Standard dose',f:'safe'},hd:{d:'Standard dose',f:'safe'},pd:{d:'Standard dose',f:'safe'},note:'Off-label for DOAC reversal but recommended in Australian guidelines when andexanet unavailable. Less effective than specific antidotes but widely available. Also used for warfarin, vitamin K antagonist reversal.',src:'UpToDate'},
+      {drug:'━━━ HEPARIN / LMWH REVERSAL ━━━',isHeader:true,route:'',use:'',std:'',ckd3:{d:'',f:'safe'},ckd4:{d:'',f:'safe'},ckd5:{d:'',f:'safe'},hd:{d:'',f:'safe'},pd:{d:'',f:'safe'},note:'',src:'eTG'},
+      {drug:'Protamine Sulfate',route:'IV',use:'UFH reversal; partial LMWH (enoxaparin) reversal',std:'UFH IV infusion: 1mg protamine per 100 units UFH given in last 2–2.5h (half-life ~1h). Max 50mg per dose. Enoxaparin: 1mg protamine per 1mg enoxaparin if given <8h (0.5mg if 8–12h)',ckd3:{d:'Standard dose',f:'safe'},ckd4:{d:'Standard dose',f:'safe'},ckd5:{d:'Standard dose',f:'safe'},hd:{d:'Standard dose',f:'safe'},pd:{d:'Standard dose',f:'safe'},note:'UFH: reversal complete (100%). LMWH: only ~60–75% effective (anti-Xa activity not fully reversed). Administer protamine slowly (max 5mg/min) — rapid infusion causes bradycardia, hypotension, pulmonary hypertension. Caution in patients with fish allergy or previous protamine exposure (neutralising antibodies).',src:'eTG + UpToDate'},
+    ],
+    monitoring:['INR: check 30 min and 4h post PCC infusion for warfarin reversal','Dabigatran: thrombin time (TT) or ecarin clotting time — aPTT is unreliable for dabigatran monitoring','Factor Xa levels: anti-Xa assay for rivaroxaban/apixaban if available (not routine, poor correlation with bleeding)','Clinical reassessment: haemostasis, haemodynamics — more important than laboratory values','Rebound anticoagulation: monitor 12–24h post-reversal in patients on therapeutic anticoagulation (especially dabigatran — can rebound after idarucizumab)','Restart anticoagulation: discuss with treating team — premature restart after reversal risks thromboembolism'],
+    dialysis:['Dabigatran is ~60% dialysable over 4h HD session — useful if idarucizumab unavailable or re-elevation after reversal','HD anticoagulation during session: UFH (most common) or regional citrate anticoagulation if high bleeding risk; avoid systemic anticoagulation where possible','PD: no systemic anticoagulation for peritoneal dialysis itself; consider heparin added to dialysate bags only if fibrin formation occurs'],
+  },
+  {
+    id:'htn-management',name:'Hypertension Management',abbr:'Hypertension',cat:'Chronic Disease',icon:'🩺',type:'management',
+    summary:'BP target in most CKD patients is <130/80 mmHg (standardised office BP). ACEi or ARB is mandatory in CKD with proteinuria — provides both BP and renoprotection. SGLT2 inhibitors offer an additional BP-lowering mechanism with cardiorenal benefit. Resistant hypertension (BP uncontrolled on 3 drugs including a diuretic) warrants MRA + secondary cause workup.',
+    pearls:[
+      'BP target: <130/80 mmHg for most CKD patients (KDIGO 2021); standardised office BP (5 min seated, 3 readings averaged)',
+      'Elderly/frail >80 years: start lower (target <150/90), titrate cautiously; avoid orthostatic hypotension',
+      'First-line in CKD + proteinuria: ACEi or ARB (antiproteinuric + BP lowering) — NOT both together (ONTARGET: dual RAAS blockade increases AKI risk)',
+      'First-line in CKD without proteinuria: ACEi/ARB or CCB or thiazide — patient-specific factors guide choice',
+      'AVOID atenolol in CKD — renally eliminated; use carvedilol, bisoprolol, or metoprolol succinate instead',
+      'SGLT2 inhibitors: 2–3 mmHg systolic reduction; also provide cardiorenal protection independently',
+      'Resistant HTN (≥3 drugs including a diuretic, still uncontrolled): add MRA (spironolactone 25mg); check for secondary causes',
+      'Diuretics in CKD: thiazides lose efficacy eGFR <30 — switch to loop diuretics (frusemide); metolazone retains efficacy in CKD',
+    ],
+    meds:[
+      {drug:'ACEi — Perindopril / Ramipril',route:'PO',use:'First-line CKD + proteinuria; HFrEF; post-MI; DM nephropathy',std:'Perindopril 2.5–10mg daily; Ramipril 1.25–10mg daily (start low in CKD)',ckd3:{d:'Start low 1.25–2.5mg; titrate; tolerate Cr ↑ ≤30% + K⁺ ≤5.5',f:'adjust'},ckd4:{d:'Start lowest dose; cautious titration; strict K⁺/Cr monitoring',f:'caution'},ckd5:{d:'Use with caution; high hyperkalaemia + hypotension risk; specialist input',f:'caution'},hd:{d:'Can use; dose post-HD; monitor BP on non-dialysis days',f:'adjust'},pd:{d:'Can use; monitor K⁺ and BP; helpful for cardiac protection',f:'adjust'},note:'Do NOT stop for moderate Cr rise (<30%) or K⁺ rise (<5.5) — this is expected RAAS effect. Stop if K⁺ >5.5 or Cr rise >30%. Do NOT combine with ARB (ONTARGET trial). Add SZC/patiromer if K⁺ limits RAAS use.',src:'eTG + UpToDate'},
+      {drug:'ARB — Irbesartan / Candesartan / Telmisartan',route:'PO',use:'CKD + proteinuria (if ACEi-intolerant); HFrEF; DM nephropathy',std:'Irbesartan 75–300mg daily; Candesartan 4–32mg daily; Telmisartan 20–80mg daily',ckd3:{d:'Standard dosing; tolerate Cr ↑ ≤30% + K⁺ ≤5.5',f:'safe'},ckd4:{d:'Start low; careful titration; K⁺/Cr monitoring',f:'adjust'},ckd5:{d:'Use with caution; specialist input',f:'caution'},hd:{d:'Can use; hepatic metabolism; monitor BP',f:'adjust'},pd:{d:'Can use; monitor K⁺ and BP',f:'adjust'},note:'Equivalent antiproteinuric effect to ACEi. Preferred over ACEi if dry cough with ACEi. Do NOT combine ACEi + ARB — dual RAAS blockade increases AKI, hyperkalaemia, and hypotension risk without additional benefit.',src:'eTG + UpToDate'},
+      {drug:'CCB — Amlodipine / Lercanidipine',route:'PO',use:'Essential hypertension; CKD (non-proteinuric); elderly; add-on to RAAS agent',std:'Amlodipine 2.5–10mg daily; Lercanidipine 10–20mg daily',ckd3:{d:'Standard dose ✓ (hepatic elimination)',f:'safe'},ckd4:{d:'Standard dose ✓',f:'safe'},ckd5:{d:'Standard dose ✓',f:'safe'},hd:{d:'Standard dose ✓ (not HD-cleared)',f:'safe'},pd:{d:'Standard dose ✓',f:'safe'},note:'Dihydropyridine CCBs (amlodipine, lercanidipine, felodipine) preferred over non-dihydropyridines (diltiazem, verapamil) in CKD. Lercanidipine may be better tolerated (less peripheral oedema). Non-DHP CCBs interact with calcineurin inhibitors (tacrolimus) — relevant in transplant.',src:'eTG + UpToDate'},
+      {drug:'Thiazide / Thiazide-like (Indapamide)',route:'PO',use:'Essential hypertension; add-on to RAAS; calcium-sparing (hypercalciuria/stones)',std:'Indapamide SR 1.5mg daily; HCT 12.5–25mg daily',ckd3:{d:'Indapamide retains efficacy to eGFR ~30; standard dose',f:'adjust'},ckd4:{d:'Thiazides lose efficacy eGFR <30 — switch to frusemide for diuresis; can still try indapamide for BP',f:'caution'},ckd5:{d:'Thiazides generally ineffective eGFR <15 — use frusemide or thiazide + loop combination',f:'avoid'},hd:{d:'Limited role if anuric; metolazone + frusemide if residual function',f:'avoid'},pd:{d:'Limited role; PD provides fluid removal',f:'caution'},note:'Indapamide preferred over hydrochlorothiazide (longer acting, less metabolic side effects). Thiazides cause K⁺ loss — monitor K⁺ with ACEi/ARB combination. Thiazide-calcium paradox: thiazides paradoxically ↓ urinary Ca²⁺ (useful in calcium stone formers).',src:'eTG + UpToDate'},
+      {drug:'Frusemide (loop diuretic)',route:'PO/IV',use:'Volume-mediated hypertension in CKD4/5; fluid overload; replace thiazide when eGFR <30',std:'PO 20–80mg daily; titrate; higher doses in CKD4/5',ckd3:{d:'20–80mg daily; dose reduce to BD if fluid resistant',f:'safe'},ckd4:{d:'40–160mg BD; higher doses needed for diuretic effect',f:'safe'},ckd5:{d:'Up to 500mg/day; diuretic resistance common; add metolazone',f:'safe'},hd:{d:'Limited if anuric; 250mg+ if any residual function',f:'caution'},pd:{d:'Use if residual function; PD provides fluid removal',f:'adjust'},note:'Loop diuretics replace thiazides in CKD4/5 for volume/BP management. Higher ceiling doses needed as eGFR declines. For resistant cases: add metolazone 2.5–5mg 30min before frusemide (synergistic sequential nephron blockade).',src:'eTG + UpToDate'},
+      {drug:'Carvedilol / Bisoprolol (beta-blocker)',route:'PO',use:'Hypertension + HFrEF; post-MI; rate control + HTN; (AVOID ATENOLOL)',std:'Carvedilol 3.125–25mg BD; Bisoprolol 2.5–10mg daily',ckd3:{d:'No adjustment ✓ (hepatic)',f:'safe'},ckd4:{d:'No adjustment ✓',f:'safe'},ckd5:{d:'No adjustment ✓',f:'safe'},hd:{d:'No adjustment; give pre-HD',f:'safe'},pd:{d:'No adjustment ✓',f:'safe'},note:'⚠ AVOID ATENOLOL — renally eliminated, accumulates in CKD, prolonged beta-blockade. Beta-blockers not first-line for isolated hypertension without compelling indication (HF, post-MI, AF). Useful as 4th-line in resistant HTN.',src:'eTG + UpToDate'},
+    ],
+    monitoring:['BP: target <130/80 mmHg standardised office measurement; home BP monitoring encouraged (average 7 days AM + PM)','Renal function + K⁺: within 1–4 weeks of starting/uptitrating ACEi/ARB; then 3-monthly in CKD','Postural BP (standing at 1 and 3 min): especially in elderly, diabetic (autonomic neuropathy), dialysis patients','Urine ACR: annually in CKD — progression of proteinuria indicates inadequate RAAS protection or CKD progression','Ambulatory BP monitoring (ABPM): consider if white coat hypertension suspected or masked hypertension','Secondary hypertension workup in resistant HTN: U&amp;E (renal artery stenosis), aldosterone/renin ratio (primary aldosteronism), TSH, renal imaging, sleep study (OSA)'],
+    dialysis:['HD interdialytic hypertension: often volume-mediated — reassess dry weight, ultrafiltration goals, dialysate Na⁺','Intradialytic hypertension (BP rises during HD): paradoxical; investigate for volume overload, excessive Na loading, RAAS activation','Antihypertensives: avoid giving ACEi/ARB/beta-blockers immediately before HD (hypotension risk); give post-HD or split dosing','PD patients: lower prevalence of hypertension than HD; sodium restriction + adequate UF critical'],
+  },
+  {
+    id:'dm-ckd',name:'Diabetes Management in CKD',abbr:'Diabetes + CKD',cat:'Chronic Disease',icon:'🩸',type:'management',
+    summary:'Diabetes is the leading cause of CKD in Australia. Tight glycaemic control (HbA1c <7%) reduces microvascular progression but must be individualised in CKD (hypoglycaemia risk with reduced drug clearance). SGLT2 inhibitors are now first-line agents in CKD + T2DM regardless of glycaemic control — proven cardiorenal protection independent of glucose effect.',
+    pearls:[
+      'SGLT2 inhibitors: first-line in CKD + T2DM — CREDENCE (canagliflozin), DAPA-CKD (dapagliflozin), EMPA-KIDNEY (empagliflozin) all show renoprotection independent of glucose lowering',
+      'HbA1c target: <7% (53 mmol/mol) general; <7.5–8% in elderly/frail/limited life expectancy; avoid tight control in CKD5/HD (falsely low HbA1c + high hypo risk)',
+      'Metformin: CONTRAINDICATED eGFR <30; reduce dose in eGFR 30–45; always stop before contrast/acute illness',
+      'Insulin requirements DECREASE in CKD4/5 (kidneys degrade ~30–40% of insulin) — reduce doses and monitor closely',
+      'Sulfonylureas: high hypoglycaemia risk in CKD — if used, prefer glipizide (shorter-acting); avoid glibenclamide/gliclazide in CKD5',
+      'GLP-1 receptor agonists: semaglutide and liraglutide safe to eGFR ~15; weight loss benefit; cardiovascular protection',
+      'HbA1c unreliable in HD patients (shortened RBC survival = falsely low HbA1c) — use fructosamine or glycated albumin',
+      'Annual review in DM+CKD: HbA1c, ACR, eGFR, BP, lipids, foot examination, retinal screening',
+    ],
+    meds:[
+      {drug:'SGLT2 Inhibitors (Dapagliflozin / Empagliflozin)',route:'PO',use:'First-line CKD + T2DM regardless of HbA1c; also HFrEF/HFpEF — cardiorenal protection',std:'10mg daily',ckd3:{d:'10mg daily ✓ — full cardiac + renal benefit; glucose-lowering reduced but still present',f:'safe'},ckd4:{d:'10mg daily ✓ — renal benefit maintained to eGFR ~20; PBS-listed',f:'safe'},ckd5:{d:'Generally NOT recommended (eGFR <20) — insufficient data; glucose-lowering effect minimal',f:'caution'},hd:{d:'Generally NOT recommended in HD — insufficient evidence; glucose lowering unreliable',f:'avoid'},pd:{d:'Generally NOT recommended in PD — insufficient evidence',f:'avoid'},note:'DAPA-CKD: dapagliflozin 10mg daily reduced CKD progression + death by 39% in CKD + T2DM. Benefit seen independent of diabetes (also worked in non-diabetic CKD). Initial Cr rise on starting is expected (haemodynamic) — do NOT stop.',src:'UpToDate / PBS'},
+      {drug:'GLP-1 RA (Semaglutide — Ozempic / Rybelsus)',route:'SC/PO',use:'T2DM + CVD or high CV risk; obesity; add-on when glycaemic targets not met',std:'SC Semaglutide 0.25mg weekly → 0.5mg → 1mg; oral 3mg → 7mg → 14mg daily',ckd3:{d:'Full dose ✓ — renal benefit being investigated (FLOW trial); CV protection established',f:'safe'},ckd4:{d:'Full dose ✓ — no dose adjustment needed; GI side effects may be worse with dehydration',f:'safe'},ckd5:{d:'Use with caution eGFR <15; dehydration risk from GI side effects; specialist guidance',f:'caution'},hd:{d:'Limited data; generally avoid or use with caution; GI side effects risk dehydration in HD',f:'caution'},pd:{d:'Limited data; use with caution; GI side effects can affect PD performance',f:'caution'},note:'FLOW trial (2024): semaglutide reduced CKD progression by 24% in T2DM — emerging first-line agent for CKD + DM alongside SGLT2i. Significant weight loss benefit (5–10%+ body weight). Nausea common on initiation — start low. Contraindicated in personal/family history of medullary thyroid cancer.',src:'UpToDate'},
+      {drug:'Metformin',route:'PO',use:'T2DM standard first-line — with eGFR restrictions',std:'500mg BD → 1g BD (standard)',ckd3:{d:'eGFR 45–59: max 1g BD; eGFR 30–44: reduce to 500mg BD; hold if acutely unwell or before contrast',f:'adjust'},ckd4:{d:'eGFR <30: CONTRAINDICATED — lactic acidosis risk',f:'avoid'},ckd5:{d:'CONTRAINDICATED',f:'avoid'},hd:{d:'CONTRAINDICATED',f:'avoid'},pd:{d:'CONTRAINDICATED',f:'avoid'},note:'Always stop metformin before: contrast agents (hold 48h, restart when Cr stable), major surgery, acute illness with AKI risk. Lactic acidosis is rare but fatal — risk rises sharply when eGFR <30.',src:'eTG + UpToDate'},
+      {drug:'Insulin (Detemir / Degludec / Glargine + Actrapid)',route:'SC',use:'T2DM advanced CKD or insulin-dependent T1DM; requires dose reduction in CKD',std:'Individualise; reduce basal dose by 25–50% in CKD4/5; monitor BGL q4–6h',ckd3:{d:'Modest dose reduction may be needed; monitor BGL closely',f:'adjust'},ckd4:{d:'Reduce doses by ~25%; longer duration of action; BGL q4–6h',f:'adjust'},ckd5:{d:'Reduce doses by 25–50%; significant prolongation of insulin action; high hypo risk',f:'caution'},hd:{d:'Reduce doses significantly; BGL can fall post-HD (dialysate glucose 5.5 mmol/L); check BGL post-HD',f:'caution'},pd:{d:'Glucose load from PD dialysate may require MORE insulin — peritoneal insulin administration possible in T1DM',f:'adjust'},note:'Kidneys degrade 30–40% of circulating insulin — in CKD4/5, insulin half-life is prolonged and requirements fall. High hypoglycaemia risk. Consider CGM (continuous glucose monitoring) in CKD patients on insulin.',src:'eTG + UpToDate'},
+      {drug:'Glipizide (Sulfonylurea)',route:'PO',use:'T2DM when SGLT2i/GLP-1 not tolerated or contraindicated — shorter-acting SU preferred in CKD',std:'2.5–10mg BD (glipizide); start low in CKD',ckd3:{d:'2.5–5mg daily; high hypoglycaemia risk; monitor BGL closely',f:'adjust'},ckd4:{d:'Start 2.5mg daily; significant hypo risk; glipizide preferred (short-acting)',f:'caution'},ckd5:{d:'AVOID sulfonylureas in CKD5 — prolonged severe hypoglycaemia risk',f:'avoid'},hd:{d:'AVOID — severe and prolonged hypoglycaemia; insulin preferred if needed',f:'avoid'},pd:{d:'AVOID in CKD5 — insulin or SGLT2i if eGFR allows',f:'avoid'},note:'If sulfonylurea needed: prefer glipizide (shorter acting, less active renal metabolites) over gliclazide or glibenclamide. Gliclazide has active renally-cleared metabolites — accumulates in CKD. Glibenclamide: avoid in ANY degree of CKD.',src:'eTG + UpToDate'},
+    ],
+    monitoring:['HbA1c: 3-monthly until at target, then 6-monthly. NOTE: in HD/CKD5, HbA1c is UNRELIABLE — shortened RBC survival = falsely low. Use fructosamine or glycated albumin instead.','eGFR + ACR: 3-6 monthly in DM+CKD — progression indicates inadequate RAAS/SGLT2i protection','BP: target <130/80 in DM+CKD; ACEi/ARB + SGLT2i + CCB typical combination','BGL monitoring: daily fasting + 2h post-meal; CGM strongly recommended in insulin-treated CKD patients','Annual foot examination: peripheral neuropathy + vascular assessment; high amputation risk in DM+CKD','Annual retinal screening: diabetic retinopathy progression correlates with renal disease progression','Lipids: statin therapy in all DM+CKD patients (high CV risk); atorvastatin 40mg preferred'],
+    dialysis:['HD patients: HbA1c unreliable (falsely low); use fructosamine or glycated albumin for glycaemic monitoring','Post-HD hypoglycaemia: dialysate glucose 5.5 mmol/L equilibrates with blood — check BGL at end of each HD session if on insulin or sulfonylureas','PD + diabetes: dextrose in dialysate = significant glucose load (~100–200g/day from dialysate glucose absorption); insulin requirements may paradoxically increase','IP insulin: some PD patients (especially T1DM) use intraperitoneal insulin via dialysate — discuss with specialist','Metformin: ABSOLUTELY contraindicated in all dialysis patients'],
+  },
 ];
 
   </script>
@@ -782,14 +904,14 @@ const PRESENTATIONS = [
 // APP v4 — Mobile-responsive, Export Notes, Quick Study
 // ═══════════════════════════════════════════════════════════
 
-const CATS = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Dialysis-Specific','Custom'];
-const CAT_C = {'Ward Quick Ref':'#67e8f9','Quick Study':'#a78bfa','Infectious Disease':'#fbbf24','Transplant':'#60a5fa','Acute Presentations':'#f87171','CKD Management':'#34d399','Dialysis-Specific':'#2dd4bf','Custom':'#c084fc'};
+const CATS = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific','Custom'];
+const CAT_C = {'Chronic Disease':'#fb923c','Ward Quick Ref':'#67e8f9','Quick Study':'#a78bfa','Infectious Disease':'#fbbf24','Transplant':'#60a5fa','Acute Presentations':'#f87171','CKD Management':'#34d399','Chronic Disease':'#fb923c','Dialysis-Specific':'#2dd4bf','Custom':'#c084fc'};
 const FL = {safe:'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0',adjust:'background:#fffbeb;color:#92400e;border:1px solid #fde68a',caution:'background:#fff7ed;color:#9a3412;border:1px solid #fed7aa',avoid:'background:#fef2f2;color:#b91c1c;border:1px solid #fecaca'};
 const SRC_C = {'eTG':'background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe','UpToDate':'background:#f5f3ff;color:#6d28d9;border:1px solid #ddd6fe','eTG + UpToDate':'background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe','ISPD 2022':'background:#f0fdfa;color:#0f766e;border:1px solid #99f6e4','UpToDate / PBS':'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0','KDIGO':'background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd','KDIGO / PBS':'background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc','eTG / PBS':'background:#f0fdf4;color:#166534;border:1px solid #86efac'};
 const URGENCY_C = {'Mandatory':'background:#fee2e2;color:#b91c1c','Mandatory + ECG':'background:#fee2e2;color:#b91c1c','URGENT if TMA suspected':'background:#fee2e2;color:#b91c1c','URGENT if TTP suspected':'background:#fee2e2;color:#b91c1c','GN screen (URGENT if haemoptysis)':'background:#ffedd5;color:#c2410c','Urgent — same day':'background:#ffedd5;color:#c2410c','Urgent (bedside)':'background:#ffedd5;color:#c2410c','Urgent — do before antibiotics':'background:#ffedd5;color:#c2410c','First-line':'background:#fef9c3;color:#854d0e','First-line (if on diuretics)':'background:#fef9c3;color:#854d0e','Bedside':'background:#fef9c3;color:#854d0e','GN screen':'background:#dbeafe;color:#1e40af','If clinically indicated':'background:#f3f4f6;color:#4b5563','If respiratory symptoms':'background:#f3f4f6;color:#4b5563','If pulmonary infiltrate':'background:#f3f4f6;color:#4b5563'};
 
 const S = {
-  id:'common-meds', tab:'Overview',
+  id:'common-meds', tab:'Overview', screen:'home', hsearch:'', searchResults:[],
   notes:{}, custom:[], search:'',
   editNote:false, noteText:'',
   showModal:false, newName:'', newSummary:'', newPearls:'',
@@ -799,6 +921,7 @@ const S = {
 function init() {
   try { S.notes = JSON.parse(localStorage.getItem('nephroref_notes_v2')||'{}'); } catch(e) {}
   try { S.custom = JSON.parse(localStorage.getItem('nephroref_custom_v2')||'[]'); } catch(e) {}
+  S.screen = 'home';
   render();
 }
 
@@ -886,6 +1009,7 @@ function render() {
   const exportModal = S.showExport ? buildExportModal() : '';
   const addModal = S.showModal ? buildAddModal() : '';
 
+  if (S.screen === 'home') { document.getElementById('app').innerHTML = buildHome(); attachHomeEvents(); return; }
   document.getElementById('app').innerHTML = `
     <div style="display:flex;height:100dvh;background:#f9fafb;overflow:hidden;font-family:'IBM Plex Sans',system-ui,sans-serif">
 
@@ -1168,6 +1292,7 @@ function buildAddModal() {
 // ─── EVENT HANDLERS ───────────────────────────────────────────
 function selP(id) {
   closeMenu();
+  S.screen='main';
   S.id=id; const p=all().find(x=>x.id===id);
   S.tab=p?tabs(p.type)[0]:'Overview';
   S.editNote=false; S.search='';
@@ -1215,6 +1340,123 @@ function downloadNotes() {
   a.href=url; a.download='nephroref-notes-'+new Date().toISOString().slice(0,10)+'.txt';
   a.click(); URL.revokeObjectURL(url);
 }
+
+// ─── HOME PAGE + GLOBAL SEARCH ──────────────────────────────
+function buildHome() {
+  var pres = all();
+  var catTiles = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific'];
+  var catIcons = {'Ward Quick Ref':'💊','Quick Study':'🎓','Infectious Disease':'🫁','Transplant':'🔵','Acute Presentations':'⚡','CKD Management':'⚗️','Chronic Disease':'🩺','Dialysis-Specific':'🔴'};
+  var hasSearch = S.hsearch.length > 1;
+  var tileHtml = hasSearch ? buildSearchResults(S.hsearch) : catTiles.map(function(cat) {
+    var col = CAT_C[cat] || '#9ca3af';
+    var icon = catIcons[cat] || '📋';
+    var count = pres.filter(function(p){return p.cat===cat && p.type!=='home';}).length;
+    return '<div onclick="selCat(''+cat+'')" style="background:white;border-radius:14px;border:1px solid #e5e7eb;padding:16px 12px;text-align:center;cursor:pointer;transition:transform 0.1s;box-shadow:0 1px 3px rgba(0,0,0,0.06)" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''">'+
+      '<div style="font-size:1.6rem;margin-bottom:6px">'+icon+'</div>'+
+      '<div style="font-size:0.72rem;font-weight:600;color:#1e293b;line-height:1.3;margin-bottom:3px">'+esc(cat)+'</div>'+
+      '<div style="font-size:0.6rem;color:'+col+';font-weight:600">'+count+' topics</div>'+
+    '</div>';
+  }).join('');
+  var safeTop = 'max(14px, env(safe-area-inset-top, 14px))';
+  return '<div style="height:100dvh;display:flex;flex-direction:column;background:#0f172a;overflow:hidden">'+
+    '<div style="flex-shrink:0;padding-top:'+safeTop+'"></div>'+
+    '<div style="flex-shrink:0;text-align:center;padding:20px 20px 10px">'+
+      '<svg width="72" height="72" viewBox="0 0 180 180" style="margin-bottom:8px">'+
+        '<rect width="180" height="180" rx="36" fill="#FFF0EC"/>'+
+        '<ellipse cx="90" cy="153" rx="20" ry="4" fill="rgba(200,115,105,0.2)"/>'+
+        '<path d="M118,27C138,27,150,46,150,72C150,98,136,118,116,118C107,118,99,112,96,104C94,96,100,89,101,83C102,77,97,70,99,62C101,51,108,27,118,27Z" fill="#D88080"/>'+
+        '<path d="M23,40C18,50,16,62,20,75" stroke="rgba(255,255,255,0.38)" stroke-width="4.5" fill="none" stroke-linecap="round"/>'+
+        '<path d="M62,27C42,27,30,46,30,72C30,98,44,118,64,118C73,118,81,112,84,104C86,96,80,89,79,83C78,77,83,70,81,62C79,51,72,27,62,27Z" fill="#E89090"/>'+
+        '<path d="M157,40C162,50,164,62,160,75" stroke="rgba(255,255,255,0.4)" stroke-width="4.5" fill="none" stroke-linecap="round"/>'+
+        '<path d="M84,101Q89,122,86,138Q88,145,90,149" stroke="#C87070" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+        '<path d="M96,101Q91,122,94,138Q92,145,90,149" stroke="#C87070" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+        '<circle cx="90" cy="149" r="4" fill="#C87070"/>'+
+        '<path d="M90,30C90,30,84,21,77,21C70,21,65,27,65,33C65,42,75,50,90,60C105,50,115,42,115,33C115,27,110,21,103,21C96,21,90,30,90,30Z" fill="#C85060"/>'+
+      '</svg>'+
+      '<div style="color:white;font-size:1.5rem;font-weight:700;letter-spacing:0.02em;line-height:1.1">Nephro-Ref</div>'+
+      '<div style="color:#64748b;font-size:0.75rem;margin-top:3px">Australian Clinical Reference</div>'+
+    '</div>'+
+    '<div style="padding:0 16px 12px;flex-shrink:0">'+
+      '<div style="position:relative">'+
+        '<span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;pointer-events:none">🔍</span>'+
+        '<input id="home-srch" placeholder="Search medications, presentations, pearls..." value="'+esc(S.hsearch)+'"'+
+          'style="width:100%;background:#1e293b;color:white;font-size:0.875rem;border-radius:12px;padding:12px 12px 12px 38px;border:1px solid #334155;outline:none;font-family:inherit">'+
+      '</div>'+
+    '</div>'+
+    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">'+
+      (hasSearch ? tileHtml : '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tileHtml+'</div>')+
+    '</div>'+
+  '</div>';
+}
+
+function buildSearchResults(query) {
+  var q = query.toLowerCase();
+  var results = [];
+  all().forEach(function(p) {
+    if (p.type === 'home') return;
+    var matches = [];
+    if (p.name.toLowerCase().indexOf(q)>=0 || (p.abbr||'').toLowerCase().indexOf(q)>=0)
+      matches.push({label:'Name', text: p.name});
+    if (p.summary && p.summary.toLowerCase().indexOf(q)>=0)
+      matches.push({label:'Summary', text: snip(p.summary, p.summary.toLowerCase().indexOf(q))});
+    if (p.pearls) p.pearls.forEach(function(pearl) {
+      if (pearl.toLowerCase().indexOf(q)>=0 && matches.length<4)
+        matches.push({label:'Pearl', text: snip(pearl, pearl.toLowerCase().indexOf(q))});
+    });
+    if (p.meds) p.meds.forEach(function(m) {
+      if (!m.isHeader && m.drug && m.drug.toLowerCase().indexOf(q)>=0 && matches.length<4)
+        matches.push({label:'Drug', text: m.drug + (m.use ? ' — '+m.use.slice(0,40) : '')});
+      if (!m.isHeader && m.note && m.note.toLowerCase().indexOf(q)>=0 && matches.length<4)
+        matches.push({label:'Note', text: snip(m.note, m.note.toLowerCase().indexOf(q))});
+    });
+    if (matches.length > 0) results.push({p:p, matches:matches.slice(0,2)});
+  });
+  if (!results.length) return '<div style="text-align:center;padding:40px;color:#64748b"><div style="font-size:2rem;margin-bottom:8px">🔍</div><div style="font-size:0.875rem">No results for "'+esc(query)+'"</div></div>';
+  return '<div style="display:flex;flex-direction:column;gap:8px">'+
+    results.map(function(r) {
+      var col = CAT_C[r.p.cat] || '#9ca3af';
+      return '<div onclick="selP(''+r.p.id+'')" style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:12px 14px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.05)">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+          '<span style="font-size:1rem">'+r.p.icon+'</span>'+
+          '<span style="font-weight:600;font-size:0.85rem;color:#111827">'+esc(r.p.name)+'</span>'+
+          '<span style="font-size:0.6rem;font-weight:600;color:'+col+';margin-left:auto">'+esc(r.p.cat)+'</span>'+
+        '</div>'+
+        r.matches.map(function(m) {
+          return '<div style="font-size:0.72rem;color:#6b7280;margin-top:2px"><span style="color:#0d9488;font-weight:600;margin-right:4px">'+m.label+'</span>'+esc(m.text)+'</div>';
+        }).join('')+
+      '</div>';
+    }).join('')+
+  '</div>';
+}
+
+function snip(text, idx) {
+  var start = Math.max(0, idx-20);
+  var end = Math.min(text.length, idx+60);
+  return (start>0?'...':'')+text.slice(start,end)+(end<text.length?'...':'');
+}
+
+function selCat(cat) {
+  var first = all().find(function(p){return p.cat===cat && p.type!=='home';});
+  if (first) selP(first.id);
+}
+
+function goHome() { S.screen='home'; S.hsearch=''; render(); }
+
+function attachHomeEvents() {
+  var el = document.getElementById('home-srch');
+  if (el) {
+    el.focus();
+    el.addEventListener('input', function() {
+      S.hsearch = this.value;
+      var content = document.querySelector('#app > div > div:last-child');
+      if (content) {
+        var hasSearch = S.hsearch.length > 1;
+        content.innerHTML = hasSearch ? buildSearchResults(S.hsearch) : '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific'].map(function(cat){var col=CAT_C[cat]||'#9ca3af';var icon={'Ward Quick Ref':'💊','Quick Study':'🎓','Infectious Disease':'🫁','Transplant':'🔵','Acute Presentations':'⚡','CKD Management':'⚗️','Chronic Disease':'🩺','Dialysis-Specific':'🔴'}[cat]||'📋';var count=all().filter(function(p){return p.cat===cat&&p.type!=='home';}).length;return '<div onclick="selCat(''+cat+'')" style="background:white;border-radius:14px;border:1px solid #e5e7eb;padding:16px 12px;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.06)" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''"><div style="font-size:1.6rem;margin-bottom:6px">'+icon+'</div><div style="font-size:0.72rem;font-weight:600;color:#1e293b;line-height:1.3;margin-bottom:3px">'+esc(cat)+'</div><div style="font-size:0.6rem;color:'+col+';font-weight:600">'+count+' topics</div></div>';}).join('')+'</div>';
+      }
+    });
+  }
+}
+
 
 // Start
 init();
