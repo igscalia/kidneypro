@@ -12,67 +12,75 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script>
-  function _mkIcon(){
-    try{
+  (function(){
+    try {
       var c=document.createElement('canvas');c.width=c.height=180;
       var x=c.getContext('2d'),w=180;
+      // Warm cream rounded background
       x.fillStyle='#FFF0EC';
-      var rd=40;
+      var rd=38;
       x.beginPath();x.moveTo(rd,0);x.lineTo(w-rd,0);
       x.arcTo(w,0,w,rd,rd);x.lineTo(w,w-rd);
       x.arcTo(w,w,w-rd,w,rd);x.lineTo(rd,w);
       x.arcTo(0,w,0,w-rd,rd);x.lineTo(0,rd);
       x.arcTo(0,0,rd,0,rd);x.closePath();x.fill();
-      x.fillStyle='rgba(200,115,105,0.18)';
-      x.beginPath();x.ellipse(90,170,22,5,0,0,Math.PI*2);x.fill();
+      // Shadow under ureters
+      x.fillStyle='rgba(200,112,100,0.18)';
+      x.beginPath();x.ellipse(90,162,17,4,0,0,Math.PI*2);x.fill();
+      // RIGHT kidney (behind, slightly darker) — smaller, further right
       x.fillStyle='#D88080';
       x.beginPath();
-      x.moveTo(132,32);x.bezierCurveTo(154,32,168,52,168,82);
-      x.bezierCurveTo(168,113,152,136,130,136);
-      x.bezierCurveTo(119,136,110,129,107,119);
-      x.bezierCurveTo(104,109,111,101,112,94);
-      x.bezierCurveTo(114,87,108,79,110,70);
-      x.bezierCurveTo(112,57,120,32,132,32);x.closePath();x.fill();
-      x.strokeStyle='rgba(255,255,255,0.38)';x.lineWidth=5;x.lineCap='round';
-      x.beginPath();x.moveTo(156,44);x.bezierCurveTo(163,54,166,68,162,82);x.stroke();
-      x.fillStyle='rgba(255,255,255,0.38)';
-      x.beginPath();x.arc(157,42,3.5,0,Math.PI*2);x.fill();
+      x.moveTo(136,42);x.bezierCurveTo(156,42,168,59,168,84);
+      x.bezierCurveTo(168,109,155,128,135,128);
+      x.bezierCurveTo(125,128,117,122,115,113);
+      x.bezierCurveTo(112,104,119,97,120,91);
+      x.bezierCurveTo(121,85,115,78,117,70);
+      x.bezierCurveTo(119,59,125,42,136,42);x.closePath();x.fill();
+      x.strokeStyle='rgba(255,255,255,0.38)';x.lineWidth=4.5;x.lineCap='round';
+      x.beginPath();x.moveTo(158,53);x.bezierCurveTo(163,62,165,74,162,85);x.stroke();
+      // LEFT kidney (front, brighter) — smaller, further left
       x.fillStyle='#E89090';
       x.beginPath();
-      x.moveTo(48,32);x.bezierCurveTo(26,32,12,52,12,82);
-      x.bezierCurveTo(12,113,28,136,50,136);
-      x.bezierCurveTo(61,136,70,129,73,119);
-      x.bezierCurveTo(76,109,69,101,68,94);
-      x.bezierCurveTo(66,87,72,79,70,70);
-      x.bezierCurveTo(68,57,60,32,48,32);x.closePath();x.fill();
-      x.strokeStyle='rgba(255,255,255,0.45)';x.lineWidth=5;x.lineCap='round';
-      x.beginPath();x.moveTo(24,44);x.bezierCurveTo(17,54,14,68,18,82);x.stroke();
+      x.moveTo(44,42);x.bezierCurveTo(24,42,12,59,12,84);
+      x.bezierCurveTo(12,109,25,128,45,128);
+      x.bezierCurveTo(55,128,63,122,65,113);
+      x.bezierCurveTo(68,104,61,97,60,91);
+      x.bezierCurveTo(59,85,65,78,63,70);
+      x.bezierCurveTo(61,59,55,42,44,42);x.closePath();x.fill();
+      x.strokeStyle='rgba(255,255,255,0.45)';x.lineWidth=4.5;x.lineCap='round';
+      x.beginPath();x.moveTo(22,53);x.bezierCurveTo(17,62,15,74,18,85);x.stroke();
       x.fillStyle='rgba(255,255,255,0.45)';
-      x.beginPath();x.arc(23,42,3.5,0,Math.PI*2);x.fill();
-      x.strokeStyle='#C87070';x.lineWidth=5.5;x.lineCap='round';
-      x.beginPath();x.moveTo(73,116);x.quadraticCurveTo(80,140,87,157);
-      x.quadraticCurveTo(89,163,90,167);x.stroke();
-      x.beginPath();x.moveTo(107,116);x.quadraticCurveTo(100,140,93,157);
-      x.quadraticCurveTo(91,163,90,167);x.stroke();
+      x.beginPath();x.arc(20,51,3,0,Math.PI*2);x.fill();
+      // Left ureter
+      x.strokeStyle='#C87070';x.lineWidth=5;x.lineCap='round';
+      x.beginPath();x.moveTo(65,111);
+      x.quadraticCurveTo(70,132,78,148);
+      x.quadraticCurveTo(83,157,86,161);x.stroke();
+      // Right ureter
+      x.beginPath();x.moveTo(115,111);
+      x.quadraticCurveTo(110,132,102,148);
+      x.quadraticCurveTo(97,157,94,161);x.stroke();
+      // Ureter junction
+      x.beginPath();x.moveTo(86,161);x.quadraticCurveTo(90,165,94,161);x.stroke();
       x.fillStyle='#C87070';
-      x.beginPath();x.arc(90,167,4.5,0,Math.PI*2);x.fill();
+      x.beginPath();x.arc(90,161,3.5,0,Math.PI*2);x.fill();
+      // Heart — small, centered between the kidneys, upper area
       x.fillStyle='#C85060';
       x.beginPath();
-      x.moveTo(90,34);
-      x.bezierCurveTo(90,34,83,23,75,23);
-      x.bezierCurveTo(67,23,62,29,62,36);
-      x.bezierCurveTo(62,46,73,55,90,66);
-      x.bezierCurveTo(107,55,118,46,118,36);
-      x.bezierCurveTo(118,29,113,23,105,23);
-      x.bezierCurveTo(97,23,90,34,90,34);x.closePath();x.fill();
+      x.moveTo(90,38);
+      x.bezierCurveTo(90,38,84,28,77,28);
+      x.bezierCurveTo(70,28,65,34,65,40);
+      x.bezierCurveTo(65,49,76,57,90,67);
+      x.bezierCurveTo(104,57,115,49,115,40);
+      x.bezierCurveTo(115,34,110,28,103,28);
+      x.bezierCurveTo(96,28,90,38,90,38);x.closePath();x.fill();
+      // Apply as icons
       var img=c.toDataURL('image/png');
       var lk=document.createElement('link');lk.rel='apple-touch-icon';lk.setAttribute('sizes','180x180');lk.href=img;document.head.appendChild(lk);
       var fv=document.createElement('link');fv.rel='icon';fv.type='image/png';fv.href=img;document.head.appendChild(fv);
     }catch(e){}
-  }
-  _mkIcon();
+  })();
   </script>
-  
   <style>
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     body { margin:0; overflow:hidden; }
@@ -82,6 +90,7 @@
     input::placeholder, textarea::placeholder { color:#64748b; }
     small { font-size:0.65rem; }
 
+    /* ── Responsive layout ── */
     @media (max-width: 599px) {
       #sidebar {
         position:fixed!important; left:-260px!important; top:0;
@@ -89,21 +98,16 @@
         z-index:100; transition:left 0.25s ease;
       }
       #sidebar.sb-open { left:0!important; }
-      /* Safe-top spacer sits at very top of sidebar — fills status bar height */
       .sb-safe-top {
-        height: env(safe-area-inset-top, 0px);
-        min-height: env(safe-area-inset-top, 0px);
-        background: #0f172a;
-        flex-shrink: 0;
-        display: block;
+        height:env(safe-area-inset-top,0px); min-height:env(safe-area-inset-top,0px);
+        background:#0f172a; flex-shrink:0; display:block;
       }
       #backdrop.bd-visible { display:block!important; }
-      /* Push hamburger bar BELOW the iOS status bar */
       .mobile-bar {
         display:flex!important;
-        padding-top: max(14px, env(safe-area-inset-top, 14px)) !important;
-        padding-bottom: 10px !important;
-        min-height: calc(44px + env(safe-area-inset-top, 0px)) !important;
+        padding-top:max(14px,env(safe-area-inset-top,14px))!important;
+        padding-bottom:10px!important;
+        min-height:calc(44px + env(safe-area-inset-top,0px))!important;
       }
       .desktop-header { display:none!important; }
       .mobile-tabs { display:flex!important; }
@@ -124,6 +128,7 @@
       </div>
     </div>
   </div>
+
   <script>
 const PRESENTATIONS = [
   {
@@ -789,10 +794,6 @@ const PRESENTATIONS = [
   },
 
   {
-    id:'home',name:'Home',abbr:'Home',cat:'__home__',icon:'⚕️',type:'home',
-    summary:'',pearls:[],meds:[],monitoring:[],dialysis:[]
-  },
-  {
     id:'elyte-replace',name:'Electrolyte Replacement',abbr:'Electrolyte Replacement',cat:'Ward Quick Ref',icon:'🧪',type:'management',
     summary:'Practical guide to safe electrolyte replacement on the ward. Magnesium must be corrected before potassium will correct — always check both simultaneously. IV potassium via peripheral line is limited to 10 mmol/h maximum. Calcium chloride causes phlebitis — always use gluconate via peripheral line.',
     pearls:[
@@ -896,22 +897,24 @@ const PRESENTATIONS = [
     monitoring:['HbA1c: 3-monthly until at target, then 6-monthly. NOTE: in HD/CKD5, HbA1c is UNRELIABLE — shortened RBC survival = falsely low. Use fructosamine or glycated albumin instead.','eGFR + ACR: 3-6 monthly in DM+CKD — progression indicates inadequate RAAS/SGLT2i protection','BP: target <130/80 in DM+CKD; ACEi/ARB + SGLT2i + CCB typical combination','BGL monitoring: daily fasting + 2h post-meal; CGM strongly recommended in insulin-treated CKD patients','Annual foot examination: peripheral neuropathy + vascular assessment; high amputation risk in DM+CKD','Annual retinal screening: diabetic retinopathy progression correlates with renal disease progression','Lipids: statin therapy in all DM+CKD patients (high CV risk); atorvastatin 40mg preferred'],
     dialysis:['HD patients: HbA1c unreliable (falsely low); use fructosamine or glycated albumin for glycaemic monitoring','Post-HD hypoglycaemia: dialysate glucose 5.5 mmol/L equilibrates with blood — check BGL at end of each HD session if on insulin or sulfonylureas','PD + diabetes: dextrose in dialysate = significant glucose load (~100–200g/day from dialysate glucose absorption); insulin requirements may paradoxically increase','IP insulin: some PD patients (especially T1DM) use intraperitoneal insulin via dialysate — discuss with specialist','Metformin: ABSOLUTELY contraindicated in all dialysis patients'],
   },
+
 ];
 
   </script>
+
   <script>
 // ═══════════════════════════════════════════════════════════
 // APP v4 — Mobile-responsive, Export Notes, Quick Study
 // ═══════════════════════════════════════════════════════════
 
 const CATS = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific','Custom'];
-const CAT_C = {'Chronic Disease':'#fb923c','Ward Quick Ref':'#67e8f9','Quick Study':'#a78bfa','Infectious Disease':'#fbbf24','Transplant':'#60a5fa','Acute Presentations':'#f87171','CKD Management':'#34d399','Chronic Disease':'#fb923c','Dialysis-Specific':'#2dd4bf','Custom':'#c084fc'};
+const CAT_C = {'Ward Quick Ref':'#67e8f9','Chronic Disease':'#fb923c','Quick Study':'#a78bfa','Infectious Disease':'#fbbf24','Transplant':'#60a5fa','Acute Presentations':'#f87171','CKD Management':'#34d399','Dialysis-Specific':'#2dd4bf','Custom':'#c084fc'};
 const FL = {safe:'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0',adjust:'background:#fffbeb;color:#92400e;border:1px solid #fde68a',caution:'background:#fff7ed;color:#9a3412;border:1px solid #fed7aa',avoid:'background:#fef2f2;color:#b91c1c;border:1px solid #fecaca'};
 const SRC_C = {'eTG':'background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe','UpToDate':'background:#f5f3ff;color:#6d28d9;border:1px solid #ddd6fe','eTG + UpToDate':'background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe','ISPD 2022':'background:#f0fdfa;color:#0f766e;border:1px solid #99f6e4','UpToDate / PBS':'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0','KDIGO':'background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd','KDIGO / PBS':'background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc','eTG / PBS':'background:#f0fdf4;color:#166534;border:1px solid #86efac'};
 const URGENCY_C = {'Mandatory':'background:#fee2e2;color:#b91c1c','Mandatory + ECG':'background:#fee2e2;color:#b91c1c','URGENT if TMA suspected':'background:#fee2e2;color:#b91c1c','URGENT if TTP suspected':'background:#fee2e2;color:#b91c1c','GN screen (URGENT if haemoptysis)':'background:#ffedd5;color:#c2410c','Urgent — same day':'background:#ffedd5;color:#c2410c','Urgent (bedside)':'background:#ffedd5;color:#c2410c','Urgent — do before antibiotics':'background:#ffedd5;color:#c2410c','First-line':'background:#fef9c3;color:#854d0e','First-line (if on diuretics)':'background:#fef9c3;color:#854d0e','Bedside':'background:#fef9c3;color:#854d0e','GN screen':'background:#dbeafe;color:#1e40af','If clinically indicated':'background:#f3f4f6;color:#4b5563','If respiratory symptoms':'background:#f3f4f6;color:#4b5563','If pulmonary infiltrate':'background:#f3f4f6;color:#4b5563'};
 
 const S = {
-  id:'common-meds', tab:'Overview', screen:'home', hsearch:'', searchResults:[],
+  id:'common-meds', tab:'Overview', screen:'home', hsearch:'',
   notes:{}, custom:[], search:'',
   editNote:false, noteText:'',
   showModal:false, newName:'', newSummary:'', newPearls:'',
@@ -921,7 +924,7 @@ const S = {
 function init() {
   try { S.notes = JSON.parse(localStorage.getItem('nephroref_notes_v2')||'{}'); } catch(e) {}
   try { S.custom = JSON.parse(localStorage.getItem('nephroref_custom_v2')||'[]'); } catch(e) {}
-  S.screen = 'home';
+  S.screen='home';
   render();
 }
 
@@ -981,7 +984,6 @@ function render() {
   }).join('');
 
   const sidebarHTML = `
-    <div class="sb-safe-top"></div>
     <div style="padding:14px 16px 12px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:10px;flex-shrink:0">
       <span style="font-size:1.4rem">⚕️</span>
       <div>
@@ -1009,7 +1011,7 @@ function render() {
   const exportModal = S.showExport ? buildExportModal() : '';
   const addModal = S.showModal ? buildAddModal() : '';
 
-  if (S.screen === 'home') { document.getElementById('app').innerHTML = buildHome(); attachHomeEvents(); return; }
+  if(S.screen==='home'){document.getElementById('app').innerHTML=buildHome();attachHomeEvents();return;}
   document.getElementById('app').innerHTML = `
     <div style="display:flex;height:100dvh;background:#f9fafb;overflow:hidden;font-family:'IBM Plex Sans',system-ui,sans-serif">
 
@@ -1025,7 +1027,7 @@ function render() {
       <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
 
         <!-- MOBILE-ONLY top bar -->
-        <div class="mobile-bar" style="display:none;background:#0f172a;padding-left:14px;padding-right:14px;padding-bottom:10px;padding-top:10px;align-items:center;gap:10px;flex-shrink:0">
+        <div class="mobile-bar" style="display:none;background:#0f172a;padding:10px 14px;align-items:center;gap:10px;flex-shrink:0">
           <button onclick="toggleMenu()" style="color:white;font-size:1.3rem;background:none;border:none;cursor:pointer;padding:0;line-height:1;flex-shrink:0">☰</button>
           <span style="font-size:1.1rem;flex-shrink:0">${p.icon}</span>
           <span style="color:white;font-weight:600;font-size:0.85rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}</span>
@@ -1341,102 +1343,112 @@ function downloadNotes() {
   a.click(); URL.revokeObjectURL(url);
 }
 
-// ─── HOME PAGE + GLOBAL SEARCH ──────────────────────────────
+// ─── HOME PAGE ─────────────────────────────────────────────────
+var HOME_CATS = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific'];
+var HOME_ICONS = {'Ward Quick Ref':'💊','Quick Study':'🎓','Infectious Disease':'🫁','Transplant':'🔵','Acute Presentations':'⚡','CKD Management':'⚗️','Chronic Disease':'🩺','Dialysis-Specific':'🔴'};
+
 function buildHome() {
-  var pres = all();
-  var catTiles = ['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific'];
-  var catIcons = {'Ward Quick Ref':'💊','Quick Study':'🎓','Infectious Disease':'🫁','Transplant':'🔵','Acute Presentations':'⚡','CKD Management':'⚗️','Chronic Disease':'🩺','Dialysis-Specific':'🔴'};
-  var hasSearch = S.hsearch.length > 1;
-  var tileHtml = hasSearch ? buildSearchResults(S.hsearch) : catTiles.map(function(cat) {
-    var col = CAT_C[cat] || '#9ca3af';
-    var icon = catIcons[cat] || '📋';
-    var count = pres.filter(function(p){return p.cat===cat && p.type!=='home';}).length;
-    return '<div onclick="selCat(''+cat+'')" style="background:white;border-radius:14px;border:1px solid #e5e7eb;padding:16px 12px;text-align:center;cursor:pointer;transition:transform 0.1s;box-shadow:0 1px 3px rgba(0,0,0,0.06)" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''">'+
-      '<div style="font-size:1.6rem;margin-bottom:6px">'+icon+'</div>'+
-      '<div style="font-size:0.72rem;font-weight:600;color:#1e293b;line-height:1.3;margin-bottom:3px">'+esc(cat)+'</div>'+
-      '<div style="font-size:0.6rem;color:'+col+';font-weight:600">'+count+' topics</div>'+
-    '</div>';
-  }).join('');
-  var safeTop = 'max(14px, env(safe-area-inset-top, 14px))';
-  return '<div style="height:100dvh;display:flex;flex-direction:column;background:#0f172a;overflow:hidden">'+
-    '<div style="flex-shrink:0;padding-top:'+safeTop+'"></div>'+
-    '<div style="flex-shrink:0;text-align:center;padding:20px 20px 10px">'+
-      '<svg width="72" height="72" viewBox="0 0 180 180" style="margin-bottom:8px">'+
-        '<rect width="180" height="180" rx="36" fill="#FFF0EC"/>'+
-        '<ellipse cx="90" cy="153" rx="20" ry="4" fill="rgba(200,115,105,0.2)"/>'+
-        '<path d="M118,27C138,27,150,46,150,72C150,98,136,118,116,118C107,118,99,112,96,104C94,96,100,89,101,83C102,77,97,70,99,62C101,51,108,27,118,27Z" fill="#D88080"/>'+
-        '<path d="M23,40C18,50,16,62,20,75" stroke="rgba(255,255,255,0.38)" stroke-width="4.5" fill="none" stroke-linecap="round"/>'+
-        '<path d="M62,27C42,27,30,46,30,72C30,98,44,118,64,118C73,118,81,112,84,104C86,96,80,89,79,83C78,77,83,70,81,62C79,51,72,27,62,27Z" fill="#E89090"/>'+
-        '<path d="M157,40C162,50,164,62,160,75" stroke="rgba(255,255,255,0.4)" stroke-width="4.5" fill="none" stroke-linecap="round"/>'+
-        '<path d="M84,101Q89,122,86,138Q88,145,90,149" stroke="#C87070" stroke-width="5" fill="none" stroke-linecap="round"/>'+
-        '<path d="M96,101Q91,122,94,138Q92,145,90,149" stroke="#C87070" stroke-width="5" fill="none" stroke-linecap="round"/>'+
-        '<circle cx="90" cy="149" r="4" fill="#C87070"/>'+
-        '<path d="M90,30C90,30,84,21,77,21C70,21,65,27,65,33C65,42,75,50,90,60C105,50,115,42,115,33C115,27,110,21,103,21C96,21,90,30,90,30Z" fill="#C85060"/>'+
-      '</svg>'+
-      '<div style="color:white;font-size:1.5rem;font-weight:700;letter-spacing:0.02em;line-height:1.1">Nephro-Ref</div>'+
-      '<div style="color:#64748b;font-size:0.75rem;margin-top:3px">Australian Clinical Reference</div>'+
-    '</div>'+
-    '<div style="padding:0 16px 12px;flex-shrink:0">'+
-      '<div style="position:relative">'+
-        '<span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#64748b;font-size:1rem;pointer-events:none">🔍</span>'+
-        '<input id="home-srch" placeholder="Search medications, presentations, pearls..." value="'+esc(S.hsearch)+'"'+
-          'style="width:100%;background:#1e293b;color:white;font-size:0.875rem;border-radius:12px;padding:12px 12px 12px 38px;border:1px solid #334155;outline:none;font-family:inherit">'+
-      '</div>'+
-    '</div>'+
-    '<div style="flex:1;overflow-y:auto;padding:0 16px 16px">'+
-      (hasSearch ? tileHtml : '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tileHtml+'</div>')+
-    '</div>'+
-  '</div>';
+  var hasQ = S.hsearch.length > 1;
+  var safeTop = 'max(14px,env(safe-area-inset-top,14px))';
+  var kidneySVG = '<svg width="80" height="80" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 10px">'
+    + '<rect width="180" height="180" rx="38" fill="#FFF0EC"/>'
+    + '<ellipse cx="90" cy="162" rx="18" ry="4" fill="rgba(200,115,105,0.2)"/>'
+    // Right kidney (slightly darker, behind)
+    + '<path d="M136,42C156,42,168,59,168,84C168,109,155,128,135,128C125,128,117,122,115,113C112,104,119,97,120,91C121,85,115,78,117,70C119,59,125,42,136,42Z" fill="#D88080"/>'
+    + '<path d="M158,53C163,62,165,73,162,85" stroke="rgba(255,255,255,0.38)" stroke-width="5" fill="none" stroke-linecap="round"/>'
+    // Left kidney (brighter, front)
+    + '<path d="M44,42C24,42,12,59,12,84C12,109,25,128,45,128C55,128,63,122,65,113C68,104,61,97,60,91C59,85,65,78,63,70C61,59,55,42,44,42Z" fill="#E89090"/>'
+    + '<path d="M22,53C17,62,15,73,18,85" stroke="rgba(255,255,255,0.45)" stroke-width="5" fill="none" stroke-linecap="round"/>'
+    + '<circle cx="20" cy="51" r="3.5" fill="rgba(255,255,255,0.45)"/>'
+    // Left ureter
+    + '<path d="M65,111Q70,132,78,148Q82,156,85,160" stroke="#C87070" stroke-width="5" fill="none" stroke-linecap="round"/>'
+    // Right ureter
+    + '<path d="M115,111Q110,132,102,148Q98,156,95,160" stroke="#C87070" stroke-width="5" fill="none" stroke-linecap="round"/>'
+    + '<path d="M85,160Q90,164,95,160" stroke="#C87070" stroke-width="4.5" fill="none" stroke-linecap="round"/>'
+    // Heart (smaller, between kidneys at top)
+    + '<path d="M90,36C90,36,84,27,77,27C70,27,65,33,65,39C65,48,75,56,90,66C105,56,115,48,115,39C115,33,110,27,103,27C96,27,90,36,90,36Z" fill="#C85060"/>'
+    + '</svg>';
+
+  return '<div style="height:100dvh;display:flex;flex-direction:column;background:#0f172a;overflow:hidden">'
+    + '<div style="height:'+safeTop+';background:#0f172a;flex-shrink:0"></div>'
+    + '<div style="flex-shrink:0;text-align:center;padding:18px 20px 6px">'
+    + kidneySVG
+    + '<div style="color:white;font-size:1.45rem;font-weight:700;letter-spacing:0.02em;line-height:1.1">Nephro-Ref</div>'
+    + '<div style="color:#64748b;font-size:0.75rem;margin-top:4px">Australian Clinical Reference</div>'
+    + '</div>'
+    + '<div style="padding:10px 16px 10px;flex-shrink:0">'
+    + '<div style="position:relative">'
+    + '<span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#64748b;pointer-events:none">🔍</span>'
+    + '<input id="home-srch" placeholder="Search meds, presentations, pearls..." value="'+esc(S.hsearch)+'"'
+    + ' style="width:100%;background:#1e293b;color:white;font-size:0.875rem;border-radius:12px;padding:11px 12px 11px 38px;border:1px solid #334155;outline:none;font-family:inherit">'
+    + '</div></div>'
+    + '<div id="home-tiles" style="flex:1;overflow-y:auto;padding:6px 14px 16px">'
+    + (hasQ ? buildSearchResults(S.hsearch) : buildCatTiles())
+    + '</div></div>';
+}
+
+function buildCatTiles() {
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">'
+    + HOME_CATS.map(function(cat) {
+        var col = CAT_C[cat]||'#9ca3af';
+        var icon = HOME_ICONS[cat]||'📋';
+        var count = all().filter(function(p){return p.cat===cat;}).length;
+        return '<div onclick="selCat(\''+cat+'\')"'
+          + ' style="background:white;border-radius:13px;border:1px solid #e5e7eb;padding:15px 10px;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.06)">'
+          + '<div style="font-size:1.5rem;margin-bottom:5px">'+icon+'</div>'
+          + '<div style="font-size:0.68rem;font-weight:600;color:#1e293b;line-height:1.3;margin-bottom:3px">'+esc(cat)+'</div>'
+          + '<div style="font-size:0.6rem;font-weight:600;color:'+col+'">'+count+' topics</div>'
+          + '</div>';
+      }).join('')
+    + '</div>';
 }
 
 function buildSearchResults(query) {
   var q = query.toLowerCase();
   var results = [];
   all().forEach(function(p) {
-    if (p.type === 'home') return;
-    var matches = [];
-    if (p.name.toLowerCase().indexOf(q)>=0 || (p.abbr||'').toLowerCase().indexOf(q)>=0)
-      matches.push({label:'Name', text: p.name});
-    if (p.summary && p.summary.toLowerCase().indexOf(q)>=0)
-      matches.push({label:'Summary', text: snip(p.summary, p.summary.toLowerCase().indexOf(q))});
-    if (p.pearls) p.pearls.forEach(function(pearl) {
-      if (pearl.toLowerCase().indexOf(q)>=0 && matches.length<4)
-        matches.push({label:'Pearl', text: snip(pearl, pearl.toLowerCase().indexOf(q))});
+    var hits = [];
+    if (p.name.toLowerCase().indexOf(q)>=0) hits.push({t:'Name',v:p.name});
+    if (p.summary && p.summary.toLowerCase().indexOf(q)>=0 && hits.length<3)
+      hits.push({t:'Summary',v:snip(p.summary,p.summary.toLowerCase().indexOf(q))});
+    if (p.pearls) p.pearls.forEach(function(pr){
+      if (pr.toLowerCase().indexOf(q)>=0 && hits.length<3)
+        hits.push({t:'Pearl',v:snip(pr,pr.toLowerCase().indexOf(q))});
     });
-    if (p.meds) p.meds.forEach(function(m) {
-      if (!m.isHeader && m.drug && m.drug.toLowerCase().indexOf(q)>=0 && matches.length<4)
-        matches.push({label:'Drug', text: m.drug + (m.use ? ' — '+m.use.slice(0,40) : '')});
-      if (!m.isHeader && m.note && m.note.toLowerCase().indexOf(q)>=0 && matches.length<4)
-        matches.push({label:'Note', text: snip(m.note, m.note.toLowerCase().indexOf(q))});
+    if (p.meds) p.meds.forEach(function(m){
+      if (!m.isHeader && m.drug && m.drug.toLowerCase().indexOf(q)>=0 && hits.length<3)
+        hits.push({t:'Drug',v:m.drug+(m.use?(' — '+m.use.slice(0,45)):'')});
+      if (!m.isHeader && m.note && m.note.toLowerCase().indexOf(q)>=0 && hits.length<3)
+        hits.push({t:'Note',v:snip(m.note,m.note.toLowerCase().indexOf(q))});
     });
-    if (matches.length > 0) results.push({p:p, matches:matches.slice(0,2)});
+    if (hits.length) results.push({p:p,hits:hits.slice(0,2)});
   });
-  if (!results.length) return '<div style="text-align:center;padding:40px;color:#64748b"><div style="font-size:2rem;margin-bottom:8px">🔍</div><div style="font-size:0.875rem">No results for "'+esc(query)+'"</div></div>';
-  return '<div style="display:flex;flex-direction:column;gap:8px">'+
-    results.map(function(r) {
-      var col = CAT_C[r.p.cat] || '#9ca3af';
-      return '<div onclick="selP(''+r.p.id+'')" style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:12px 14px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.05)">'+
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
-          '<span style="font-size:1rem">'+r.p.icon+'</span>'+
-          '<span style="font-weight:600;font-size:0.85rem;color:#111827">'+esc(r.p.name)+'</span>'+
-          '<span style="font-size:0.6rem;font-weight:600;color:'+col+';margin-left:auto">'+esc(r.p.cat)+'</span>'+
-        '</div>'+
-        r.matches.map(function(m) {
-          return '<div style="font-size:0.72rem;color:#6b7280;margin-top:2px"><span style="color:#0d9488;font-weight:600;margin-right:4px">'+m.label+'</span>'+esc(m.text)+'</div>';
-        }).join('')+
-      '</div>';
-    }).join('')+
-  '</div>';
+  if (!results.length)
+    return '<div style="text-align:center;padding:40px 20px;color:#64748b"><div style="font-size:2rem;margin-bottom:8px">🔍</div><div style="font-size:0.875rem">No results for "'+esc(query)+'"</div></div>';
+  return '<div style="display:flex;flex-direction:column;gap:8px">'
+    + results.map(function(r){
+        return '<div onclick="selP(\''+r.p.id+'\')" style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:12px 14px;cursor:pointer">'
+          + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+          + '<span>'+r.p.icon+'</span>'
+          + '<span style="font-weight:600;font-size:0.85rem;color:#111827;flex:1">'+esc(r.p.name)+'</span>'
+          + '<span style="font-size:0.58rem;font-weight:700;color:'+(CAT_C[r.p.cat]||'#9ca3af')+'">'+esc(r.p.cat)+'</span>'
+          + '</div>'
+          + r.hits.map(function(h){
+              return '<div style="font-size:0.7rem;color:#6b7280;margin-top:2px">'
+                + '<span style="color:#0d9488;font-weight:600;margin-right:3px">'+h.t+'</span>'+esc(h.v)+'</div>';
+            }).join('')
+          + '</div>';
+      }).join('')
+    + '</div>';
 }
 
-function snip(text, idx) {
-  var start = Math.max(0, idx-20);
-  var end = Math.min(text.length, idx+60);
-  return (start>0?'...':'')+text.slice(start,end)+(end<text.length?'...':'');
+function snip(txt,idx){
+  var s=Math.max(0,idx-18);var e=Math.min(txt.length,idx+55);
+  return (s>0?'...':'')+txt.slice(s,e)+(e<txt.length?'...':'');
 }
 
 function selCat(cat) {
-  var first = all().find(function(p){return p.cat===cat && p.type!=='home';});
+  var first = all().find(function(p){return p.cat===cat;});
   if (first) selP(first.id);
 }
 
@@ -1444,17 +1456,12 @@ function goHome() { S.screen='home'; S.hsearch=''; render(); }
 
 function attachHomeEvents() {
   var el = document.getElementById('home-srch');
-  if (el) {
-    el.focus();
-    el.addEventListener('input', function() {
-      S.hsearch = this.value;
-      var content = document.querySelector('#app > div > div:last-child');
-      if (content) {
-        var hasSearch = S.hsearch.length > 1;
-        content.innerHTML = hasSearch ? buildSearchResults(S.hsearch) : '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+['Ward Quick Ref','Quick Study','Infectious Disease','Transplant','Acute Presentations','CKD Management','Chronic Disease','Dialysis-Specific'].map(function(cat){var col=CAT_C[cat]||'#9ca3af';var icon={'Ward Quick Ref':'💊','Quick Study':'🎓','Infectious Disease':'🫁','Transplant':'🔵','Acute Presentations':'⚡','CKD Management':'⚗️','Chronic Disease':'🩺','Dialysis-Specific':'🔴'}[cat]||'📋';var count=all().filter(function(p){return p.cat===cat&&p.type!=='home';}).length;return '<div onclick="selCat(''+cat+'')" style="background:white;border-radius:14px;border:1px solid #e5e7eb;padding:16px 12px;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.06)" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform=''"><div style="font-size:1.6rem;margin-bottom:6px">'+icon+'</div><div style="font-size:0.72rem;font-weight:600;color:#1e293b;line-height:1.3;margin-bottom:3px">'+esc(cat)+'</div><div style="font-size:0.6rem;color:'+col+';font-weight:600">'+count+' topics</div></div>';}).join('')+'</div>';
-      }
-    });
-  }
+  if (!el) return;
+  el.addEventListener('input', function(){
+    S.hsearch = this.value;
+    var tiles = document.getElementById('home-tiles');
+    if (tiles) tiles.innerHTML = S.hsearch.length>1 ? buildSearchResults(S.hsearch) : buildCatTiles();
+  });
 }
 
 
@@ -1462,5 +1469,6 @@ function attachHomeEvents() {
 init();
 
   </script>
+
 </body>
 </html>
