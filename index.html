@@ -16,15 +16,12 @@
     try{
       var c=document.createElement('canvas');c.width=c.height=180;
       var x=c.getContext('2d'),w=180;
-      // Warm cream background
       x.fillStyle='#FFF0EC';var rd=38;
       x.beginPath();x.moveTo(rd,0);x.lineTo(w-rd,0);x.arcTo(w,0,w,rd,rd);x.lineTo(w,w-rd);
       x.arcTo(w,w,w-rd,w,rd);x.lineTo(rd,w);x.arcTo(0,w,0,w-rd,rd);x.lineTo(0,rd);
       x.arcTo(0,0,rd,0,rd);x.closePath();x.fill();
-      // Shadow
       x.fillStyle='rgba(200,112,100,0.18)';
       x.beginPath();x.ellipse(90,162,17,4,0,0,Math.PI*2);x.fill();
-      // Right kidney (behind, darker) — smaller, rightward
       x.fillStyle='#D88080';
       x.beginPath();x.moveTo(136,42);x.bezierCurveTo(156,42,168,59,168,84);
       x.bezierCurveTo(168,109,155,128,135,128);x.bezierCurveTo(125,128,117,122,115,113);
@@ -32,7 +29,6 @@
       x.bezierCurveTo(119,59,125,42,136,42);x.closePath();x.fill();
       x.strokeStyle='rgba(255,255,255,0.38)';x.lineWidth=4.5;x.lineCap='round';
       x.beginPath();x.moveTo(158,53);x.bezierCurveTo(163,62,165,74,162,85);x.stroke();
-      // Left kidney (front, brighter) — smaller, leftward
       x.fillStyle='#E89090';
       x.beginPath();x.moveTo(44,42);x.bezierCurveTo(24,42,12,59,12,84);
       x.bezierCurveTo(12,109,25,128,45,128);x.bezierCurveTo(55,128,63,122,65,113);
@@ -42,7 +38,6 @@
       x.beginPath();x.moveTo(22,53);x.bezierCurveTo(17,62,15,74,18,85);x.stroke();
       x.fillStyle='rgba(255,255,255,0.45)';
       x.beginPath();x.arc(20,51,3,0,Math.PI*2);x.fill();
-      // Ureters with clear gap in centre
       x.strokeStyle='#C87070';x.lineWidth=5;x.lineCap='round';
       x.beginPath();x.moveTo(65,111);x.quadraticCurveTo(72,134,80,150);
       x.quadraticCurveTo(84,158,87,162);x.stroke();
@@ -50,7 +45,6 @@
       x.quadraticCurveTo(96,158,93,162);x.stroke();
       x.beginPath();x.moveTo(87,162);x.quadraticCurveTo(90,166,93,162);x.stroke();
       x.fillStyle='#C87070';x.beginPath();x.arc(90,162,3.5,0,Math.PI*2);x.fill();
-      // Heart between kidneys, top
       x.fillStyle='#C85060';
       x.beginPath();x.moveTo(90,38);
       x.bezierCurveTo(90,38,84,28,77,28);x.bezierCurveTo(70,28,65,34,65,40);
@@ -1397,7 +1391,7 @@ function buildCatTiles() {
         var count = all().filter(function(p){return p.cat===cat;}).length;
         var bg = TBG[cat]||'rgba(255,255,255,0.06)';
         var bdr = TBDR[cat]||'rgba(255,255,255,0.15)';
-        return '<div onclick="selCat(''+cat+'')" style="background:'+bg+';border:1px solid '+bdr+';border-radius:14px;padding:18px 12px 14px;text-align:center;cursor:pointer">'
+        return '<div onclick="selCat(this.dataset.cat)" data-cat="'+cat+'" style="background:'+bg+';border:1px solid '+bdr+';border-radius:14px;padding:18px 12px 14px;text-align:center;cursor:pointer">'
           + '<div style="font-size:2rem;margin-bottom:8px;line-height:1">'+icon+'</div>'
           + '<div style="font-size:0.8rem;font-weight:700;color:white;line-height:1.25;margin-bottom:4px;letter-spacing:0.01em">'+esc(cat)+'</div>'
           + '<div style="font-size:0.62rem;font-weight:600;color:'+col+'">'+count+' topics</div>'
@@ -1433,7 +1427,7 @@ function buildSearchResults(query) {
     return '<div style="text-align:center;padding:40px 20px;color:#64748b"><div style="font-size:2rem;margin-bottom:8px">🔍</div><div style="font-size:0.875rem">No results for "'+esc(query)+'"</div></div>';
   return '<div style="display:flex;flex-direction:column;gap:8px">'
     + results.map(function(r){
-        return '<div onclick="selP(\''+r.p.id+'\')" style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:12px 14px;cursor:pointer">'
+        return '<div onclick="selP(this.dataset.id)" data-id="'+r.p.id+'" style="background:white;border-radius:12px;border:1px solid #e5e7eb;padding:12px 14px;cursor:pointer">';
           + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
           + '<span>'+r.p.icon+'</span>'
           + '<span style="font-weight:600;font-size:0.85rem;color:#111827;flex:1">'+esc(r.p.name)+'</span>'
