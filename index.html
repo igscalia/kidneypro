@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width,initial-scale=1.0,viewport-fit=cover'>
   <title>KidneyPro</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="KidneyPro">
-  <meta name="theme-color" content="#0f172a">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <meta name='apple-mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'>
+  <meta name='apple-mobile-web-app-title' content='KidneyPro'>
+  <meta name='theme-color' content='#0f172a'>
+  <link rel='preconnect' href='https://fonts.googleapis.com'>
+  <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+  <link href='https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap' rel='stylesheet'>
   <script>
   (function(){try{var c=document.createElement('canvas');c.width=c.height=180;var x=c.getContext('2d'),w=180;x.fillStyle='#FFF0EC';var rd=38;x.beginPath();x.moveTo(rd,0);x.lineTo(w-rd,0);x.arcTo(w,0,w,rd,rd);x.lineTo(w,w-rd);x.arcTo(w,w,w-rd,w,rd);x.lineTo(rd,w);x.arcTo(0,w,0,w-rd,rd);x.lineTo(0,rd);x.arcTo(0,0,rd,0,rd);x.closePath();x.fill();x.fillStyle='rgba(200,112,100,0.18)';x.beginPath();x.ellipse(90,162,17,4,0,0,Math.PI*2);x.fill();x.fillStyle='#D88080';x.beginPath();x.moveTo(136,42);x.bezierCurveTo(156,42,168,59,168,84);x.bezierCurveTo(168,109,155,128,135,128);x.bezierCurveTo(125,128,117,122,115,113);x.bezierCurveTo(112,104,119,97,120,91);x.bezierCurveTo(121,85,115,78,117,70);x.bezierCurveTo(119,59,125,42,136,42);x.closePath();x.fill();x.strokeStyle='rgba(255,255,255,0.38)';x.lineWidth=4.5;x.lineCap='round';x.beginPath();x.moveTo(158,53);x.bezierCurveTo(163,62,165,74,162,85);x.stroke();x.fillStyle='#E89090';x.beginPath();x.moveTo(44,42);x.bezierCurveTo(24,42,12,59,12,84);x.bezierCurveTo(12,109,25,128,45,128);x.bezierCurveTo(55,128,63,122,65,113);x.bezierCurveTo(68,104,61,97,60,91);x.bezierCurveTo(59,85,65,78,63,70);x.bezierCurveTo(61,59,55,42,44,42);x.closePath();x.fill();x.strokeStyle='rgba(255,255,255,0.45)';x.lineWidth=4.5;x.lineCap='round';x.beginPath();x.moveTo(22,53);x.bezierCurveTo(17,62,15,74,18,85);x.stroke();x.fillStyle='rgba(255,255,255,0.45)';x.beginPath();x.arc(20,51,3,0,Math.PI*2);x.fill();x.strokeStyle='#C87070';x.lineWidth=5;x.lineCap='round';x.beginPath();x.moveTo(65,111);x.quadraticCurveTo(72,134,80,150);x.quadraticCurveTo(84,158,87,162);x.stroke();x.beginPath();x.moveTo(115,111);x.quadraticCurveTo(108,134,100,150);x.quadraticCurveTo(96,158,93,162);x.stroke();x.beginPath();x.moveTo(87,162);x.quadraticCurveTo(90,166,93,162);x.stroke();x.fillStyle='#C87070';x.beginPath();x.arc(90,162,3.5,0,Math.PI*2);x.fill();x.fillStyle='#C85060';x.beginPath();x.moveTo(90,38);x.bezierCurveTo(90,38,84,28,77,28);x.bezierCurveTo(70,28,65,34,65,40);x.bezierCurveTo(65,49,76,57,90,67);x.bezierCurveTo(104,57,115,49,115,40);x.bezierCurveTo(115,34,110,28,103,28);x.bezierCurveTo(96,28,90,38,90,38);x.closePath();x.fill();var img=c.toDataURL('image/png');var lk=document.createElement('link');lk.rel='apple-touch-icon';lk.setAttribute('sizes','180x180');lk.href=img;document.head.appendChild(lk);var fv=document.createElement('link');fv.rel='icon';fv.type='image/png';fv.href=img;document.head.appendChild(fv);}catch(e){}}());
-  </script>
-  <style>
+  </script>  <style>
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     body{margin:0;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;}
     ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:#475569;border-radius:2px;}
@@ -24,60 +23,40 @@
 
     @media(max-width:599px){#sidebar{position:fixed!important;left:-260px!important;top:0;height:100dvh;width:260px!important;min-width:260px!important;z-index:100;transition:left 0.25s ease;}#sidebar.sb-open{left:0!important;}.sb-safe-top{height:env(safe-area-inset-top,0px);min-height:env(safe-area-inset-top,0px);background:#0f172a;flex-shrink:0;display:block;}#backdrop.bd-visible{display:block!important;}.mobile-bar{display:flex!important;padding-top:max(14px,env(safe-area-inset-top,14px))!important;padding-bottom:10px!important;min-height:calc(44px + env(safe-area-inset-top,0px))!important;}.desktop-header{display:none!important;}.mobile-tabs{display:flex!important;}}
     @media(min-width:600px){.mobile-bar{display:none!important;}.mobile-tabs{display:none!important;}.sb-safe-top{display:none!important;}}
-    /* ─── DARK MODE OVERRIDES ─────────────────────────────────── */
-    body.dark-mode { background:#0f172a; color:#f1f5f9; }
-    body.dark-mode #sidebar input { background:#1e293b!important; color:#f1f5f9!important; border-color:#334155!important; }
-    body.dark-mode #main-content div[style*="background:white"],
-    body.dark-mode #main-content div[style*="background: white"] { background:#1e293b!important; }
-    body.dark-mode #main-content div[style*="background:#f9fafb"],
-    body.dark-mode #main-content div[style*="background:#f8fafc"] { background:#0f172a!important; }
-    body.dark-mode #main-content div[style*="background:#f1f5f9"] { background:#0f172a!important; }
-    body.dark-mode #main-content div[style*="background:#fffbeb"] { background:#1a1200!important; border-color:#3a2a00!important; }
-    body.dark-mode #main-content div[style*="background:#eff6ff"] { background:#0c1428!important; border-color:#1e3a6e!important; }
-    body.dark-mode #main-content div[style*="background:#fef2f2"] { background:#1a0a0a!important; border-color:#3a1010!important; }
-    body.dark-mode #main-content div[style*="background:#f0fdf4"] { background:#0a1a10!important; border-color:#1a3a20!important; }
-    body.dark-mode #main-content div[style*="background:#f0fdfa"] { background:#051a18!important; border-color:#0d3430!important; }
-    body.dark-mode #main-content div[style*="background:#faf5ff"] { background:#120a1a!important; border-color:#2a1a3a!important; }
-    body.dark-mode #main-content div[style*="color:#0f172a"],
-    body.dark-mode #main-content span[style*="color:#0f172a"],
-    body.dark-mode #main-content p[style*="color:#0f172a"] { color:#f1f5f9!important; }
-    body.dark-mode #main-content div[style*="color:#1e293b"],
-    body.dark-mode #main-content span[style*="color:#1e293b"] { color:#e2e8f0!important; }
-    body.dark-mode #main-content div[style*="color:#374151"],
-    body.dark-mode #main-content span[style*="color:#374151"],
-    body.dark-mode #main-content p[style*="color:#374151"] { color:#cbd5e1!important; }
-    body.dark-mode #main-content div[style*="color:#4b5563"],
-    body.dark-mode #main-content span[style*="color:#4b5563"] { color:#94a3b8!important; }
-    body.dark-mode #main-content div[style*="color:#6b7280"],
-    body.dark-mode #main-content span[style*="color:#6b7280"] { color:#94a3b8!important; }
-    body.dark-mode #main-content div[style*="color:#64748b"],
-    body.dark-mode #main-content span[style*="color:#64748b"] { color:#94a3b8!important; }
-    body.dark-mode #main-content div[style*="color:#92400e"] { color:#fcd34d!important; }
-    body.dark-mode #main-content div[style*="color:#1d4ed8"] { color:#93c5fd!important; }
-    body.dark-mode #main-content div[style*="color:#15803d"],
-    body.dark-mode #main-content span[style*="color:#15803d"] { color:#86efac!important; }
-    body.dark-mode #main-content div[style*="border:1px solid #e5e7eb"],
-    body.dark-mode #main-content div[style*="border:1px solid #e2e8f0"],
-    body.dark-mode #main-content div[style*="border:1px solid #f1f5f9"],
-    body.dark-mode #main-content div[style*="border:1px solid #f3f4f6"] { border-color:#334155!important; }
-    body.dark-mode #main-content div[style*="border-bottom:1px solid #e5e7eb"],
-    body.dark-mode #main-content div[style*="border-bottom:1px solid #f1f5f9"] { border-bottom-color:#334155!important; }
-    body.dark-mode .desktop-header { background:#1e293b!important; border-color:#334155!important; }
-    body.dark-mode div[style*="border-bottom:1px solid #f3f4f6"] { border-bottom-color:#334155!important; }
-    body.dark-mode div[style*="background:#f1f5f9;border-radius:99px"] { background:#334155!important; color:#f1f5f9!important; }
-    body.dark-mode #quiz-body div[style*="background:#f8fafc"] { background:#1e2d40!important; border-color:#334155!important; }
-    body.dark-mode #quiz-body div[style*="background:#f9fafb"] { background:#1e2d40!important; }
-    body.dark-mode .mobile-tabs { background:#1e293b!important; border-color:#334155!important; }
-    body.dark-mode .mobile-bar { background:#0f172a!important; }
-    body.dark-mode textarea { background:#1e293b!important; color:#f1f5f9!important; border-color:#334155!important; }
-    body.dark-mode input[type=number] { background:#1e293b!important; color:#f1f5f9!important; border-color:#334155!important; }
-    body.dark-mode select { background:#1e293b!important; color:#f1f5f9!important; border-color:#334155!important; }
+    body.dark-mode{background:#0f172a;color:#f1f5f9}
+    body.dark-mode #sidebar input{background:#1e293b!important;color:#f1f5f9!important;border-color:#334155!important}
+    body.dark-mode #main-content div[style*="background:white"],body.dark-mode #main-content div[style*="background: white"]{background:#1e293b!important}
+    body.dark-mode #main-content div[style*="background:#f9fafb"],body.dark-mode #main-content div[style*="background:#f8fafc"]{background:#0f172a!important}
+    body.dark-mode #main-content div[style*="background:#f1f5f9"]{background:#0f172a!important}
+    body.dark-mode #main-content div[style*="background:#fffbeb"]{background:#1a1200!important}
+    body.dark-mode #main-content div[style*="background:#eff6ff"]{background:#0c1428!important}
+    body.dark-mode #main-content div[style*="background:#fef2f2"]{background:#1a0a0a!important}
+    body.dark-mode #main-content div[style*="background:#f0fdf4"]{background:#0a1a10!important}
+    body.dark-mode #main-content div[style*="background:#f0fdfa"]{background:#051a18!important}
+    body.dark-mode #main-content div[style*="background:#faf5ff"]{background:#120a1a!important}
+    body.dark-mode #main-content div[style*="color:#0f172a"],body.dark-mode #main-content span[style*="color:#0f172a"],body.dark-mode #main-content p[style*="color:#0f172a"]{color:#f1f5f9!important}
+    body.dark-mode #main-content div[style*="color:#1e293b"],body.dark-mode #main-content span[style*="color:#1e293b"]{color:#e2e8f0!important}
+    body.dark-mode #main-content div[style*="color:#374151"],body.dark-mode #main-content span[style*="color:#374151"],body.dark-mode #main-content p[style*="color:#374151"]{color:#cbd5e1!important}
+    body.dark-mode #main-content div[style*="color:#6b7280"],body.dark-mode #main-content span[style*="color:#6b7280"]{color:#94a3b8!important}
+    body.dark-mode #main-content div[style*="color:#64748b"],body.dark-mode #main-content span[style*="color:#64748b"]{color:#94a3b8!important}
+    body.dark-mode #main-content div[style*="color:#92400e"]{color:#fcd34d!important}
+    body.dark-mode #main-content div[style*="color:#1d4ed8"]{color:#93c5fd!important}
+    body.dark-mode #main-content div[style*="color:#15803d"],body.dark-mode #main-content span[style*="color:#15803d"]{color:#86efac!important}
+    body.dark-mode #main-content div[style*="border:1px solid #e5e7eb"],body.dark-mode #main-content div[style*="border:1px solid #e2e8f0"],body.dark-mode #main-content div[style*="border:1px solid #f1f5f9"]{border-color:#334155!important}
+    body.dark-mode .desktop-header{background:#1e293b!important;border-color:#334155!important}
+    body.dark-mode div[style*="border-bottom:1px solid #f3f4f6"]{border-bottom-color:#334155!important}
+    body.dark-mode #quiz-body div[style*="background:#f8fafc"]{background:#1e2d40!important;border-color:#334155!important}
+    body.dark-mode .mobile-tabs{background:#1e293b!important;border-color:#334155!important}
+    body.dark-mode .mobile-bar{background:#0f172a!important}
+    body.dark-mode textarea{background:#1e293b!important;color:#f1f5f9!important;border-color:#334155!important}
+    body.dark-mode input[type=number]{background:#1e293b!important;color:#f1f5f9!important;border-color:#334155!important}
+    body.dark-mode select{background:#1e293b!important;color:#f1f5f9!important;border-color:#334155!important}
   </style>
 </head>
 <body>
-  <div id="app" style="height:100dvh;overflow:hidden">
-    <div style="height:100dvh;display:flex;align-items:center;justify-content:center;background:#0f172a">
-      <div style="text-align:center;color:white"><div style="font-size:3rem;margin-bottom:12px">&#9877;</div><div style="color:#94a3b8;font-size:0.875rem">Loading KidneyPro...</div></div></div></div>
+  <div id='app' style='height:100dvh;overflow:hidden'>
+    <div style='height:100dvh;display:flex;align-items:center;justify-content:center;background:#0f172a'>
+      <div style='text-align:center;color:white'><div style='font-size:3rem;margin-bottom:12px'>&#9877;</div><div style='color:#94a3b8;font-size:0.875rem'>Loading KidneyPro...</div></div></div></div>
   <script>
 const PRESENTATIONS = [
   {
@@ -1269,7 +1248,7 @@ function buildContent(p) {
   if (S.tab==='Monitoring') return buildMonitoring(p);
   if (S.tab==='My Notes') return buildNotes(p);
   if (p.type==='diagram') { if(S.tab==='Pearls') return buildStudyPearls(p); return buildDiagram(p); }
-  if (p.type==='quiz') { S.quiz=S.quiz||{tab:'ckd',idx:0,sel:null,shuffled:[],score:0,total:0}; var qt={'CKD Basics':'ckd','Acute Presentations':'acute','Transplant':'transplant','General Neph':'neph'}; var tgt=qt[S.tab]||'ckd'; if(!S.quiz.shuffled.length||S.quiz.tab!==tgt) quizInit(tgt); return buildQuiz(p); }
+  if (p.type==='quiz') { S.quiz=S.quiz||{tab:'ckd',idx:0,sel:null,shuffled:[],score:0,total:0}; var qt={'CKD Basics':'ckd','Acute Presentations':'acute','Transplant':'transplant','General Neph':'neph'}; var b2t={'ckd':'CKD Basics','acute':'Acute Presentations','transplant':'Transplant','neph':'General Neph'}; var tgt; if(S.quiz.fromLink){tgt=S.quiz.tab;S.quiz.fromLink=false;S.tab=b2t[tgt]||'CKD Basics';} else{tgt=qt[S.tab]||S.quiz.tab||'ckd';} if(!S.quiz.shuffled.length||S.quiz.tab!==tgt) quizInit(tgt); return buildQuiz(p); }
   if (p.type==='scenarios') return buildScenarios(p);
   if (p.type==='calculator') { if(S.tab==='Pearls') return buildCalcPearls(p); return buildCalculator(p); }
   return '';
@@ -1642,45 +1621,82 @@ function buildHome() {
 
 function buildCatTiles() {
   var dk = S.dark;
-  var TLINE={'Ward Reference':'#67e8f9','Acute Presentations':'#f87171','CKD Management':'#34d399','Quick Study':'#a78bfa','Calculators':'#fb923c'};
-  var TBGR={'Ward Reference':'rgba(103,232,249,0.14)','Acute Presentations':'rgba(248,113,113,0.14)','CKD Management':'rgba(52,211,153,0.14)','Quick Study':'rgba(167,139,250,0.14)','Calculators':'rgba(251,146,60,0.14)'};
+  var TLINE={'Ward Reference':'#67e8f9','Acute Presentations':'#f87171','CKD Management':'#34d399','Quick Study':'#a78bfa','Calculators':'#fb923c','Clinical Quiz':'#a78bfa'};
+  var TBGR={'Ward Reference':'rgba(103,232,249,0.14)','Acute Presentations':'rgba(248,113,113,0.14)','CKD Management':'rgba(52,211,153,0.14)','Quick Study':'rgba(167,139,250,0.14)','Calculators':'rgba(251,146,60,0.14)','Clinical Quiz':'rgba(167,139,250,0.14)'};
+  var TRGB={'Ward Reference':'103,232,249','Acute Presentations':'248,113,113','CKD Management':'52,211,153','Quick Study':'167,139,250','Calculators':'251,146,60','Clinical Quiz':'167,139,250'};
+  var EXTRA={name:'Clinical Quiz',icon:'&#129504;',action:'selP(\'clinical-quiz\')',cnt:'57 questions'};
   var cats = HOME_CATS;
   var html = '';
   if (dk) {
     html = '<div style="display:flex;flex-direction:column;gap:10px">';
     cats.forEach(function(cat){
-      var ln = TLINE[cat]||'#94a3b8';
-      var bg = TBGR[cat]||'rgba(148,163,184,0.14)';
-      var icon = HOME_ICONS[cat]||'&#128203;';
-      var cnt = all().filter(function(p){return p.cat===cat;}).length;
-      html += '<div onclick="selCat(this.dataset.cat)" data-cat="'+cat+'" style="background:#1e293b;border-radius:16px;border:1px solid #2d3f55;border-right:4px solid '+ln+';padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px">'
-        + '<div style="width:46px;height:46px;border-radius:12px;background:'+bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.5rem">'+icon+'</div>'
-        + '<div style="flex:1;min-width:0">'
-        + '<div style="font-size:0.88rem;font-weight:700;color:#f1f5f9">'+esc(cat)+'</div>'
-        + '<div style="font-size:0.64rem;font-weight:600;color:'+ln+';margin-top:2px;text-transform:uppercase;letter-spacing:0.05em">'+cnt+' topics</div>'
-        + '</div>'
-        + '<span style="color:#475569;font-size:1.3rem">&#8250;</span>'
-        + '</div>';
+      var ln=TLINE[cat]||'#94a3b8';
+      var bg=TBGR[cat]||'rgba(148,163,184,0.14)';
+      var icon=HOME_ICONS[cat]||'&#128203;';
+      var cnt=all().filter(function(p){return p.cat===cat;}).length;
+      html+='<div onclick="selCat(this.dataset.cat)" data-cat="'+cat+'" style="background:#1e293b;border-radius:16px;border:1px solid #2d3f55;border-right:4px solid '+ln+';padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px">'
+        +'<div style="width:46px;height:46px;border-radius:12px;background:'+bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.5rem">'+icon+'</div>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:0.88rem;font-weight:700;color:#f1f5f9">'+esc(cat)+'</div>'
+        +'<div style="font-size:0.64rem;font-weight:600;color:'+ln+';margin-top:2px;text-transform:uppercase;letter-spacing:0.05em">'+cnt+' topics</div>'
+        +'</div>'
+        +'<span style="color:#475569;font-size:1.3rem">&#8250;</span>'
+        +'</div>';
     });
-    html += '</div>';
-    html += '<div style="margin-top:10px"><div onclick="openAllCats()" style="background:#1e293b;border-radius:16px;border:1px solid #2d3f55;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px">'
-      + '<div style="width:46px;height:46px;border-radius:12px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.5rem">&#128992;</div>'
-      + '<div style="flex:1;font-size:0.88rem;font-weight:700;color:#f1f5f9">Browse all topics</div>'
-      + '<span style="color:#475569;font-size:1.3rem">&#8250;</span>'
-      + '</div></div>';
+    html+='<div onclick="selP(\'clinical-quiz\')" style="background:#1e293b;border-radius:16px;border:1px solid #2d3f55;border-right:4px solid #a78bfa;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px">'
+      +'<div style="width:46px;height:46px;border-radius:12px;background:rgba(167,139,250,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.5rem">&#129504;</div>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:0.88rem;font-weight:700;color:#f1f5f9">Clinical Quiz</div>'
+      +'<div style="font-size:0.64rem;font-weight:600;color:#a78bfa;margin-top:2px;text-transform:uppercase;letter-spacing:0.05em">57 questions</div>'
+      +'</div>'
+      +'<span style="color:#475569;font-size:1.3rem">&#8250;</span>'
+      +'</div>';
+    html+='</div>';
+    html+='<div style="margin-top:10px"><div onclick="openAllCats()" style="background:#1e293b;border-radius:16px;border:1px solid #2d3f55;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px">'
+      +'<div style="width:46px;height:46px;border-radius:12px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.5rem">&#128992;</div>'
+      +'<div style="flex:1;font-size:0.88rem;font-weight:700;color:#f1f5f9">Browse all topics</div>'
+      +'<span style="color:#475569;font-size:1.3rem">&#8250;</span>'
+      +'</div></div>';
   } else {
+    var makeTile = function(name, icon, onclick, subtitle, rgb, tileBg) {
+      var bdr = 'rgba('+rgb+',0.28)';
+      var sh  = '0 4px 14px rgba(0,0,0,0.09),0 1px 3px rgba(0,0,0,0.06)';
+      return '<div onclick="'+onclick+'" style="background:white;border:1.5px solid '+bdr+';border-radius:16px;padding:20px 12px 18px;text-align:center;cursor:pointer;box-shadow:'+sh+'">'
+        +'<div style="width:54px;height:54px;border-radius:14px;background:'+tileBg+';display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.6rem">'+icon+'</div>'
+        +'<div style="font-size:0.8rem;font-weight:700;color:#1e293b;line-height:1.3;margin-bottom:5px">'+esc(name)+'</div>'
+        +'<div style="font-size:0.62rem;font-weight:700;color:rgba('+rgb+',0.85);letter-spacing:0.04em;text-transform:uppercase">'+subtitle+'</div>'
+        +'</div>';
+    };
     var tiles = cats.map(function(cat){
-      var ln = TLINE[cat]||'#94a3b8';
-      var bg = TBGR[cat]||'rgba(148,163,184,0.08)';
+      var rgb = TRGB[cat]||'148,163,184';
       var icon = HOME_ICONS[cat]||'&#128203;';
       var cnt = all().filter(function(p){return p.cat===cat;}).length;
-      return '<div onclick="selCat(this.dataset.cat)" data-cat="'+cat+'" style="background:white;border:1px solid rgba(0,0,0,0.06);border-radius:16px;padding:20px 12px 18px;text-align:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.08)">'
-        + '<div style="width:54px;height:54px;border-radius:14px;background:'+bg+';display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.6rem">'+icon+'</div>'
-        + '<div style="font-size:0.8rem;font-weight:700;color:#1e293b;line-height:1.3;margin-bottom:5px">'+esc(cat)+'</div>'
-        + '<div style="font-size:0.62rem;font-weight:700;color:'+ln+';letter-spacing:0.04em;text-transform:uppercase">'+cnt+' topics</div>'
-        + '</div>';
-    }).join('');
-    html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'+tiles+'</div>'
+      var bg  = TBGR[cat]||'rgba(148,163,184,0.14)';
+      return makeTile(cat, icon, 'selCat(this.dataset.cat)', cnt+' topics', rgb, bg);
+    });
+    // Replace onclick for cat tiles to use data-cat properly
+    var catTiles = cats.map(function(cat){
+      var rgb = TRGB[cat]||'148,163,184';
+      var bdr = 'rgba('+rgb+',0.28)';
+      var sh  = '0 4px 14px rgba(0,0,0,0.09),0 1px 3px rgba(0,0,0,0.06)';
+      var icon = HOME_ICONS[cat]||'&#128203;';
+      var bg  = TBGR[cat]||'rgba(148,163,184,0.14)';
+      var cnt = all().filter(function(p){return p.cat===cat;}).length;
+      return '<div onclick="selCat(this.dataset.cat)" data-cat="'+cat+'" style="background:white;border:1.5px solid '+bdr+';border-radius:16px;padding:20px 12px 18px;text-align:center;cursor:pointer;box-shadow:'+sh+'">'
+        +'<div style="width:54px;height:54px;border-radius:14px;background:'+bg+';display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.6rem">'+icon+'</div>'
+        +'<div style="font-size:0.8rem;font-weight:700;color:#1e293b;line-height:1.3;margin-bottom:5px">'+esc(cat)+'</div>'
+        +'<div style="font-size:0.62rem;font-weight:700;color:rgba('+rgb+',0.85);letter-spacing:0.04em;text-transform:uppercase">'+cnt+' topics</div>'
+        +'</div>';
+    });
+    var quizRgb='167,139,250';
+    var quizBdr='rgba('+quizRgb+',0.28)';
+    var quizSh='0 4px 14px rgba(0,0,0,0.09),0 1px 3px rgba(0,0,0,0.06)';
+    var quizTile='<div onclick="selP(\'clinical-quiz\')" style="background:white;border:1.5px solid '+quizBdr+';border-radius:16px;padding:20px 12px 18px;text-align:center;cursor:pointer;box-shadow:'+quizSh+'">'
+      +'<div style="width:54px;height:54px;border-radius:14px;background:rgba(167,139,250,0.14);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.6rem">&#129504;</div>'
+      +'<div style="font-size:0.8rem;font-weight:700;color:#1e293b;line-height:1.3;margin-bottom:5px">Clinical Quiz</div>'
+      +'<div style="font-size:0.62rem;font-weight:700;color:rgba('+quizRgb+',0.85);letter-spacing:0.04em;text-transform:uppercase">57 questions</div>'
+      +'</div>';
+    html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'+catTiles.join('')+quizTile+'</div>'
       + '<div style="text-align:center"><button onclick="openAllCats()" style="color:#64748b;font-size:0.78rem;background:white;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;font-family:inherit;padding:9px 22px;box-shadow:0 1px 2px rgba(0,0,0,0.04)">Browse all topics &#8594;</button></div>';
   }
   return html;
@@ -1746,6 +1762,7 @@ function goToQuiz(bankId) {
   S.quiz.sel=null;
   S.quiz.score=0;
   S.quiz.total=0;
+  S.quiz.fromLink=true;
   selP('clinical-quiz');
 }
 function goHome() { S.screen='home'; S.hsearch=''; render(); }
